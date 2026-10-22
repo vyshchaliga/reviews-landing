@@ -12,6 +12,10 @@
       title: 'Що говорять учасники про Вищу Лігу',
       h1a: 'Що говорять', h1b: 'учасники', h1bg: 'про', h1c: 'Вищу Лігу',
       cta: 'Хочу у Вищу Лігу',
+      s1n: '$8 000 000+', s1c: 'сумарно заробили наші учасники на своїх запусках за весь час існування Ліги',
+      s2n: '5 ПОТОКІВ', s2c: 'системної роботи та перевіреної методології, яка дає стабільний результат',
+      s3n: '250+ УЧАСНИКІВ', s3c: 'які вже пройшли програму, серед яких є найсильніші експерти та продюсери ринку',
+      s4n: '50+ РІЗНИХ НІШ', s4c: 'у яких наші інструменти допомогли вирости в доході та побудувати систему',
       zoom: 'Збільшити відгук',
       play: 'Відтворити', pause: 'Пауза', soundOn: 'Увімкнути звук', soundOff: 'Вимкнути звук'
     },
@@ -19,6 +23,10 @@
       title: 'Что говорят участники о Высшей Лиге',
       h1a: 'Что говорят', h1b: 'участники', h1bg: 'о', h1c: 'Высшей Лиге',
       cta: 'Хочу в Высшую Лигу',
+      s1n: '$8 000 000+', s1c: 'суммарно заработали наши участники на своих запусках за всё время существования Лиги',
+      s2n: '5 ПОТОКОВ', s2c: 'системной работы и проверенной методологии, которая даёт стабильный результат',
+      s3n: '250+ УЧАСТНИКОВ', s3c: 'которые уже прошли программу, среди которых сильнейшие эксперты и продюсеры рынка',
+      s4n: '50+ РАЗНЫХ НИШ', s4c: 'в которых наши инструменты помогли вырасти в доходе и построить систему',
       zoom: 'Увеличить отзыв',
       play: 'Воспроизвести', pause: 'Пауза', soundOn: 'Включить звук', soundOff: 'Выключить звук'
     }
@@ -386,8 +394,73 @@
     check();
   }
 
+  /* ---------- Досягнення: на телефоні нескінченна карусель ---------- */
+  function initStats() {
+    var box = document.getElementById('stats');
+    if (!box) return;
+    var track = box.querySelector('.stats-track');
+    var items = Array.prototype.slice.call(track.children);
+    for (var k = 0; k < 2; k++) {
+      items.forEach(function (it) {
+        var c = it.cloneNode(true);
+        c.classList.add('clone'); c.setAttribute('aria-hidden', 'true');
+        track.appendChild(c);
+      });
+    }
+    var mq = window.matchMedia('(max-width: 600px)');
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var SPEED = 34;                                   // px за секунду, справа наліво
+    var x = 0, vel = 0, drag = false, lastX = 0, lastT = 0, resumeAt = 0, raf = 0, visible = true, last = 0;
+
+    function setW() { return track.children[items.length].offsetLeft - track.children[0].offsetLeft; }
+    function apply() {
+      var w = setW();
+      if (w > 0) x = ((x % w) + w) % w;               // кільце: докрутити до кінця неможливо
+      track.style.transform = 'translate3d(' + (-x) + 'px,0,0)';
+    }
+    function frame(t) {
+      raf = 0;
+      if (!mq.matches || !visible) return;
+      var dt = Math.min(64, t - last) / 1000; last = t;
+      if (!drag) {
+        if (Math.abs(vel) > 8) { x += vel * dt; vel *= Math.pow(0.02, dt); resumeAt = t + 1200; }
+        else if (!reduce && t >= resumeAt) { x += SPEED * dt; }
+      }
+      apply();
+      raf = requestAnimationFrame(frame);
+    }
+    function start() {
+      if (raf || !mq.matches || !visible) return;
+      last = performance.now(); raf = requestAnimationFrame(frame);
+    }
+    function onMq() {
+      if (mq.matches) start();
+      else { x = 0; vel = 0; track.style.transform = ''; }
+    }
+    box.addEventListener('pointerdown', function (e) {
+      if (!mq.matches) return;
+      drag = true; lastX = e.clientX; lastT = performance.now(); vel = 0;
+    });
+    box.addEventListener('pointermove', function (e) {
+      if (!drag) return;
+      var now = performance.now(), dx = e.clientX - lastX;
+      x -= dx; vel = 0.7 * vel + 0.3 * (-dx / Math.max(1, now - lastT) * 1000);
+      lastX = e.clientX; lastT = now; apply();
+    });
+    function end() { if (!drag) return; drag = false; resumeAt = performance.now() + 1500; }
+    box.addEventListener('pointerup', end);
+    box.addEventListener('pointercancel', end);
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (es) { visible = es[0].isIntersecting; if (visible) start(); }).observe(box);
+    }
+    if (mq.addEventListener) mq.addEventListener('change', onMq); else if (mq.addListener) mq.addListener(onMq);
+    window.addEventListener('resize', function () { if (mq.matches) apply(); });
+    onMq();
+  }
+
   /* ---------- Старт ---------- */
   function init() {
+    initStats();
     state.touch = !!(window.matchMedia && window.matchMedia('(hover: none) and (pointer: coarse)').matches);
     if (state.touch) document.documentElement.classList.add('touch');
     state.lang = pickLang();

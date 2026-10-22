@@ -138,3 +138,27 @@ html:not(.touch) .shot-wrap.zoomable{cursor:zoom-in;outline:none}
 .zoom-fly{position:fixed;z-index:100;cursor:zoom-out;transition:transform .42s cubic-bezier(.22,.8,.24,1);will-change:transform}
 .zoom-fly .shot{box-shadow:0 30px 90px rgba(0,0,0,0.65)}
 @media (prefers-reduced-motion:reduce){.zoom-fly{transition-duration:.01s}.zoom-bg{transition-duration:.01s}}
+
+/* ===== Досягнення ===== */
+.stats{max-width:1328px;margin:0 auto;padding:64px 0 6px;display:grid;grid-template-columns:repeat(4,1fr);position:relative;z-index:3}
+.stats-track{display:contents}
+.stat{padding:0 28px;border-left:1px solid rgba(255,255,255,0.1);min-width:0}
+.stat:first-child{border-left:0;padding-left:0}
+.stat.clone{display:none}
+.stat-n{font-size:34px;line-height:1.1;font-weight:700;color:#fff;white-space:nowrap}
+.stat-c{font-size:14px;line-height:1.45;color:#A3A3A3;margin-top:8px}
+@media (max-width:1100px) and (min-width:601px){
+  .stats{grid-template-columns:1fr 1fr;gap:34px 0;padding-top:48px}
+  .stat:nth-child(3){border-left:0;padding-left:0}
+  .stat-n{font-size:30px}
+}
+@media (max-width:600px){
+  .hero-in{display:flex;flex-direction:column}
+  .stats{order:2;display:block;overflow:hidden;touch-action:pan-y;margin:0 -18px;padding:40px 0 4px;max-width:none;-webkit-user-select:none;user-select:none}
+  .rule{order:3}
+  .stats-track{display:flex;gap:12px;width:max-content;padding-left:18px;will-change:transform}
+  .stat,.stat.clone{display:block;flex:0 0 232px;padding:16px;border:1px solid rgba(255,255,255,0.12);border-radius:14px;background:rgba(255,255,255,0.04);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+  .stat:first-child{padding-left:16px;border-left:1px solid rgba(255,255,255,0.12)}
+  .stat-n{font-size:25px;white-space:normal}
+  .stat-c{font-size:12px;margin-top:6px}
+}
