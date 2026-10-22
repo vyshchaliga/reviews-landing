@@ -21,7 +21,7 @@ const GUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 rows.forEach((r, i) => {
   const n = i + 1, where = `рядок ${n}`;
   if (r.type !== 'video' && r.type !== 'shot') { errors.push(`${where}: type має бути video або shot, зараз «${r.type}»`); return; }
-  for (const k of ['name_ua', 'name_ru']) if (!r[k]) errors.push(`${where}: порожнє поле ${k}`);
+  if (r.type === 'shot') for (const k of ['name_ua', 'name_ru']) if (!r[k]) errors.push(`${where}: порожнє поле ${k}`);   // для відео ім'я не обов'язкове
   for (const k of ['niche_ua', 'niche_ru']) if (r[k] && r[k] !== cap(r[k])) warns.push(`${where}: ${k} краще з великої літери («${r[k]}»); на сайті вона й так буде з великої`);
 
   if (r.type === 'video') {

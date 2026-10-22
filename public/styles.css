@@ -162,3 +162,5 @@ html:not(.touch) .shot-wrap.zoomable{cursor:zoom-in;outline:none}
   .stat-n{font-size:25px;white-space:normal}
   .stat-c{font-size:12px;margin-top:6px}
 }
+
+.meta[hidden]{display:none}

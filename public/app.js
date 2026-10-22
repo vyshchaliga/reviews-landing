@@ -74,7 +74,8 @@
       var niche = lang === 'ru' ? c.row.niche_ru : c.row.niche_ua;
       c.nameEl.textContent = name;
       c.nicheEl.textContent = cap(niche);
-      c.sepEl.hidden = !niche;
+      c.sepEl.hidden = !niche || !name;
+      c.item.querySelector('.meta').hidden = !name && !niche;
       if (c.img) c.img.alt = name + ' — ' + cap(niche);
       if (c.wrap && c.zoomable) c.wrap.setAttribute('aria-label', t.zoom);
       if (c.play) c.play.setAttribute('aria-label', t.play);
