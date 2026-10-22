@@ -33,7 +33,7 @@ button{font:inherit}
 /* ===== Перший екран (десктоп) ===== */
 .hero{position:relative;z-index:1;padding:28px 56px 44px;overflow-x:clip;overflow-y:visible}
 .hero-in{position:relative;z-index:2;max-width:1328px;margin:0 auto}
-.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:36px}
+.topbar{display:flex;align-items:center;justify-content:flex-end;min-height:24px;margin-bottom:36px}
 .logo{font-size:19px;letter-spacing:0.01em}
 .langs{display:flex;align-items:center;gap:7px}
 .lang{font-size:12px;font-weight:600;letter-spacing:0.04em;color:#6E6E6E;background:none;border:0;cursor:pointer;padding:4px 2px;font-family:"Onest",sans-serif}
@@ -58,7 +58,7 @@ h1 .ln{display:block}
 .shot{width:100%;height:auto;display:block;border-radius:10px;background:#fff}
 .ring{position:absolute;border:2.5px solid #FF3B30;border-radius:5px;pointer-events:none}
 .meta{display:block;line-height:1.45;padding:9px 2px 0;font-size:12px;color:#8C8C8C}
-.meta b{color:#fff;font-weight:600;font-size:13px}
+.meta b{color:#D5A77A;font-weight:600;font-size:13px}
 .meta .sep{color:#555;margin:0 8px}
 
 /* ===== Відео (Reels 9:16) ===== */
@@ -82,8 +82,8 @@ html.touch .reel.is-playing .play{display:none}
 html.touch .snd{display:flex}
 
 /* ===== Закріплена кнопка ===== */
-.btn{position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;text-align:center;background:linear-gradient(145deg,#D5A77A 0%,#795939 100%);color:#000;border:0;border-radius:3000px;font-family:"Onest",sans-serif;font-weight:700;cursor:pointer;text-decoration:none}
-.btn:hover{background:linear-gradient(145deg,#E3B98F 0%,#8A6845 100%);color:#000}
+.btn{position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;text-align:center;background:linear-gradient(145deg,#C79A6D 0%,#6B4E32 100%);color:#fff;text-shadow:0 1px 2px rgba(0,0,0,0.28);border:0;border-radius:3000px;font-family:"Onest",sans-serif;font-weight:700;cursor:pointer;text-decoration:none}
+.btn:hover{background:linear-gradient(145deg,#D4A778 0%,#7A5A3B 100%);color:#fff}
 .btn::after{content:"";position:absolute;top:0;left:-60%;width:40%;height:100%;background:linear-gradient(100deg,rgba(255,255,255,0) 0%,rgba(255,244,214,0.7) 50%,rgba(255,255,255,0) 100%);transform:skewX(-20deg);animation:sheen 3.4s ease-in-out infinite;pointer-events:none}
 @keyframes sheen{0%{left:-60%}55%,100%{left:140%}}
 .cta-bar{position:fixed;left:0;right:0;bottom:0;z-index:40;padding:14px 56px 16px;transform:translateY(110%);opacity:0;pointer-events:none;transition:transform .35s ease,opacity .35s ease}
@@ -91,6 +91,12 @@ html.touch .snd{display:flex}
 .cta-bg{position:absolute;left:0;right:0;bottom:0;top:-34px;background:linear-gradient(0deg,rgba(0,0,0,0.62) 0%,rgba(0,0,0,0.38) 55%,rgba(0,0,0,0) 100%);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);-webkit-mask-image:linear-gradient(0deg,#000 0%,#000 50%,transparent 100%);mask-image:linear-gradient(0deg,#000 0%,#000 50%,transparent 100%);pointer-events:none}
 .cta-in{position:relative;max-width:1328px;margin:0 auto}
 .cta-in .btn{width:100%;padding:18px 24px;font-size:17px}
+/* ПК: компактна кнопка по центру внизу (на телефоні лишається смуга на всю ширину) */
+html:not(.touch) .cta-bar{left:50%;right:auto;padding:0 0 30px;transform:translate(-50%,110%)}
+html:not(.touch) .cta-bar.on{transform:translate(-50%,0)}
+html:not(.touch) .cta-bg{display:none}
+html:not(.touch) .cta-in{max-width:none}
+html:not(.touch) .cta-in .btn{width:min(360px,calc(100vw - 28px));padding:17px 24px;font-size:16px;box-shadow:0 12px 40px rgba(0,0,0,0.6),0 0 0 1px rgba(255,235,200,0.18)}
 
 /* ===== Адаптив ===== */
 @media (max-width:1100px){.wall{column-count:3}}
@@ -119,3 +125,8 @@ html.touch .snd{display:flex}
 }
 @media (max-width:520px){.wall{column-count:1}}
 @media (prefers-reduced-motion:reduce){.bg i,.btn::after,.gold,.king img,.king::before{animation:none}}
+
+/* ===== Версія 2 (/v2): без імен і ніш, стіна щільніша ===== */
+.nonames .meta{display:none}
+.nonames .wall{column-gap:12px}
+.nonames .item{margin-bottom:12px}

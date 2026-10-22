@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="uk" class="nonames">
+<head>
+<meta charset="utf-8">
+<base href="/">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Що говорять учасники про Вищу Лігу</title>
+<meta name="description" content="Відгуки учасників програми «Вища Ліга».">
+<meta name="theme-color" content="#000000">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preload" href="assets/fonts/oswald-cyrillic-700-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="bg" aria-hidden="true"><i class="b1"></i><i class="b2"></i><i class="b3"></i></div>
+
+<header class="hero">
+  <div class="hero-in">
+    <div class="topbar">
+      <div class="langs" role="group" aria-label="Language">
+        <button type="button" class="lang" data-lang="ua">UA</button>
+        <span class="lang-sep">|</span>
+        <button type="button" class="lang" data-lang="ru">RU</button>
+      </div>
+    </div>
+    <div class="hero-main">
+      <div class="king" aria-hidden="true"><img src="assets/img/king.webp" alt="" width="570" height="900"></div>
+      <h1 class="d">
+        <span class="ln" data-i18n="h1a">Що говорять</span>
+        <span class="ln"><span data-i18n="h1b">учасники</span> <span class="gold" data-i18n="h1bg">про</span></span>
+        <span class="ln"><span class="gold" data-i18n="h1c">Вищу Лігу</span></span>
+      </h1>
+    </div>
+    <div class="rule"></div>
+  </div>
+</header>
+
+<main class="wall-wrap">
+  <div class="wall" id="wall"></div>
+</main>
+
+<div class="cta-bar" id="cta" aria-hidden="true">
+  <div class="cta-bg"></div>
+  <div class="cta-in">
+    <a class="btn" id="cta-link" href="https://vyschaliga.com/main" tabindex="-1" data-i18n="cta">Хочу у Вищу Лігу</a>
+  </div>
+</div>
+
+<script src="config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
