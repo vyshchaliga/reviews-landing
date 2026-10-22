@@ -130,3 +130,11 @@ html:not(.touch) .cta-in .btn{width:min(360px,calc(100vw - 28px));padding:17px 2
 .nonames .meta{display:none}
 .nonames .wall{column-gap:12px}
 .nonames .item{margin-bottom:12px}
+
+/* ===== Збільшення скріна по кліку (ПК) ===== */
+html:not(.touch) .shot-wrap.zoomable{cursor:zoom-in;outline:none}
+.zoom-bg{position:fixed;inset:0;z-index:90;background:rgba(0,0,0,0.62);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);opacity:0;transition:opacity .35s ease}
+.zoom-bg.on{opacity:1}
+.zoom-fly{position:fixed;z-index:100;cursor:zoom-out;transition:transform .42s cubic-bezier(.22,.8,.24,1);will-change:transform}
+.zoom-fly .shot{box-shadow:0 30px 90px rgba(0,0,0,0.65)}
+@media (prefers-reduced-motion:reduce){.zoom-fly{transition-duration:.01s}.zoom-bg{transition-duration:.01s}}

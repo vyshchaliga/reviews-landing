@@ -12,12 +12,14 @@
       title: 'Що говорять учасники про Вищу Лігу',
       h1a: 'Що говорять', h1b: 'учасники', h1bg: 'про', h1c: 'Вищу Лігу',
       cta: 'Хочу у Вищу Лігу',
+      zoom: 'Збільшити відгук',
       play: 'Відтворити', pause: 'Пауза', soundOn: 'Увімкнути звук', soundOff: 'Вимкнути звук'
     },
     ru: {
       title: 'Что говорят участники о Высшей Лиге',
       h1a: 'Что говорят', h1b: 'участники', h1bg: 'о', h1c: 'Высшей Лиге',
       cta: 'Хочу в Высшую Лигу',
+      zoom: 'Увеличить отзыв',
       play: 'Воспроизвести', pause: 'Пауза', soundOn: 'Включить звук', soundOff: 'Выключить звук'
     }
   };
@@ -66,6 +68,7 @@
       c.nicheEl.textContent = cap(niche);
       c.sepEl.hidden = !niche;
       if (c.img) c.img.alt = name + ' — ' + cap(niche);
+      if (c.wrap && c.zoomable) c.wrap.setAttribute('aria-label', t.zoom);
       if (c.play) c.play.setAttribute('aria-label', t.play);
       if (c.snd) c.snd.setAttribute('aria-label', state.muted ? t.soundOn : t.soundOff);
     });
@@ -247,8 +250,73 @@
       }
     }
     card.img = img;
+    card.wrap = wrap;
     return wrap;
   }
+
+  /* ---------- Збільшення скріна по кліку (лише ПК) ---------- */
+  var zoom = null;
+
+  function openZoom(card) {
+    if (zoom) return;
+    var wrap = card.wrap;
+    var r = wrap.getBoundingClientRect();
+    var natW = +card.row.w || r.width, natH = +card.row.h || r.height;
+    var vw = window.innerWidth, vh = window.innerHeight;
+    var tw = Math.min(natW, vw * 0.9, vh * 0.9 * natW / natH);
+    var th = tw * natH / natW;
+    var left = (vw - tw) / 2, top = (vh - th) / 2;
+
+    var bg = el('div', 'zoom-bg');
+    var fly = buildShot(card.row, { index: 0 });
+    fly.classList.add('zoom-fly');
+    fly.style.left = left + 'px'; fly.style.top = top + 'px'; fly.style.width = tw + 'px';
+    fly.style.transformOrigin = '0 0';
+    fly.style.transform = 'translate(' + (r.left - left) + 'px,' + (r.top - top) + 'px) scale(' + (r.width / tw) + ')';
+    document.body.appendChild(bg);
+    document.body.appendChild(fly);
+    wrap.style.visibility = 'hidden';
+    fly.getBoundingClientRect();                    // фіксуємо стартовий стан
+    bg.classList.add('on');
+    fly.style.transform = 'none';
+
+    zoom = { card: card, bg: bg, fly: fly, left: left, top: top, tw: tw, y: window.pageYOffset, closing: false };
+    bg.addEventListener('click', closeZoom);
+    fly.addEventListener('click', closeZoom);
+  }
+
+  function closeZoom() {
+    var z = zoom;
+    if (!z || z.closing) return;
+    z.closing = true;
+    var r = z.card.wrap.getBoundingClientRect();
+    z.bg.classList.remove('on');
+    z.fly.style.transform = 'translate(' + (r.left - z.left) + 'px,' + (r.top - z.top) + 'px) scale(' + (r.width / z.tw) + ')';
+    setTimeout(function () {
+      z.card.wrap.style.visibility = '';
+      if (z.fly.parentNode) z.fly.parentNode.removeChild(z.fly);
+      if (z.bg.parentNode) z.bg.parentNode.removeChild(z.bg);
+      zoom = null;
+    }, 420);
+  }
+
+  function bindZoom(card) {
+    var wrap = card.wrap;
+    card.zoomable = true;
+    wrap.classList.add('zoomable');
+    wrap.tabIndex = 0;
+    wrap.setAttribute('role', 'button');
+    wrap.addEventListener('click', function () { openZoom(card); });
+    wrap.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openZoom(card); }
+    });
+  }
+
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeZoom(); });
+  window.addEventListener('resize', function () { closeZoom(); });
+  window.addEventListener('scroll', function () {
+    if (zoom && Math.abs(window.pageYOffset - zoom.y) > 40) closeZoom();
+  }, { passive: true });
 
   function render(rows) {
     var wall = document.getElementById('wall');
@@ -258,6 +326,7 @@
       var card = { row: row, index: state.cards.length, visible: false, ratio: 0 };
       var item = el('div', 'item');
       item.appendChild(row.type === 'video' ? buildVideo(row, card) : buildShot(row, card));
+      if (row.type === 'shot' && !state.touch) bindZoom(card);
       var meta = el('div', 'meta');
       var b = document.createElement('b');
       var sep = el('span', 'sep'); sep.textContent = '|';
