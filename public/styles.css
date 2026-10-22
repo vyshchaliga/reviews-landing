@@ -40,11 +40,11 @@ button{font:inherit}
 .lang:hover{color:#A3A3A3}
 .lang.on{color:#fff}
 .lang-sep{color:#3A3A3A;font-size:11px}
-h1{margin:0;font-size:clamp(42px,7.1vw,100px);line-height:1.16;color:#fff;position:relative;z-index:2}
+h1{margin:0;font-size:clamp(46px,8.5vw,120px);line-height:1.16;color:#fff;position:relative;z-index:2}
 h1 .ln{display:block}
-.rule{height:1px;background:rgba(255,255,255,0.14);margin:44px 0 0}
+.rule{height:1px;background:rgba(255,255,255,0.14);margin:36px 0 0}
 .hero-main{position:relative;min-height:calc(min(23vw,420px) * 1.58 - 114px)}
-.king{position:absolute;z-index:1;right:calc(14vw - 56px);top:-30px;width:min(23vw,420px);pointer-events:none}
+.king{position:absolute;z-index:4;right:calc(14vw - 56px);top:-30px;width:min(23vw,420px);pointer-events:none}
 .king img{display:block;width:100%;height:auto;animation:kingFloat 7s ease-in-out infinite alternate;filter:drop-shadow(0 30px 50px rgba(0,0,0,0.55))}
 .king::before{content:"";position:absolute;left:-30%;right:-30%;top:5%;bottom:-5%;background:radial-gradient(closest-side,rgba(228,189,144,0.30) 0%,rgba(213,167,122,0.10) 55%,rgba(213,167,122,0) 100%);animation:kingGlow 7s ease-in-out infinite alternate}
 @keyframes kingFloat{0%{transform:translateY(0) rotate(-0.8deg)}100%{transform:translateY(-22px) rotate(0.8deg)}}
@@ -108,9 +108,9 @@ html:not(.touch) .cta-in .btn{width:min(360px,calc(100vw - 28px));padding:17px 2
   .logo{font-size:16px}
   .langs{gap:6px}
   h1{font-size:clamp(34px,10vw,44px);line-height:1.2}
-  .hero-main{position:relative;min-height:calc(min(32vw,140px) * 1.58 - 40px)}
+  .hero-main{position:relative;min-height:146px}
   .rule{margin:26px 0 0}
-  .hero .king,.king{right:-1vw;top:-6px;width:min(32vw,140px)}
+  .hero .king,.king{right:-1vw;top:-6px;width:118px}
   .king img{filter:drop-shadow(0 20px 36px rgba(0,0,0,0.55))}
   .king::before{left:-40%;right:-30%}
   @keyframes kingFloat{0%{transform:translateY(0) rotate(-0.8deg)}100%{transform:translateY(-14px) rotate(0.8deg)}}
@@ -140,7 +140,7 @@ html:not(.touch) .shot-wrap.zoomable{cursor:zoom-in;outline:none}
 @media (prefers-reduced-motion:reduce){.zoom-fly{transition-duration:.01s}.zoom-bg{transition-duration:.01s}}
 
 /* ===== Досягнення ===== */
-.stats{max-width:1328px;margin:0 auto;padding:64px 0 6px;display:grid;grid-template-columns:repeat(4,1fr);position:relative;z-index:3}
+.stats{max-width:1328px;margin:0 auto;padding:44px 0 6px;display:grid;grid-template-columns:repeat(4,1fr);position:relative;z-index:3}
 .stats-track{display:contents}
 .stat{padding:0 28px;border-left:1px solid rgba(255,255,255,0.1);min-width:0}
 .stat:first-child{border-left:0;padding-left:0}
@@ -154,7 +154,7 @@ html:not(.touch) .shot-wrap.zoomable{cursor:zoom-in;outline:none}
 }
 @media (max-width:600px){
   .hero-in{display:flex;flex-direction:column}
-  .stats{order:2;display:block;overflow:hidden;touch-action:pan-y;margin:0 -18px;padding:40px 0 4px;max-width:none;-webkit-user-select:none;user-select:none}
+  .stats{order:2;display:block;overflow:hidden;touch-action:pan-y;margin:0 -18px;padding:26px 0 4px;max-width:none;-webkit-user-select:none;user-select:none}
   .rule{order:3}
   .stats-track{display:flex;gap:12px;width:max-content;padding-left:18px;will-change:transform}
   .stat,.stat.clone{display:block;flex:0 0 232px;padding:16px;border:1px solid rgba(255,255,255,0.12);border-radius:14px;background:rgba(255,255,255,0.04);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
