@@ -21,7 +21,7 @@ const GUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 rows.forEach((r, i) => {
   const n = i + 1, where = `рядок ${n}`;
   if (r.type !== 'video' && r.type !== 'shot') { errors.push(`${where}: type має бути video або shot, зараз «${r.type}»`); return; }
-  // імена й ніші не обов'язкові: на головній сторінці їх не видно, на /v2 порожній підпис просто ховається
+  // імена й ніші не обов'язкові: на головній сторінці їх не видно
   for (const k of ['niche_ua', 'niche_ru']) if (r[k] && r[k] !== cap(r[k])) warns.push(`${where}: ${k} краще з великої літери («${r[k]}»); на сайті вона й так буде з великої`);
 
   if (r.type === 'video') {
@@ -40,14 +40,6 @@ rows.forEach((r, i) => {
     if (r.ring && !/^\d+(\.\d+)?( \d+(\.\d+)?){3}$/.test(r.ring)) errors.push(`${where}: ring має вигляд «лівий верхній ширина висота» у відсотках, наприклад «8 13 85 8»`);
   }
 });
-
-// Тестова версія /v2 має свою таблицю: перевіряємо лише, що її файли на місці
-const V2_CSV = path.join(path.dirname(CSV_PATH), 'reviews-v2.csv');
-if (fs.existsSync(V2_CSV)) {
-  parseCSV(fs.readFileSync(V2_CSV, 'utf8')).rows.forEach((r, i) => {
-    if (r.type === 'shot' && r.media && !fs.existsSync(path.join(SHOTS_DIR, r.media))) errors.push(`reviews-v2.csv, рядок ${i + 1}: немає файлу public/assets/shots/${r.media}`);
-  });
-}
 
 if (changed) { writeRows(rows); console.log('Розміри скрінів доповнено.'); }
 

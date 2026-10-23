@@ -126,7 +126,7 @@ html:not(.touch) .cta-in .btn{width:min(360px,calc(100vw - 28px));padding:17px 2
 @media (max-width:520px){.wall{column-count:1}}
 @media (prefers-reduced-motion:reduce){.bg i,.btn::after,.gold,.king img,.king::before{animation:none}}
 
-/* ===== Версія 2 (/v2): без імен і ніш, стіна щільніша ===== */
+/* ===== Без імен і ніш, стіна щільніша ===== */
 .nonames .meta{display:none}
 .nonames .wall{column-gap:12px}
 .nonames .item{margin-bottom:12px}
