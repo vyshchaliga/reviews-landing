@@ -1,5 +1,5 @@
 /* Стіна відгуків «Вища Ліга».
-   Дані беруться з data/reviews.csv. Відео — з Bunny Stream (HLS), програється власним плеєром без стороннього інтерфейсу.
+   Дані беруться з data/reviews.csv (на /v2 — з data/reviews-v2.csv, див. data-csv на <html>). Відео — з Bunny Stream (HLS), програється власним плеєром без стороннього інтерфейсу.
    Жодних посилань назовні, крім кнопки «Хочу у Вищу Лігу». */
 (function () {
   'use strict';
@@ -76,7 +76,7 @@
       c.nicheEl.textContent = cap(niche);
       c.sepEl.hidden = !niche || !name;
       c.item.querySelector('.meta').hidden = !name && !niche;
-      if (c.img) c.img.alt = name + ' — ' + cap(niche);
+      if (c.img) c.img.alt = name ? name + (niche ? ' — ' + cap(niche) : '') : (lang === 'ru' ? 'Отзыв участника' : 'Відгук учасника');
       if (c.wrap && c.zoomable) c.wrap.setAttribute('aria-label', t.zoom);
       if (c.play) c.play.setAttribute('aria-label', t.play);
       if (c.snd) c.snd.setAttribute('aria-label', state.muted ? t.soundOn : t.soundOff);
@@ -475,7 +475,7 @@
       });
     });
 
-    fetch('data/reviews.csv', { cache: 'no-cache' })
+    fetch(document.documentElement.getAttribute('data-csv') || 'data/reviews.csv', { cache: 'no-cache' })
       .then(function (r) { if (!r.ok) throw new Error('csv ' + r.status); return r.text(); })
       .then(function (t) { render(parseCSV(t)); })
       .catch(function () { /* без даних сторінка лишається з першим екраном */ });
