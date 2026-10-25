@@ -158,7 +158,7 @@ vercel.json              заголовки безпеки та налаштув
 Після відправки: конфеті (чорне/золоте/біле), «Ваша анкета прийнята» і кнопка в канал передзапису (https://t.me/+khBdwlzmHHBhNzIy,
 той самий, що в анкеті на Tilda). Відгуки/відео на /rtg і на основному ленді спільні.
 
-Куди йдуть відповіді: `POST /api/lead` (`api/lead.js`) → Google Apps Script (`scripts/apps-script/Code.gs`) → рядок у вкладці
-таблиці з gid 1397488239 (колонки підбираються за назвами в 1-му рядку: sent, name, nik_tg, instagram, dohod, rol, utm_*, referer, type).
+Куди йдуть відповіді: `POST /api/lead` (`api/lead.js`) → Google Apps Script (`scripts/apps-script/Code.gs`) → рядок у таблиці «Анкети з Tilda - ВЛ 60» (Лист1), куди пише й Tilda; звідти він сам з'являється в «Анкета предзапису» і «БД заявок»
+(колонки підбираються за назвами в 1-му рядку; formid = rtg). У «Анкета предзапису» писати НЕ можна: там формули IMPORTRANGE.
 Потрібні змінні у Vercel (Settings → Environment Variables): `SHEETS_WEBHOOK_URL` (адреса веб-застосунку, що закінчується на /exec)
 і `SHEETS_SECRET` (такий самий рядок, як `SECRET` у Code.gs). Після додавання змінних — Redeploy.
