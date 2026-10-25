@@ -5,7 +5,7 @@
 const FIELDS = ['name', 'nik_tg', 'instagram', 'dohod', 'rol', 'type', 'lang', 'referer',
   'utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'];
 const OPTIONS = {
-  rol: ['Продюсер', 'Эксперт', 'И эксперт, и продюсер', 'Маркетолог / в команде проекта', 'Пока не в инфобизнесе']
+  rol: ['Продюсер', 'Эксперт', 'Маркетолог / в команде проекта', 'Пока не в инфобизнесе']   // можна кілька, через «, »
 };
 
 export default async function handler(req, res) {
@@ -33,7 +33,10 @@ export default async function handler(req, res) {
     clean[k] = v;
   }
   if (!clean.name || !clean.nik_tg || !clean.instagram || !clean.dohod ||
-      !Object.keys(OPTIONS).every((k) => OPTIONS[k].includes(b[k]))) {
+      !Object.keys(OPTIONS).every((k) => {
+        const parts = String(b[k] || '').split(', ');
+        return parts.length > 0 && new Set(parts).size === parts.length && parts.every((x) => OPTIONS[k].includes(x));
+      })) {
     return res.status(400).json({ ok: false, error: 'missing fields' });
   }
   clean.type = clean.type || 'Предзапис';

@@ -9,12 +9,12 @@
 
   // Радіо-питання. v — значення, яке потрапляє в таблицю (як в анкеті на Tilda, російською); ua/ru — підписи.
   var GROUPS = [
-    { key: 'rol', t: 'role', opts: [
+    // multi: можна обрати кілька (у таблицю йдуть через кому); solo: варіант, що виключає інші
+    { key: 'rol', t: 'role', multi: true, opts: [
       { v: 'Продюсер',                        ua: 'Продюсер',                         ru: 'Продюсер' },
       { v: 'Эксперт',                         ua: 'Експерт',                          ru: 'Эксперт' },
-      { v: 'И эксперт, и продюсер',           ua: 'І експерт, і продюсер',            ru: 'И эксперт, и продюсер' },
       { v: 'Маркетолог / в команде проекта',  ua: 'Маркетолог / у команді проєкту',   ru: 'Маркетолог / в команде проекта' },
-      { v: 'Пока не в инфобизнесе',           ua: 'Поки не в інфобізнесі',            ru: 'Пока не в инфобизнесе' } ] }
+      { v: 'Пока не в инфобизнесе',           ua: 'Поки не в інфобізнесі',            ru: 'Пока не в инфобизнесе', solo: true } ] }
   ];
 
   var T = {
@@ -22,7 +22,7 @@
       title1: 'Анкета', title2: 'передзапису',
       sub: 'Уважно перевірте правильність даних, включно з ніком в інстаграмі та телеграмі.',
       name: 'Ваше ім’я', tg: 'Нік у телеграмі через @', ig: 'Нік в інстаграмі через @',
-      income: 'Ваш середній дохід на місяць?', role: 'Яка ваша роль',
+      income: 'Ваш середній дохід на місяць?', role: 'Яка ваша роль', multi: 'можна обрати кілька',
       send: 'Відправити анкету', sending: 'Відправляємо…',
       need: 'Заповніть, будь ласка, усі поля', fail: 'Не вдалося відправити анкету. Спробуйте ще раз за хвилину.',
       okTitle: 'Ваша анкета прийнята', okText: 'Запрошуємо в канал передзапису', okBtn: 'У канал передзапису',
@@ -32,7 +32,7 @@
       title1: 'Анкета', title2: 'предзаписи',
       sub: 'Внимательно проверьте правильность данных, включая ник в инстаграмме и телеграмме.',
       name: 'Ваше имя', tg: 'Ник в телеграмм через @', ig: 'Ник в инстаграмм через @',
-      income: 'Ваш средний доход в месяц?', role: 'Какая ваша роль',
+      income: 'Ваш средний доход в месяц?', role: 'Какая ваша роль', multi: 'можно выбрать несколько',
       send: 'Отправить анкету', sending: 'Отправляем…',
       need: 'Заполните, пожалуйста, все поля', fail: 'Не удалось отправить анкету. Попробуйте ещё раз через минуту.',
       okTitle: 'Ваша анкета принята', okText: 'Приглашаем в канал предзаписи', okBtn: 'В канал предзаписи',
@@ -117,22 +117,29 @@
     refs.groups = {};
     function group(g) {
       var fs = el('fieldset', 'rtg-fs');
-      var lg = el('legend', 'rtg-l'); fs.appendChild(lg);
+      var lg = el('legend', 'rtg-l');
+      var lgT = document.createElement('span'); var lgH = el('span', 'rtg-hint');
+      lg.appendChild(lgT); lg.appendChild(lgH); fs.appendChild(lg);
       var box = el('div', 'rtg-chips'); fs.appendChild(box);
       var items = [];
       g.opts.forEach(function (o) {
         var lab = el('label', 'rtg-opt');
-        var inp = document.createElement('input'); inp.type = 'radio'; inp.name = g.key; inp.value = o.v;
-        var dot = el('span', 'rtg-dot');
+        var inp = document.createElement('input'); inp.type = g.multi ? 'checkbox' : 'radio'; inp.name = g.key; inp.value = o.v;
+        var dot = el('span', g.multi ? 'rtg-dot sq' : 'rtg-dot');
         var tx = document.createElement('span');
         lab.appendChild(inp); lab.appendChild(dot); lab.appendChild(tx);
         box.appendChild(lab);
         items.push({ opt: o, text: tx, input: inp, label: lab });
       });
-      box.addEventListener('change', function () {
+      box.addEventListener('change', function (e) {
+        var cur = items.filter(function (it) { return it.input === e.target; })[0];
+        if (g.multi && cur && cur.input.checked) {
+          // «Поки не в інфобізнесі» не поєднується з іншими ролями
+          items.forEach(function (it) { if (it !== cur && (cur.opt.solo || it.opt.solo)) it.input.checked = false; });
+        }
         items.forEach(function (it) { it.label.classList.toggle('on', it.input.checked); });
       });
-      refs.groups[g.key] = { def: g, set: fs, legend: lg, items: items };
+      refs.groups[g.key] = { def: g, set: fs, legend: lgT, hint: lgH, items: items };
       return fs;
     }
     form.appendChild(field('dohod', 'text', 'off'));
@@ -182,6 +189,7 @@
     GROUPS.forEach(function (g) {
       var G = refs.groups[g.key];
       G.legend.textContent = t[g.t];
+      G.hint.textContent = g.multi ? t.multi : '';
       G.items.forEach(function (r) { r.text.textContent = r.opt[lg]; });
     });
     refs.go.textContent = busy ? t.sending : t.send;
@@ -241,7 +249,8 @@
     };
     GROUPS.forEach(function (g) {
       data[g.key] = '';
-      refs.groups[g.key].items.forEach(function (r) { if (r.input.checked) data[g.key] = r.opt.v; });
+      data[g.key] = refs.groups[g.key].items.filter(function (r) { return r.input.checked; })
+        .map(function (r) { return r.opt.v; }).join(', ');
     });
 
     var bad = false;

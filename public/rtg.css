@@ -39,6 +39,12 @@ html.rtg-lock,html.rtg-lock body{overflow:hidden}
 .rtg-opt input:checked + .rtg-dot::after{transform:scale(1)}
 .rtg-opt input:focus-visible + .rtg-dot{box-shadow:0 0 0 3px rgba(213,167,122,0.45)}
 .rtg-fs.err .rtg-dot{border-color:#E0795B}
+.rtg-hint{display:inline-block;margin-left:8px;font-size:13px;font-weight:400;color:rgba(230,219,208,0.55)}
+/* Квадратик-галочка для множинного вибору */
+.rtg-dot.sq{border-radius:7px;transition:border-color .2s,background .2s}
+.rtg-dot.sq::after{width:7px;height:13px;margin-top:-3px;border-radius:0;background:none;border:solid #1A120C;border-width:0 2.6px 2.6px 0;transform:rotate(45deg) scale(0)}
+.rtg-opt input:checked + .rtg-dot.sq{border-color:transparent;background:linear-gradient(145deg,#E7BE90 0%,#B17E50 100%)}
+.rtg-opt input:checked + .rtg-dot.sq::after{transform:rotate(45deg) scale(1)}
 
 .rtg-msg{min-height:0;margin:-8px 0 16px;font-size:13px;color:#E8896D}
 .rtg-msg:empty{display:none}
@@ -82,6 +88,9 @@ html.rtg-lock,html.rtg-lock body{overflow:hidden}
   .rtg-opt{gap:8px;padding:9px 14px 9px 10px;border:1px solid rgba(230,219,208,0.22);border-radius:999px;background:#1F1B19;font-size:14px;line-height:18px;transition:border-color .2s,background .2s}
   .rtg-dot{width:16px;height:16px;border-width:1.5px}
   .rtg-dot::after{width:8px;height:8px}
+  .rtg-dot.sq{border-radius:5px}
+  .rtg-dot.sq::after{width:4px;height:8px;margin-top:-2px;border-width:0 2px 2px 0}
+  .rtg-hint{font-size:12px;margin-left:6px}
   .rtg-opt.on{border-color:#D5A77A;background:rgba(213,167,122,0.16);color:#fff}
   .rtg-fs.err .rtg-opt{border-color:#E0795B}
 
