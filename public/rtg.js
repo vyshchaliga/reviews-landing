@@ -54,6 +54,8 @@
     s.appendChild(p); return s;
   }
 
+  // Поле з «плаваючим» підписом: на телефоні підпис стоїть усередині поля і зсувається вгору, коли поле активне або заповнене
+  // (на ПК підпис над полем, як раніше). Для ніків «@» підставляється сам, щоб було видно формат.
   function field(key, type, autocomplete, inputmode) {
     var wrap = el('div', 'rtg-f');
     var id = 'rtg-' + key;
@@ -61,10 +63,30 @@
     var i = el('input', 'rtg-in');
     i.id = id; i.name = key; i.type = type || 'text'; i.maxLength = 200;
     i.autocomplete = autocomplete || 'off';
+    i.setAttribute('enterkeyhint', key === 'dohod' ? 'done' : 'next');
     if (inputmode) i.setAttribute('inputmode', inputmode);
-    if (key === 'tg' || key === 'instagram') { i.setAttribute('autocapitalize', 'none'); i.setAttribute('autocorrect', 'off'); i.spellcheck = false; i.placeholder = '@'; }
-    wrap.appendChild(l); wrap.appendChild(i);
-    refs[key] = { wrap: wrap, label: l, input: i };
+    var nick = key === 'tg' || key === 'instagram';
+    if (nick) { i.setAttribute('autocapitalize', 'none'); i.setAttribute('autocorrect', 'off'); i.spellcheck = false; }
+    function sync() { wrap.classList.toggle('has', i.value !== ''); }
+    i.addEventListener('focus', function () {
+      if (nick && i.value === '') { i.value = '@'; try { i.setSelectionRange(1, 1); } catch (e) { /* ігноруємо */ } }
+      sync();
+    });
+    i.addEventListener('blur', function () { if (nick && i.value === '@') i.value = ''; sync(); });
+    i.addEventListener('input', function () {
+      if (nick && /^@{2,}/.test(i.value)) i.value = i.value.replace(/^@+/, '@');   // людина за звичкою додала ще один «@»
+      sync();
+    });
+    i.addEventListener('change', sync);
+    i.addEventListener('keydown', function (e) {               // Enter = до наступного поля, а не відправка
+      if (e.key !== 'Enter') return;
+      e.preventDefault();
+      var all = Array.prototype.slice.call(form.querySelectorAll('.rtg-in'));
+      var next = all[all.indexOf(i) + 1];
+      if (next) next.focus(); else i.blur();
+    });
+    wrap.appendChild(i); wrap.appendChild(l);               // порядок важливий для CSS: спершу поле, потім підпис
+    refs[key] = { wrap: wrap, label: l, input: i, sync: sync };
     return wrap;
   }
 
@@ -96,6 +118,7 @@
     function group(g) {
       var fs = el('fieldset', 'rtg-fs');
       var lg = el('legend', 'rtg-l'); fs.appendChild(lg);
+      var box = el('div', 'rtg-chips'); fs.appendChild(box);
       var items = [];
       g.opts.forEach(function (o) {
         var lab = el('label', 'rtg-opt');
@@ -103,8 +126,11 @@
         var dot = el('span', 'rtg-dot');
         var tx = document.createElement('span');
         lab.appendChild(inp); lab.appendChild(dot); lab.appendChild(tx);
-        fs.appendChild(lab);
-        items.push({ opt: o, text: tx, input: inp });
+        box.appendChild(lab);
+        items.push({ opt: o, text: tx, input: inp, label: lab });
+      });
+      box.addEventListener('change', function () {
+        items.forEach(function (it) { it.label.classList.toggle('on', it.input.checked); });
       });
       refs.groups[g.key] = { def: g, set: fs, legend: lg, items: items };
       return fs;
@@ -174,6 +200,7 @@
     texts();
     lastFocus = document.activeElement;
     formView.hidden = done; okView.hidden = !done;
+    ['name', 'tg', 'instagram', 'dohod'].forEach(function (k) { refs[k].sync(); });
     document.documentElement.classList.add('rtg-lock');
     // поки елемент не показаний, перехід не спрацює: даємо браузеру один кадр
     requestAnimationFrame(function () {
@@ -193,9 +220,8 @@
   function isOpen() { return ov && ov.classList.contains('on'); }
 
   function atNick(v) {
-    v = (v || '').replace(/\s+/g, '');
-    if (!v) return '';
-    return v.charAt(0) === '@' ? v : '@' + v;
+    v = (v || '').replace(/\s+/g, '').replace(/^@+/, '');
+    return v ? '@' + v : '';
   }
 
   function utm() {

@@ -21,7 +21,7 @@ html.rtg-lock,html.rtg-lock body{overflow:hidden}
 .rtg-h{margin:0 40px 10px 0;font-size:30px;line-height:1.12}
 .rtg-sub{margin:0 0 26px;font-size:14px;line-height:1.5;color:rgba(255,255,255,0.62)}
 
-.rtg-f{display:block;margin:0 0 20px}
+.rtg-f{display:flex;flex-direction:column-reverse;margin:0 0 20px}   /* у DOM поле йде перед підписом; на ПК підпис показуємо над полем */
 .rtg-l{display:block;margin:0 0 9px;font-size:15px;font-weight:600;color:#E6DBD0}
 .rtg-in{display:block;width:100%;height:56px;padding:0 18px;border-radius:16px;border:1px solid transparent;background:#1F1B19;color:#fff;font-family:"Onest",system-ui,sans-serif;font-size:16px;outline:0;transition:border-color .2s,background .2s}
 .rtg-in::placeholder{color:rgba(255,255,255,0.28)}
@@ -34,6 +34,7 @@ html.rtg-lock,html.rtg-lock body{overflow:hidden}
 .rtg-opt input{position:absolute;opacity:0;width:1px;height:1px;margin:0}
 .rtg-dot{flex:none;width:28px;height:28px;border-radius:50%;border:2px solid rgba(230,219,208,0.55);display:flex;align-items:center;justify-content:center;transition:border-color .2s}
 .rtg-dot::after{content:"";width:14px;height:14px;border-radius:50%;background:linear-gradient(145deg,#E7BE90 0%,#B17E50 100%);transform:scale(0);transition:transform .2s ease}
+.rtg-chips{display:block}
 .rtg-opt input:checked + .rtg-dot{border-color:#D5A77A}
 .rtg-opt input:checked + .rtg-dot::after{transform:scale(1)}
 .rtg-opt input:focus-visible + .rtg-dot{box-shadow:0 0 0 3px rgba(213,167,122,0.45)}
@@ -59,9 +60,33 @@ html.rtg-lock,html.rtg-lock body{overflow:hidden}
 
 @media (max-width:520px){
   .rtg-ov{padding:10px}
-  .rtg-card{padding:28px 20px 22px;border-radius:24px;max-height:calc(100vh - 20px);max-height:calc(100dvh - 20px)}
-  .rtg-h{font-size:26px}
+  .rtg-card{padding:22px 16px 18px;border-radius:22px;max-height:calc(100vh - 20px);max-height:calc(100dvh - 20px)}
+  .rtg-x{top:12px;right:12px;width:36px;height:36px}
+  .rtg-h{font-size:24px;margin:0 44px 6px 0}
+  .rtg-sub{font-size:12.5px;line-height:1.4;margin:0 0 14px}
   .rtg-ok .rtg-h{font-size:30px}
+
+  /* Поля: підпис усередині поля, при фокусі/заповненні зсувається вгору */
+  .rtg-f{display:block;position:relative;margin:0 0 10px}
+  .rtg-in{height:52px;padding:19px 14px 5px;border-radius:14px}
+  .rtg-f .rtg-l{position:absolute;left:15px;right:15px;top:16px;margin:0;font-size:15px;font-weight:500;line-height:20px;color:rgba(230,219,208,0.62);
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;pointer-events:none;transition:top .16s ease,font-size .16s ease,color .16s ease}
+  .rtg-f:focus-within .rtg-l,.rtg-f.has .rtg-l{top:6px;font-size:11.5px;line-height:14px;font-weight:600;color:#BFB3A8}
+  .rtg-f:focus-within .rtg-l{color:#D5A77A}
+  .rtg-f.err .rtg-l{color:#E8896D}
+
+  /* Роль: компактні «таблетки» з радіо-кружечком замість довгого списку */
+  .rtg-fs{margin:4px 0 14px}
+  .rtg-fs .rtg-l{font-size:14px;margin:0 0 8px}
+  .rtg-chips{display:flex;flex-wrap:wrap;gap:8px}
+  .rtg-opt{gap:8px;padding:9px 14px 9px 10px;border:1px solid rgba(230,219,208,0.22);border-radius:999px;background:#1F1B19;font-size:14px;line-height:18px;transition:border-color .2s,background .2s}
+  .rtg-dot{width:16px;height:16px;border-width:1.5px}
+  .rtg-dot::after{width:8px;height:8px}
+  .rtg-opt.on{border-color:#D5A77A;background:rgba(213,167,122,0.16);color:#fff}
+  .rtg-fs.err .rtg-opt{border-color:#E0795B}
+
+  .rtg-msg{margin:-4px 0 10px}
+  .rtg-go{min-height:54px;font-size:16px}
 }
 @media (prefers-reduced-motion:reduce){.rtg-ov,.rtg-card{transition:none}}
 @media (max-height:860px) and (min-width:521px){
