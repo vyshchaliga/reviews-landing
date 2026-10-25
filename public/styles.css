@@ -164,3 +164,6 @@ html:not(.touch) .shot-wrap.zoomable{cursor:zoom-in;outline:none}
 }
 
 .meta[hidden]{display:none}
+
+/* Нескінченна стрічка на телефоні: порції відгуків */
+.batch{display:flow-root}

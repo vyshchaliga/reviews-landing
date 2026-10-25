@@ -37,6 +37,10 @@
     muted: true,       // глобальний стан звуку (для телефона)
     touch: false,
     cards: [],         // { row, reel, video, nameEl, nicheEl, ... }
+    rows: [],          // рядки, що пішли в стрічку (для зациклення на телефоні)
+    videos: [],        // картки з відео, за якими стежимо
+    batches: [],       // дописані порції стрічки (телефон)
+    nextIndex: 0,
     current: null      // картка, що зараз грає
   };
 
@@ -327,49 +331,134 @@
     if (zoom && Math.abs(window.pageYOffset - zoom.y) > 40) closeZoom();
   }, { passive: true });
 
+  function buildCard(row) {
+    var card = { row: row, index: state.nextIndex++, visible: false, ratio: 0 };
+    var item = el('div', 'item');
+    item.appendChild(row.type === 'video' ? buildVideo(row, card) : buildShot(row, card));
+    if (row.type === 'shot' && !state.touch) bindZoom(card);
+    var meta = el('div', 'meta');
+    var b = document.createElement('b');
+    var sep = el('span', 'sep'); sep.textContent = '|';
+    var niche = document.createElement('span');
+    meta.appendChild(b); meta.appendChild(sep); meta.appendChild(niche);
+    item.appendChild(meta);
+    card.nameEl = b; card.nicheEl = niche; card.sepEl = sep; card.item = item;
+    return card;
+  }
+
   function render(rows) {
     var wall = document.getElementById('wall');
-    rows.forEach(function (row, i) {
+    rows.forEach(function (row) {
       if (!row.media) return;                         // відео без ID або файл без назви: пропускаємо
       if (row.type !== 'video' && row.type !== 'shot') return;
-      var card = { row: row, index: state.cards.length, visible: false, ratio: 0 };
-      var item = el('div', 'item');
-      item.appendChild(row.type === 'video' ? buildVideo(row, card) : buildShot(row, card));
-      if (row.type === 'shot' && !state.touch) bindZoom(card);
-      var meta = el('div', 'meta');
-      var b = document.createElement('b');
-      var sep = el('span', 'sep'); sep.textContent = '|';
-      var niche = document.createElement('span');
-      meta.appendChild(b); meta.appendChild(sep); meta.appendChild(niche);
-      item.appendChild(meta);
-      card.nameEl = b; card.nicheEl = niche; card.sepEl = sep; card.item = item;
-      wall.appendChild(item);
+      var card = buildCard(row);
+      wall.appendChild(card.item);
       state.cards.push(card);
+      state.rows.push(row);
     });
     applyLang(state.lang);
     observeVideos();
     watchSticky();
+    initLoop();
   }
 
   /* ---------- Автозапуск при скролі (телефон) і пауза поза екраном (ПК) ---------- */
+  var videoIO = null;
+
+  function onVideoIO(entries) {
+    var videos = state.videos;
+    entries.forEach(function (en) {
+      var c = en.target._card; if (!c) return;
+      c.ratio = en.intersectionRatio; c.visible = en.isIntersecting;
+    });
+    if (state.touch) {
+      var best = null;
+      videos.forEach(function (c) { if (c.ratio >= 0.6 && (!best || c.ratio > best.ratio)) best = c; });
+      videos.forEach(function (c) { if (c !== best) pauseCard(c); });
+      if (best && best.video.paused && !best.reel.classList.contains('needs-tap')) playCard(best);
+    } else {
+      videos.forEach(function (c) { if (c.ratio < 0.15) pauseCard(c); });
+    }
+  }
+
+  function watchVideo(c) {
+    if (!c.video || !videoIO) return;
+    c.reel._card = c; state.videos.push(c); videoIO.observe(c.reel);
+  }
+
+  function unwatchVideo(c) {
+    if (!c.video) return;
+    if (videoIO) videoIO.unobserve(c.reel);
+    var i = state.videos.indexOf(c); if (i > -1) state.videos.splice(i, 1);
+    pauseCard(c);
+    if (c.hls) { try { c.hls.destroy(); } catch (e) { /* ігноруємо */ } c.hls = null; }
+    if (state.current === c) state.current = null;
+  }
+
   function observeVideos() {
-    var videos = state.cards.filter(function (c) { return c.video; });
-    if (!videos.length || !('IntersectionObserver' in window)) return;
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (en) {
-        var c = en.target._card; c.ratio = en.intersectionRatio; c.visible = en.isIntersecting;
-      });
-      if (state.touch) {
-        var best = null;
-        videos.forEach(function (c) { if (c.ratio >= 0.6 && (!best || c.ratio > best.ratio)) best = c; });
-        videos.forEach(function (c) { if (c !== best) pauseCard(c); });
-        if (best && best.video.paused && !best.reel.classList.contains('needs-tap')) playCard(best);
-        else if (best && best.reel.classList.contains('needs-tap')) { /* чекаємо тапу */ }
-      } else {
-        videos.forEach(function (c) { if (c.ratio < 0.15) pauseCard(c); });
+    if (!('IntersectionObserver' in window)) return;
+    videoIO = new IntersectionObserver(onVideoIO, { threshold: [0, 0.15, 0.3, 0.5, 0.6, 0.75, 0.9, 1] });
+    state.cards.forEach(watchVideo);
+  }
+
+  /* ---------- Нескінченна стрічка на телефоні ----------
+     Коли користувач наближається до низу, дописуємо ще одну «порцію» відгуків, починаючи
+     з ДРУГОГО (перший під заголовком не повторюється, перший екран більше не з'являється).
+     Нічого не телепортуємо і не скролимо кодом, тому швидкий інерційний скрол не переривається. */
+  function initLoop() {
+    if (!window.matchMedia || state.rows.length < 2) return;
+    var mq = window.matchMedia('(max-width: 520px)');
+    var wall = document.getElementById('wall');
+    var KEEP = 2;                 // скільки останніх порцій тримаємо в DOM повністю
+    var lastAdd = 0, ticking = false;
+
+    function prune() {
+      var live = state.batches.filter(function (b) { return !b.pruned; });
+      while (live.length > KEEP) {
+        var b = live.shift();
+        var h = b.el.getBoundingClientRect().height;
+        b.cards.forEach(function (c) {
+          unwatchVideo(c);
+          var i = state.cards.indexOf(c); if (i > -1) state.cards.splice(i, 1);
+        });
+        while (b.el.firstChild) b.el.removeChild(b.el.firstChild);
+        b.el.style.height = h + 'px';
+        b.pruned = true;
       }
-    }, { threshold: [0, 0.15, 0.3, 0.5, 0.6, 0.75, 0.9, 1] });
-    videos.forEach(function (c) { c.reel._card = c; io.observe(c.reel); });
+    }
+
+    function addBatch() {
+      var box = el('div', 'batch');
+      var cards = [];
+      state.rows.slice(1).forEach(function (row) {
+        var c = buildCard(row);
+        box.appendChild(c.item);
+        cards.push(c);
+      });
+      wall.appendChild(box);
+      cards.forEach(function (c) { state.cards.push(c); watchVideo(c); });
+      state.batches.push({ el: box, cards: cards, pruned: false });
+      applyLang(state.lang);
+      prune();
+    }
+
+    function check() {
+      ticking = false;
+      if (!mq.matches) return;
+      var vh = window.innerHeight || 800;
+      var left = document.documentElement.scrollHeight - (window.pageYOffset + vh);
+      var now = Date.now();
+      if (left < vh * 3 && now - lastAdd > 250) {
+        lastAdd = now;
+        addBatch();
+        schedule();                       // сторінка могла бути короткою: перевіряємо ще раз
+      }
+    }
+    function schedule() { if (!ticking) { ticking = true; requestAnimationFrame(check); } }
+
+    window.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', schedule);
+    schedule();
   }
 
   /* ---------- Закріплена кнопка після N-го відгука ---------- */
