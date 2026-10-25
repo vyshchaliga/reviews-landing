@@ -7,12 +7,24 @@
   var CHANNEL_URL = 'https://t.me/+khBdwlzmHHBhNzIy';   // той самий канал, куди веде анкета на Tilda
   var API = '/api/lead';
 
-  var ROLES = [
-    { v: 'Продюсер',                        ua: 'Продюсер',                         ru: 'Продюсер' },
-    { v: 'Эксперт',                         ua: 'Експерт',                          ru: 'Эксперт' },
-    { v: 'И эксперт, и продюсер',           ua: 'І експерт, і продюсер',            ru: 'И эксперт, и продюсер' },
-    { v: 'Маркетолог / в команде проекта',  ua: 'Маркетолог / у команді проєкту',   ru: 'Маркетолог / в команде проекта' },
-    { v: 'Пока не в инфобизнесе',           ua: 'Поки не в інфобізнесі',            ru: 'Пока не в инфобизнесе' }
+  // Радіо-питання. v — значення, яке потрапляє в таблицю (як в анкеті на Tilda, російською); ua/ru — підписи.
+  var GROUPS = [
+    { key: 'podpiska', t: 'podpiska', opts: [
+      { v: 'Около месяца',       ua: 'Приблизно місяць',     ru: 'Около месяца' },
+      { v: 'До 3-4 месяцев',     ua: 'До 3–4 місяців',       ru: 'До 3-4 месяцев' },
+      { v: 'Около полугода',     ua: 'Приблизно пів року',   ru: 'Около полугода' },
+      { v: 'Чуть меньше года',   ua: 'Трохи менше року',     ru: 'Чуть меньше года' },
+      { v: 'Больше года',        ua: 'Більше року',          ru: 'Больше года' } ] },
+    { key: 'rol', t: 'role', opts: [
+      { v: 'Продюсер',                        ua: 'Продюсер',                         ru: 'Продюсер' },
+      { v: 'Эксперт',                         ua: 'Експерт',                          ru: 'Эксперт' },
+      { v: 'И эксперт, и продюсер',           ua: 'І експерт, і продюсер',            ru: 'И эксперт, и продюсер' },
+      { v: 'Маркетолог / в команде проекта',  ua: 'Маркетолог / у команді проєкту',   ru: 'Маркетолог / в команде проекта' },
+      { v: 'Пока не в инфобизнесе',           ua: 'Поки не в інфобізнесі',            ru: 'Пока не в инфобизнесе' } ] },
+    { key: 'interes', t: 'interes', opts: [
+      { v: 'Готов заходить на поток',  ua: 'Готовий заходити на потік', ru: 'Готов заходить на поток' },
+      { v: 'Еще сомневаюсь',           ua: 'Ще сумніваюсь',             ru: 'Еще сомневаюсь' },
+      { v: 'Не заинтересован',         ua: 'Не зацікавлений',           ru: 'Не заинтересован' } ] }
   ];
 
   var T = {
@@ -21,6 +33,7 @@
       sub: 'Уважно перевірте правильність даних, включно з ніком в інстаграмі та телеграмі.',
       name: 'Ваше ім’я', tg: 'Нік у телеграмі через @', ig: 'Нік в інстаграмі через @',
       income: 'Ваш середній дохід на місяць?', role: 'Яка ваша роль',
+      podpiska: 'Як давно підписані на мене?', interes: 'Наскільки ви зацікавлені в участі у Вищій Лізі?',
       send: 'Відправити анкету', sending: 'Відправляємо…',
       need: 'Заповніть, будь ласка, усі поля', fail: 'Не вдалося відправити анкету. Спробуйте ще раз за хвилину.',
       okTitle: 'Ваша анкета прийнята', okText: 'Запрошуємо в канал передзапису', okBtn: 'У канал передзапису',
@@ -31,6 +44,7 @@
       sub: 'Внимательно проверьте правильность данных, включая ник в инстаграмме и телеграмме.',
       name: 'Ваше имя', tg: 'Ник в телеграмм через @', ig: 'Ник в инстаграмм через @',
       income: 'Ваш средний доход в месяц?', role: 'Какая ваша роль',
+      podpiska: 'Как давно подписаны на меня?', interes: 'Насколько вы заинтересованы в участии в Высшей Лиге?',
       send: 'Отправить анкету', sending: 'Отправляем…',
       need: 'Заполните, пожалуйста, все поля', fail: 'Не удалось отправить анкету. Попробуйте ещё раз через минуту.',
       okTitle: 'Ваша анкета принята', okText: 'Приглашаем в канал предзаписи', okBtn: 'В канал предзаписи',
@@ -90,22 +104,27 @@
     form.appendChild(field('name', 'text', 'name'));
     form.appendChild(field('tg', 'text', 'off'));
     form.appendChild(field('instagram', 'text', 'off'));
+    refs.groups = {};
+    function group(g) {
+      var fs = el('fieldset', 'rtg-fs');
+      var lg = el('legend', 'rtg-l'); fs.appendChild(lg);
+      var items = [];
+      g.opts.forEach(function (o) {
+        var lab = el('label', 'rtg-opt');
+        var inp = document.createElement('input'); inp.type = 'radio'; inp.name = g.key; inp.value = o.v;
+        var dot = el('span', 'rtg-dot');
+        var tx = document.createElement('span');
+        lab.appendChild(inp); lab.appendChild(dot); lab.appendChild(tx);
+        fs.appendChild(lab);
+        items.push({ opt: o, text: tx, input: inp });
+      });
+      refs.groups[g.key] = { def: g, set: fs, legend: lg, items: items };
+      return fs;
+    }
+    form.appendChild(group(GROUPS[0]));
     form.appendChild(field('dohod', 'text', 'off'));
-
-    var fs = el('fieldset', 'rtg-fs');
-    var lg = el('legend', 'rtg-l'); refs.roleLegend = lg; fs.appendChild(lg);
-    refs.roles = [];
-    ROLES.forEach(function (r, i) {
-      var lab = el('label', 'rtg-opt');
-      var inp = document.createElement('input'); inp.type = 'radio'; inp.name = 'rol'; inp.value = r.v;
-      var dot = el('span', 'rtg-dot');
-      var tx = document.createElement('span');
-      lab.appendChild(inp); lab.appendChild(dot); lab.appendChild(tx);
-      fs.appendChild(lab);
-      refs.roles.push({ role: r, text: tx, input: inp });
-    });
-    refs.roleSet = fs;
-    form.appendChild(fs);
+    form.appendChild(group(GROUPS[1]));
+    form.appendChild(group(GROUPS[2]));
 
     // Пастка для ботів: людина це поле не бачить
     var hp = el('div', 'rtg-hp'); hp.setAttribute('aria-hidden', 'true');
@@ -148,8 +167,11 @@
     refs.sub.textContent = t.sub;
     refs.name.label.textContent = t.name; refs.tg.label.textContent = t.tg;
     refs.instagram.label.textContent = t.ig; refs.dohod.label.textContent = t.income;
-    refs.roleLegend.textContent = t.role;
-    refs.roles.forEach(function (r) { r.text.textContent = r.role[lg]; });
+    GROUPS.forEach(function (g) {
+      var G = refs.groups[g.key];
+      G.legend.textContent = t[g.t];
+      G.items.forEach(function (r) { r.text.textContent = r.opt[lg]; });
+    });
     refs.go.textContent = busy ? t.sending : t.send;
     refs.x.setAttribute('aria-label', t.close);
     refs.okTitle.textContent = t.okTitle; refs.okText.textContent = t.okText; refs.okBtn.textContent = t.okBtn;
@@ -203,17 +225,21 @@
       name: refs.name.input.value.trim(),
       nik_tg: atNick(refs.tg.input.value),
       instagram: atNick(refs.instagram.input.value),
-      dohod: refs.dohod.input.value.trim(),
-      rol: ''
+      dohod: refs.dohod.input.value.trim()
     };
-    refs.roles.forEach(function (r) { if (r.input.checked) data.rol = r.role.v; });
+    GROUPS.forEach(function (g) {
+      data[g.key] = '';
+      refs.groups[g.key].items.forEach(function (r) { if (r.input.checked) data[g.key] = r.opt.v; });
+    });
 
     var bad = false;
     [['name', data.name], ['tg', data.nik_tg], ['instagram', data.instagram], ['dohod', data.dohod]].forEach(function (p) {
       var empty = !p[1] || p[1] === '@';
       refs[p[0]].wrap.classList.toggle('err', empty); if (empty) bad = true;
     });
-    refs.roleSet.classList.toggle('err', !data.rol); if (!data.rol) bad = true;
+    GROUPS.forEach(function (g) {
+      refs.groups[g.key].set.classList.toggle('err', !data[g.key]); if (!data[g.key]) bad = true;
+    });
     if (bad) {
       showMsg('need');
       var first = card.querySelector('.err input'); if (first && first.focus) first.focus();

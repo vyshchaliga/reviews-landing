@@ -1,10 +1,10 @@
 /**
  * Веб-застосунок Google Apps Script: дописує рядок анкети в таблицю.
  * Код прив'язується до таблиці «БД заявок» (Розширення → Apps Script).
- * Пише у вкладку з gid = SHEET_GID; колонки підбираються за назвами в першому рядку
+ * Пише у вкладку SHEET_NAME; колонки підбираються за назвами в першому рядку
  * (sent, name, nik_tg, instagram, dohod, rol, utm_*, referer, type ...). Зайвих колонок не чіпає.
  */
-var SHEET_GID = 1397488239;           // з посилання на таблицю: ...edit?gid=1397488239
+var SHEET_NAME = 'Анкета предзапису';   // сира вкладка; «БД заявок» збирається з неї формулою, тому в неї писати не можна
 var SECRET = 'ЗАМІНИ_НА_ДОВІЛЬНИЙ_РЯДОК';   // такий самий має бути в Vercel: SHEETS_SECRET
 
 function doPost(e) {
@@ -16,7 +16,7 @@ function doPost(e) {
 
     lock.waitLock(20000);
     var ss = SpreadsheetApp.getActiveSpreadsheet();
-    var sh = ss.getSheets().filter(function (s) { return s.getSheetId() === SHEET_GID; })[0];
+    var sh = ss.getSheetByName(SHEET_NAME);
     if (!sh) return out_({ ok: false, error: 'no sheet' });
 
     d.sent = Utilities.formatDate(new Date(), 'Europe/Kiev', 'yyyy-MM-dd HH:mm:ss');
