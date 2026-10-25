@@ -2,12 +2,10 @@
 // Налаштування (Vercel → Project → Settings → Environment Variables):
 //   SHEETS_WEBHOOK_URL — адреса веб-застосунку Apps Script (закінчується на /exec)
 //   SHEETS_SECRET      — той самий секрет, що в скрипті (scripts/apps-script/Code.gs)
-const FIELDS = ['name', 'nik_tg', 'instagram', 'podpiska', 'dohod', 'rol', 'interes', 'type', 'lang', 'referer',
+const FIELDS = ['name', 'nik_tg', 'instagram', 'dohod', 'rol', 'type', 'lang', 'referer',
   'utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'];
 const OPTIONS = {
-  podpiska: ['Около месяца', 'До 3-4 месяцев', 'Около полугода', 'Чуть меньше года', 'Больше года'],
-  rol: ['Продюсер', 'Эксперт', 'И эксперт, и продюсер', 'Маркетолог / в команде проекта', 'Пока не в инфобизнесе'],
-  interes: ['Готов заходить на поток', 'Еще сомневаюсь', 'Не заинтересован']
+  rol: ['Продюсер', 'Эксперт', 'И эксперт, и продюсер', 'Маркетолог / в команде проекта', 'Пока не в инфобизнесе']
 };
 
 export default async function handler(req, res) {
