@@ -64,6 +64,7 @@
   function applyLang(lang) {
     state.lang = lang;
     var t = DICT[lang];
+    try { document.dispatchEvent(new CustomEvent('vl:lang', { detail: lang })); } catch (e) { /* старі браузери */ }
     document.documentElement.lang = lang === 'ru' ? 'ru' : 'uk';
     document.title = t.title;
     Array.prototype.forEach.call(document.querySelectorAll('[data-i18n]'), function (n) {
@@ -555,6 +556,13 @@
     if (state.touch) document.documentElement.classList.add('touch');
     state.lang = pickLang();
     applyLang(state.lang);
+
+    // Версія для ретаргету (/rtg): кнопка відкриває попап-анкету замість переходу на основний ленд
+    if (/^\/rtg\/?$/.test(location.pathname)) {
+      document.documentElement.classList.add('rtg');
+      var lk = document.createElement('link'); lk.rel = 'stylesheet'; lk.href = 'rtg.css'; document.head.appendChild(lk);
+      var sc = document.createElement('script'); sc.src = 'rtg.js'; sc.async = true; document.head.appendChild(sc);
+    }
 
     Array.prototype.forEach.call(document.querySelectorAll('[data-lang]'), function (b) {
       b.addEventListener('click', function () {
