@@ -1,14 +1,16 @@
 // Додає відео-відгук.
 // Варіант А: відео вже завантажене в Bunny вручну, є його ID (Manage library → відео → Video ID / GUID):
-//   node scripts/add-video.mjs --id xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx --name-ua ... --name-ru ... --niche-ua ... --niche-ru ... [--position 4]
+//   node scripts/add-video.mjs --id xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx [--position 4]
 // Варіант Б: завантажити файл у Bunny цим скриптом (потрібен .env з BUNNY_API_KEY):
-//   node scripts/add-video.mjs --file ./відео.mp4 --name-ua ... (решта як вище)
+//   node scripts/add-video.mjs --file ./відео.mp4 [--position 4]
+// Імена й ніші не обов'язкові: на головній сторінці їх не видно.
+// Якщо все ж потрібні: --name-ua ... --name-ru ... --niche-ua ... --niche-ru ...
 import fs from 'node:fs';
-import { loadEnv, readRows, writeRows, parseArgs, insertRow, requireNames, cap } from './lib/common.mjs';
+import { loadEnv, readRows, writeRows, parseArgs, insertRow, cap } from './lib/common.mjs';
 
 loadEnv();
 const a = parseArgs(process.argv.slice(2));
-requireNames(a);
+const val = (k) => (a[k] && a[k] !== true ? a[k] : '');
 
 const LIB = process.env.BUNNY_LIBRARY_ID || '786703';
 const KEY = process.env.BUNNY_API_KEY;
@@ -43,12 +45,13 @@ const rows = readRows();
 if (rows.some((r) => r.type === 'video' && r.media === id)) { console.error('Таке відео вже є в таблиці.'); process.exit(1); }
 
 // Якщо в таблиці вже є рядок цієї людини без ID, заповнюємо його замість додавання дубля
-const same = rows.find((r) => r.type === 'video' && !r.media && r.name_ua === a['name-ua'] && cap(r.niche_ua) === cap(a['niche-ua']));
+// (тільки якщо імена передані — інакше збігся б будь-який порожній рядок)
+const same = val('name-ua') && rows.find((r) => r.type === 'video' && !r.media && r.name_ua === val('name-ua') && cap(r.niche_ua) === cap(val('niche-ua')));
 if (same && !a.position) { same.media = id; console.log('Заповнено ID у наявному рядку для ' + same.name_ua); }
 else insertRow(rows, {
   type: 'video', media: id, w: '', h: '',
-  name_ua: a['name-ua'], name_ru: a['name-ru'],
-  niche_ua: cap(a['niche-ua']), niche_ru: cap(a['niche-ru']), ring: ''
+  name_ua: val('name-ua'), name_ru: val('name-ru'),
+  niche_ua: cap(val('niche-ua')), niche_ru: cap(val('niche-ru')), ring: ''
 }, a.position);
 writeRows(rows);
 
