@@ -38,7 +38,8 @@ export default async function handler(req, res) {
   }
   clean.type = clean.type || 'Предзапис';
 
-  const url = process.env.SHEETS_WEBHOOK_URL;
+  // Запис у таблицю тимчасово вимкнений, доки не узгоджено, у яку саме вкладку писати (див. README)
+  const url = process.env.LEADS_ENABLED === '1' ? process.env.SHEETS_WEBHOOK_URL : '';
   if (!url) return res.status(503).json({ ok: false, error: 'not configured' });
 
   try {
