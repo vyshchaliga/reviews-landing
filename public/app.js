@@ -54,7 +54,7 @@
       var saved = localStorage.getItem('vl_lang');
       if (saved === 'ua' || saved === 'ru') return saved;
     } catch (e) {}
-    if (/^\/pre-reg-form\/?$/.test(location.pathname)) return 'ru';   // передзапис за замовчуванням російською
+    if (/^\/pre-reg-form\/?$/.test(location.pathname)) return 'ua';   // передзапис відкривається українською
     var langs = (navigator.languages && navigator.languages.length) ? navigator.languages : [navigator.language || 'uk'];
     var first = String(langs[0] || 'uk').toLowerCase();
     return first.indexOf('ru') === 0 ? 'ru' : 'ua';
@@ -65,8 +65,10 @@
   function applyLang(lang) {
     state.lang = lang;
     var t = DICT[lang];
-    try { document.dispatchEvent(new CustomEvent('vl:lang', { detail: lang })); } catch (e) { /* старі браузери */ }
+    // мову ставимо ДО події: слухачі (анкета, офер передзапису) читають її саме звідси,
+    // інакше вони перемальовуються в попередню мову
     document.documentElement.lang = lang === 'ru' ? 'ru' : 'uk';
+    try { document.dispatchEvent(new CustomEvent('vl:lang', { detail: lang })); } catch (e) { /* старі браузери */ }
     document.title = t.title;
     Array.prototype.forEach.call(document.querySelectorAll('[data-i18n]'), function (n) {
       var k = n.getAttribute('data-i18n');
