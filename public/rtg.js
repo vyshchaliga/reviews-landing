@@ -203,12 +203,28 @@
     refs.msg.setAttribute('data-k', k); refs.msg.textContent = T[lang()][k];
   }
 
+  /* Слот на першому екрані /pre-reg-form. Картка з анкетою одна: поки сторінка
+     просто гортається — вона стоїть у слоті, при кліку з ленти переїжджає в попап
+     і повертається назад після закриття. Так немає двох форм із різними станами. */
+  function slot() { return document.getElementById('prereg-slot'); }
+
+  function mountInline() {
+    var s = slot();
+    if (!s) return;
+    if (!ov) build();
+    texts();
+    formView.hidden = done; okView.hidden = !done;
+    ['name', 'tg', 'instagram', 'dohod'].forEach(function (k) { refs[k].sync(); });
+    s.appendChild(card);
+  }
+
   function open() {
     if (!ov) build();
     texts();
     lastFocus = document.activeElement;
     formView.hidden = done; okView.hidden = !done;
     ['name', 'tg', 'instagram', 'dohod'].forEach(function (k) { refs[k].sync(); });
+    ov.appendChild(card);
     document.documentElement.classList.add('rtg-lock');
     // поки елемент не показаний, перехід не спрацює: даємо браузеру один кадр
     requestAnimationFrame(function () {
@@ -223,6 +239,8 @@
     ov.classList.remove('on');
     document.documentElement.classList.remove('rtg-lock');
     if (lastFocus && lastFocus.focus) { try { lastFocus.focus(); } catch (e) { /* ігноруємо */ } }
+    // повертаємо картку у слот, коли анімація закриття добігла
+    if (slot()) setTimeout(function () { if (!isOpen()) mountInline(); }, 340);
   }
 
   function isOpen() { return ov && ov.classList.contains('on'); }
@@ -296,6 +314,9 @@
     texts();
     formView.hidden = true; okView.hidden = false;
     card.scrollTop = 0; card.focus();
+    // на /pre-reg-form тригер із бонусами більше не потрібен — анкету вже прийнято
+    var hero = document.querySelector('.hero.prereg');
+    if (hero) hero.classList.add('done');
     confetti();
   }
 
@@ -378,5 +399,8 @@
     }
   });
   document.addEventListener('vl:lang', texts);
+
+  // На /pre-reg-form анкета стоїть одразу на першому екрані
+  if (slot()) setTimeout(mountInline, 0);
   // Кнопка могла бути натиснута до завантаження цього файла: тоді вона вже повела б на основний ленд, тому тут нічого не лишаємо
 })();
