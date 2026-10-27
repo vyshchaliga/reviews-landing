@@ -31,17 +31,17 @@
 .prereg h1 .gold{font-size:1.27em;line-height:1.02}
 .prereg .lede{margin:12px auto 0;max-width:334px;font-size:15px;line-height:1.35;color:#fff}
 
-/* Смуга з фото потоку між дескриптором і бонусом */
-.band{margin:14px -18px 12px;height:168px}
-.band img{display:block;width:100%;height:100%;object-fit:cover;object-position:center 44%;
-  -webkit-mask-image:linear-gradient(180deg,rgba(0,0,0,0) 0%,#000 26%,#000 68%,rgba(0,0,0,0) 100%);
-  mask-image:linear-gradient(180deg,rgba(0,0,0,0) 0%,#000 26%,#000 68%,rgba(0,0,0,0) 100%)}
+/* Смуга з фото потоку між дескриптором і бонусом.
+   Згасання країв запечене в сам файл — так воно лягає на стелю й підлогу,
+   а не ріже людям голови й руки. */
+.band{margin:6px -18px 2px}
+.band img{display:block;width:100%;height:auto}
 
 /* ===== Бонус: рамка, без металевої підкладки ===== */
 .offer{margin-top:0}
 /* Стрілка веде з бонуса в анкету */
 .bonus-wrap{position:relative;z-index:4}
-.arrow{position:absolute;right:-12px;bottom:-44px;width:86px;height:auto;z-index:3;pointer-events:none;
+.arrow{position:absolute;right:-18px;bottom:-40px;width:96px;height:auto;z-index:3;pointer-events:none;
   filter:drop-shadow(0 6px 14px rgba(0,0,0,0.55))}
 .bonus{position:relative;display:grid;grid-template-columns:90px 1fr;gap:10px;align-items:center;
   padding:13px;border-radius:20px;
