@@ -4,3 +4,6 @@ node_modules/
 .DS_Store
 *.mp4
 *.mov
+
+# відгуки-відео лежать на Bunny, але короткий ролик для мокапа бонуса — у репозиторії
+!public/assets/video/*.mp4
