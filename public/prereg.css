@@ -8,18 +8,21 @@
 .prereg .topbar{margin-bottom:10px}
 
 /* ===== Шапка офера: текст ліворуч, фото праворуч ===== */
-.prereg .hero-main{min-height:0;padding:0;display:grid;grid-template-columns:1fr 114px;gap:6px;align-items:start}
+.prereg .hero-main{min-height:0;padding:0;display:grid;grid-template-columns:1fr 104px;gap:8px;align-items:start}
 .hero-txt{min-width:0}
-.prereg .qual{margin:0 0 10px;font-size:9.6px;line-height:1.4;font-weight:600;
-  letter-spacing:0.04em;text-transform:uppercase;color:#D5A77A}
-.prereg h1{font-size:clamp(20px,5.5vw,28px);line-height:1.06}
+.prereg .qual{margin:0 0 9px;font-size:10px;line-height:1.4;font-weight:600;
+  letter-spacing:0.03em;text-transform:uppercase;color:#D5A77A}
+.prereg h1{font-size:clamp(22px,6.4vw,26px);line-height:1.04;letter-spacing:-0.01em}
 .prereg h1 .ln{display:block}
 .prereg .lede{margin:10px 0 0;font-size:14.5px;line-height:1.35;color:#fff}
 
-.hero-pic{position:relative;margin:-6px -8px 0 0}
+/* Саша вирізаний із фону: під ним м'яке золоте світло і тінь біля ніг */
+.hero-pic{position:relative;margin:-6px -14px 0 0}
 .hero-pic img{display:block;width:100%;height:auto;position:relative;z-index:1}
-.hero-pic::before{content:"";position:absolute;left:-20%;right:-15%;top:0;bottom:-4%;
-  background:radial-gradient(closest-side,rgba(213,167,122,0.2) 0%,rgba(213,167,122,0) 100%)}
+.hero-pic::before{content:"";position:absolute;left:-28%;right:-18%;top:2%;bottom:6%;
+  background:radial-gradient(closest-side,rgba(213,167,122,0.22) 0%,rgba(213,167,122,0) 100%)}
+.hero-pic::after{content:"";position:absolute;left:4%;right:10%;bottom:-2%;height:22px;z-index:2;
+  background:radial-gradient(closest-side,rgba(0,0,0,0.55) 0%,rgba(0,0,0,0) 100%)}
 
 /* ===== Бонус: рамка, без металевої підкладки ===== */
 .offer{margin-top:4px}
