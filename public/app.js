@@ -54,6 +54,7 @@
       var saved = localStorage.getItem('vl_lang');
       if (saved === 'ua' || saved === 'ru') return saved;
     } catch (e) {}
+    if (/^\/pre-reg-form\/?$/.test(location.pathname)) return 'ru';   // передзапис за замовчуванням російською
     var langs = (navigator.languages && navigator.languages.length) ? navigator.languages : [navigator.language || 'uk'];
     var first = String(langs[0] || 'uk').toLowerCase();
     return first.indexOf('ru') === 0 ? 'ru' : 'ua';
