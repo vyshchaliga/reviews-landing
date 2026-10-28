@@ -60,6 +60,15 @@
           "value": "noindex, nofollow"
         }
       ]
+    },
+    {
+      "source": "/pre-reg-form-agent",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
     }
   ]
 }

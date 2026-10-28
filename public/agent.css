@@ -1,0 +1,126 @@
+/* Сторінка /pre-reg-form-agent: та сама архітектура, що й на /pre-reg-form,
+   але візуально зроблена в стилі diia.gov.ua — світлий фон, e-Ukraine, чорні
+   кнопки-пігулки, жовтий маркер замість золота.
+   Підключається після styles.css і перекриває його; rtg.css прилітає пізніше,
+   тому всі правила тут прибиті до html.agent, щоб виграти специфічністю. */
+
+@font-face{font-family:"e-Ukraine";font-style:normal;font-weight:300;font-display:swap;src:url(assets/fonts/e-Ukraine-Light.woff) format("woff")}
+@font-face{font-family:"e-Ukraine";font-style:normal;font-weight:400;font-display:swap;src:url(assets/fonts/e-Ukraine-Regular.woff) format("woff")}
+@font-face{font-family:"e-Ukraine";font-style:normal;font-weight:500;font-display:swap;src:url(assets/fonts/e-Ukraine-Medium.woff) format("woff")}
+@font-face{font-family:"e-Ukraine";font-style:normal;font-weight:700;font-display:swap;src:url(assets/fonts/e-Ukraine-Bold.woff) format("woff")}
+@font-face{font-family:"e-Ukraine Head";font-style:normal;font-weight:400;font-display:swap;src:url(assets/fonts/e-UkraineHead-Regular.woff) format("woff")}
+
+.agent{
+  --bg:#F5F5F5;
+  --surface:#FFFFFF;
+  --tint:#E7EEF3;
+  --ink:#000000;
+  --muted:#6B6B6B;
+  --line:#E4E4E4;
+  --accent:#F2B635;
+  --r-card:32px;
+  --r-field:16px;
+  --r-pill:40px;
+}
+
+/* ===== База ===== */
+.agent body{background:var(--bg);color:var(--ink);font-family:"e-Ukraine",system-ui,sans-serif;font-weight:400;padding-bottom:104px}
+.agent .d{font-family:"e-Ukraine Head","e-Ukraine",system-ui,sans-serif;font-weight:400;text-transform:none;letter-spacing:-0.02em}
+.agent a{color:var(--ink)}
+/* золотих плям і золотого тексту тут немає */
+.agent .bg{display:none}
+.agent .gold{background:none;-webkit-text-fill-color:currentColor;color:inherit;animation:none}
+/* жовтий маркер — акцент замість золота */
+.agent .mark{background:var(--accent);box-decoration-break:clone;-webkit-box-decoration-break:clone;padding:0 .18em;border-radius:6px}
+
+/* ===== Перший екран ===== */
+.agent .hero{padding:16px 18px 28px}
+.agent .hero-in{max-width:520px;margin:0 auto;display:flex;flex-direction:column}
+.agent .rule{display:none}
+.agent .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
+.agent .brand{font-size:15px;line-height:1;letter-spacing:-0.01em;color:var(--ink)}
+.agent .lang{color:var(--muted);font-family:"e-Ukraine",sans-serif;font-size:12px;font-weight:500}
+.agent .lang.on{color:var(--ink)}
+
+.agent .hero-main{min-height:0;padding:0;text-align:left}
+.agent .qual{display:block;margin:0 0 18px;padding:12px 18px;border-radius:var(--r-pill);
+  background:var(--tint);color:var(--ink);
+  font-size:12px;line-height:1.35;font-weight:400;letter-spacing:-0.01em;text-transform:none}
+.agent h1{margin:0;font-size:30px;line-height:1.12;letter-spacing:-0.025em;color:var(--ink);font-weight:400}
+
+/* ===== Фото: жива зйомка з потоку, кадр не ріжемо ===== */
+.agent .hero-pic{margin:18px 0 0;border-radius:var(--r-card);overflow:hidden;background:var(--tint)}
+.agent .hero-pic img{display:block;width:100%;height:auto}
+
+/* ===== Бонус =====
+   Структура мокапа ноутбука живе в prereg.css, який сюди не підключений,
+   тому потрібні правила повторені тут. */
+.agent .offer{margin-top:14px;position:relative}
+.agent .lap{position:relative;width:100%;aspect-ratio:1.62}
+.agent .lap-scr{position:absolute;left:0;right:0;top:0;bottom:11%;border-radius:6px;overflow:hidden}
+.agent .lap-v{width:100%;height:100%;object-fit:cover;display:block}
+.agent .lap-base{position:absolute;left:-7%;right:-7%;bottom:0;height:7%;border-radius:0 0 8px 8px}
+.agent .lap-base::after{content:"";position:absolute;left:50%;top:0;width:17%;height:34%;
+  transform:translateX(-50%);border-radius:0 0 5px 5px}
+.agent .bonus-t{min-width:0}
+.agent .bonus{position:relative;display:grid;grid-template-columns:82px 1fr;gap:18px;align-items:center;
+  padding:16px;border-radius:var(--r-card);background:var(--surface);
+  border:1px solid var(--line);box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none}
+.agent .bonus::before{display:none}
+.agent .bonus-h,.agent .bonus-s{display:block;color:var(--ink);font-size:13px;line-height:1.4;font-weight:400}
+.agent .bonus-h b{color:var(--ink);font-weight:500;white-space:nowrap}
+.agent .bonus-n{display:block;margin-top:4px;color:var(--ink);font-size:13px;line-height:1.4;font-weight:500}
+.agent .lap{filter:none}
+.agent .lap-scr{border:2px solid #D8D8D8;background:#111}
+.agent .lap-base{background:linear-gradient(180deg,#D8D8D8 0%,#AFAFAF 100%)}
+.agent .lap-base::after{background:rgba(0,0,0,0.12)}
+
+/* ===== Кнопки ===== */
+.agent .btn{background:var(--ink);color:var(--surface);border-radius:var(--r-pill);
+  font-family:"e-Ukraine",sans-serif;font-weight:500;letter-spacing:-0.01em;text-shadow:none}
+.agent .btn:hover{background:#1C1C1C;color:var(--surface)}
+.agent .btn::after{display:none}              /* без золотого переблиску */
+.agent .offer-go{display:flex;align-items:center;justify-content:center;width:100%;min-height:56px;
+  margin-top:14px;padding:0 18px;font-size:15px;line-height:1.2;text-transform:none;text-align:center}
+
+/* ===== Анкета ===== */
+.agent .form-slot{margin-top:12px;min-width:0;scroll-margin-top:14px}
+.agent .form-slot .rtg-card{max-width:none;max-height:none;overflow:visible;transform:none;
+  padding:22px 18px 20px;border-radius:var(--r-card);color:var(--ink);
+  background:var(--surface);border:1px solid var(--line);box-shadow:none}
+.agent .rtg-x{display:none}
+.agent .rtg-h{margin:0 0 8px;font-size:24px;line-height:1.14;color:var(--ink)}
+.agent .rtg-sub{font-size:13px;line-height:1.45;margin-bottom:18px;color:var(--muted)}
+.agent .rtg-l{color:var(--muted);font-weight:400}
+.agent .rtg-in{background:#F2F2F2;border:1px solid transparent;border-radius:var(--r-field);
+  color:var(--ink);font-family:"e-Ukraine",system-ui,sans-serif}
+.agent .rtg-in::placeholder{color:#9B9B9B}
+.agent .rtg-in:focus{border-color:var(--ink);background:#EDEDED}
+.agent .rtg-f.err .rtg-in{border-color:#F25648}
+.agent .rtg-f .rtg-l{color:var(--muted)}
+.agent .rtg-f:focus-within .rtg-l{color:var(--ink)}
+.agent .rtg-f.err .rtg-l{color:#F25648}
+.agent .rtg-msg{color:#F25648}
+.agent .rtg-go{min-height:56px;font-size:16px;border-radius:var(--r-pill)}
+
+/* ===== Стіна відгуків ===== */
+.agent .wall-wrap{padding:0 18px 36px}
+.agent .wall-h{margin:0 auto 18px;max-width:520px;font-size:26px;line-height:1.14;color:var(--ink);text-align:left}
+.agent .shot{border-radius:var(--r-field);background:var(--surface)}
+.agent .reel{border-radius:var(--r-field);background:#E4E4E4}
+.agent .reel video{background:#E4E4E4}
+.agent .play{background:var(--ink)}
+.agent .play:hover{background:#1C1C1C}
+.agent .snd{background:rgba(0,0,0,0.5)}
+
+/* ===== Закріплена кнопка ===== */
+.agent .cta-bg{background:linear-gradient(0deg,rgba(245,245,245,0.96) 0%,rgba(245,245,245,0.72) 55%,rgba(245,245,245,0) 100%);
+  -webkit-mask-image:none;mask-image:none}
+.agent .cta-in{max-width:520px}
+.agent .cta-in .btn{font-size:16px;min-height:60px;padding:0 20px}
+.agent .zoom-bg{background:rgba(0,0,0,0.5)}
+
+@media (min-width:601px){
+  .agent .hero{padding:24px 18px 36px}
+  .agent h1{font-size:34px}
+}

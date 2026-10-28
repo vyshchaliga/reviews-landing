@@ -23,6 +23,7 @@
       sub: 'Уважно перевірте правильність даних, включно з ніком в інстаграмі та телеграмі.',
       name: 'Ваше ім’я', tg: 'Нік у телеграмі через @', ig: 'Нік в інстаграмі через @',
       income: 'Ваш середній дохід на місяць?', role: 'Яка ваша роль', multi: 'можна обрати кілька',
+      nisha: 'Ваша ніша',
       send: 'Відправити анкету', sending: 'Відправляємо…',
       need: 'Заповніть, будь ласка, усі поля', fail: 'Не вдалося відправити анкету. Спробуйте ще раз за хвилину.'
     },
@@ -31,10 +32,14 @@
       sub: 'Внимательно проверьте правильность данных, включая ник в инстаграме и телеграме.',
       name: 'Ваше имя', tg: 'Ник в телеграме через @', ig: 'Ник в инстаграме через @',
       income: 'Ваш средний доход в месяц?', role: 'Какая ваша роль', multi: 'можно выбрать несколько',
+      nisha: 'Ваша ниша',
       send: 'Отправить анкету', sending: 'Отправляем…',
       need: 'Заполните, пожалуйста, все поля', fail: 'Не удалось отправить анкету. Попробуйте ещё раз через минуту.'
     }
   };
+
+  // На агентському ленді замість питання про роль стоїть вільне поле «Ваша ниша»
+  var AGENT = /^\/pre-reg-form-agent\/?$/.test(location.pathname);
 
   var card, form, formView, done = false, busy = false;
   var refs = {};
@@ -123,7 +128,8 @@
       return fs;
     }
     form.appendChild(field('dohod', 'text', 'off'));
-    form.appendChild(group(GROUPS[0]));
+    if (AGENT) form.appendChild(field('nisha', 'text', 'off'));
+    else form.appendChild(group(GROUPS[0]));
 
     // Пастка для ботів: людина це поле не бачить
     var hp = el('div', 'rtg-hp'); hp.setAttribute('aria-hidden', 'true');
@@ -153,7 +159,8 @@
     refs.sub.textContent = t.sub;
     refs.name.label.textContent = t.name; refs.tg.label.textContent = t.tg;
     refs.instagram.label.textContent = t.ig; refs.dohod.label.textContent = t.income;
-    GROUPS.forEach(function (g) {
+    if (AGENT) refs.nisha.label.textContent = t.nisha;
+    if (!AGENT) GROUPS.forEach(function (g) {
       var G = refs.groups[g.key];
       G.legend.textContent = t[g.t];
       G.hint.textContent = g.multi ? t.multi : '';
@@ -172,13 +179,15 @@
      кнопки до неї прокручують, нікуди не переносять. */
   function slot() { return document.getElementById('prereg-slot'); }
 
+  var FILLED = AGENT ? ['name', 'tg', 'instagram', 'dohod', 'nisha'] : ['name', 'tg', 'instagram', 'dohod'];
+
   function mountInline() {
     var s = slot();
     if (!s) return;
     if (!card) build();
     texts();
     formView.hidden = done;
-    ['name', 'tg', 'instagram', 'dohod'].forEach(function (k) { refs[k].sync(); });
+    FILLED.forEach(function (k) { refs[k].sync(); });
     s.appendChild(card);
   }
 
@@ -202,18 +211,26 @@
       instagram: atNick(refs.instagram.input.value),
       dohod: refs.dohod.input.value.trim()
     };
-    GROUPS.forEach(function (g) {
-      data[g.key] = '';
-      data[g.key] = refs.groups[g.key].items.filter(function (r) { return r.input.checked; })
-        .map(function (r) { return r.opt.v; }).join(', ');
-    });
+    if (AGENT) {
+      // ніша їде і своїм ключем, і в колонку rol — щоб її було видно в таблиці вже зараз
+      data.nisha = refs.nisha.input.value.trim();
+      data.rol = data.nisha;
+    } else {
+      GROUPS.forEach(function (g) {
+        data[g.key] = '';
+        data[g.key] = refs.groups[g.key].items.filter(function (r) { return r.input.checked; })
+          .map(function (r) { return r.opt.v; }).join(', ');
+      });
+    }
 
     var bad = false;
-    [['name', data.name], ['tg', data.nik_tg], ['instagram', data.instagram], ['dohod', data.dohod]].forEach(function (p) {
+    var required = [['name', data.name], ['tg', data.nik_tg], ['instagram', data.instagram], ['dohod', data.dohod]];
+    if (AGENT) required.push(['nisha', data.nisha]);
+    required.forEach(function (p) {
       var empty = !p[1] || p[1] === '@';
       refs[p[0]].wrap.classList.toggle('err', empty); if (empty) bad = true;
     });
-    GROUPS.forEach(function (g) {
+    if (!AGENT) GROUPS.forEach(function (g) {
       refs.groups[g.key].set.classList.toggle('err', !data[g.key]); if (!data[g.key]) bad = true;
     });
     if (bad) {
@@ -227,7 +244,7 @@
     data.website = '';
     data.referer = location.href.slice(0, 500);
     var u = utm(); for (var k in u) data[k] = u[k];
-    data.type = 'Предзапис';
+    data.type = AGENT ? 'Предзапис агенти' : 'Предзапис';
     data.lang = lang();
 
     busy = true; refs.go.disabled = true; texts();

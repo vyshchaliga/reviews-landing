@@ -2,8 +2,9 @@
 // Налаштування (Vercel → Project → Settings → Environment Variables):
 //   SHEETS_WEBHOOK_URL — адреса веб-застосунку Apps Script (закінчується на /exec)
 //   SHEETS_SECRET      — той самий секрет, що в скрипті (scripts/apps-script/Code.gs)
-const FIELDS = ['name', 'nik_tg', 'instagram', 'dohod', 'rol', 'type', 'lang', 'referer',
+const FIELDS = ['name', 'nik_tg', 'instagram', 'dohod', 'rol', 'nisha', 'type', 'lang', 'referer',
   'utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'];
+const AGENT_TYPE = 'Предзапис агенти';   // ленд для агентств: замість ролі зі списку — вільний текст ніші
 const OPTIONS = {
   rol: ['Продюсер', 'Эксперт', 'Маркетолог / в команде проекта', 'Пока не в инфобизнесе']   // можна кілька, через «, »
 };
@@ -32,11 +33,13 @@ export default async function handler(req, res) {
     if (/^[=+\-]/.test(v)) v = "'" + v;                       // щоб таблиця не сприйняла текст як формулу
     clean[k] = v;
   }
+  const agent = String(b.type || '') === AGENT_TYPE;
+  const choicesOk = Object.keys(OPTIONS).every((k) => {
+    const parts = String(b[k] || '').split(', ');
+    return parts.length > 0 && new Set(parts).size === parts.length && parts.every((x) => OPTIONS[k].includes(x));
+  });
   if (!clean.name || !clean.nik_tg || !clean.instagram || !clean.dohod ||
-      !Object.keys(OPTIONS).every((k) => {
-        const parts = String(b[k] || '').split(', ');
-        return parts.length > 0 && new Set(parts).size === parts.length && parts.every((x) => OPTIONS[k].includes(x));
-      })) {
+      (agent ? !clean.nisha : !choicesOk)) {
     return res.status(400).json({ ok: false, error: 'missing fields' });
   }
   clean.type = clean.type || 'Предзапис';

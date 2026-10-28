@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="ru" class="nonames agent">
+<head>
+<meta charset="utf-8">
+<base href="/">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Анкета предзаписи — Высшая Лига 6.0 для агентств</title>
+<meta name="description" content="Анкета предзаписи на шестой поток программы «Высшая Лига» для агентского бизнеса.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#F5F5F5">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="preload" href="assets/fonts/e-UkraineHead-Regular.woff" as="font" type="font/woff" crossorigin>
+<link rel="preload" href="assets/fonts/e-Ukraine-Regular.woff" as="font" type="font/woff" crossorigin>
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="agent.css">
+</head>
+<body>
+
+<header class="hero prereg">
+  <div class="hero-in">
+    <div class="topbar">
+      <span class="brand d">Высшая Лига 6.0</span>
+      <div class="langs" aria-label="Language">
+        <span class="lang on" aria-current="true">RU</span>
+      </div>
+    </div>
+
+    <div class="hero-main">
+      <p class="qual">Премиальная программа по масштабированию info/digital/agency-бизнесов</p>
+      <h1 class="d">Сделай <span class="mark">прорыв</span> в агентском бизнесе в 2027</h1>
+    </div>
+
+    <!-- Жива зйомка з потоку 25–27.09, фото Hanna Holovnia -->
+    <div class="hero-pic">
+      <img src="assets/img/agent-hero.webp" alt="" width="780" height="447" decoding="async" fetchpriority="high">
+    </div>
+
+    <section class="offer" aria-label="Бонус предзаписи">
+      <div class="bonus">
+        <div class="lap" aria-hidden="true">
+          <div class="lap-scr">
+            <video class="lap-v" muted loop playsinline preload="none" poster="assets/video/bonus.jpg">
+              <source src="assets/video/bonus.mp4" type="video/mp4">
+            </video>
+          </div>
+          <div class="lap-base"></div>
+        </div>
+        <div class="bonus-t">
+          <span class="bonus-h">Заполни анкету до <b id="deadline">—</b></span>
+          <span class="bonus-s">и гарантированно забери бонус</span>
+          <span class="bonus-n">«Система привлечения клиентов, которая приносит $20-50К в месяц»</span>
+        </div>
+      </div>
+
+      <a class="btn offer-go" href="#prereg-slot">Узнать детали программы</a>
+
+      <!-- Сюди rtg.js монтує анкету; кнопки вище й унизу лише прокручують до неї -->
+      <div class="form-slot" id="prereg-slot"></div>
+    </section>
+  </div>
+</header>
+
+<main class="wall-wrap">
+  <h2 class="wall-h d">Результаты участников <span class="mark">Высшая Лига</span></h2>
+  <div class="wall" id="wall"></div>
+</main>
+
+<div class="cta-bar" id="cta" aria-hidden="true">
+  <div class="cta-bg"></div>
+  <div class="cta-in">
+    <a class="btn" id="cta-link" href="#prereg-slot" tabindex="-1">Оставить анкету</a>
+  </div>
+</div>
+
+<script src="config.js"></script>
+<script src="app.js"></script>
+<script src="agent.js"></script>
+</body>
+</html>
