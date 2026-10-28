@@ -51,7 +51,33 @@
     // тож свій ставимо наступним тіком, інакше його перетирає
     setTimeout(function () { document.title = t.pageTitle; }, 0);
     deadline();
+    fitH1();
   }
+
+  /* Заголовок не довший за три рядки. Текст різний у двох мовах і ширина екрана
+     теж різна, тому кегль підбираємо вимірюванням, а не зашиваємо в CSS. */
+  function fitH1() {
+    var h = document.querySelector('.prereg h1');
+    if (!h) return;
+    for (var px = 26; px >= 16; px--) {
+      h.style.fontSize = px + 'px';
+      var lh = parseFloat(getComputedStyle(h).lineHeight) || px * 1.2;
+      if (h.offsetHeight / lh < 3.5) return;              // 3 рядки з запасом на округлення
+    }
+  }
+
+  /* Обидві кнопки — під бонусом і закріплена внизу — прокручують до анкети.
+     Попапа з анкетою більше немає, картка завжди стоїть у слоті на сторінці. */
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('a[href="#prereg-slot"]');
+    if (!a) return;
+    var box = document.getElementById('prereg-slot');
+    if (!box) return;
+    e.preventDefault();
+    var soft = !(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    try { box.scrollIntoView({ behavior: soft ? 'smooth' : 'auto', block: 'start' }); }
+    catch (err) { box.scrollIntoView(); }
+  });
 
   /* Дедлайн — завтра за Варшавою. Дата рахується на клієнті;
      щоб зафіксувати її на хвилю трафіку, тут ставиться константа замість Date.now(). */
@@ -91,4 +117,7 @@
   apply();
   startVideos();
   document.addEventListener('vl:lang', apply);
+  window.addEventListener('resize', fitH1);
+  // шрифт може приїхати пізніше за перший замір — тоді переміряємо
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitH1);
 })();

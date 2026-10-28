@@ -1,5 +1,5 @@
-/* Анкета передзапису: кнопка відкриває попап з анкетою.
-   Відповіді йдуть на /api/lead → Google-таблиця. Після відправки — конфеті й кнопка в канал передзапису.
+/* Анкета передзапису: картка стоїть прямо на сторінці, кнопки лише прокручують до неї.
+   Попапа немає. Відповіді йдуть на /api/lead → Google-таблиця, після відправки — редірект у канал.
    Мова береться з перемикача UA/RU на ленді. Завантажується тільки на /pre-reg-form. */
 (function () {
   'use strict';
@@ -19,38 +19,28 @@
 
   var T = {
     ua: {
-      title1: 'Анкета', title2: 'передзапису',
+      title1: 'Заповни анкету', title2: 'та дізнайся всі подробиці',
       sub: 'Уважно перевірте правильність даних, включно з ніком в інстаграмі та телеграмі.',
       name: 'Ваше ім’я', tg: 'Нік у телеграмі через @', ig: 'Нік в інстаграмі через @',
       income: 'Ваш середній дохід на місяць?', role: 'Яка ваша роль', multi: 'можна обрати кілька',
       send: 'Відправити анкету', sending: 'Відправляємо…',
-      need: 'Заповніть, будь ласка, усі поля', fail: 'Не вдалося відправити анкету. Спробуйте ще раз за хвилину.',
-      close: 'Закрити'
+      need: 'Заповніть, будь ласка, усі поля', fail: 'Не вдалося відправити анкету. Спробуйте ще раз за хвилину.'
     },
     ru: {
-      title1: 'Анкета', title2: 'предзаписи',
+      title1: 'Заполни анкету', title2: 'и узнай все подробности',
       sub: 'Внимательно проверьте правильность данных, включая ник в инстаграме и телеграме.',
       name: 'Ваше имя', tg: 'Ник в телеграме через @', ig: 'Ник в инстаграме через @',
       income: 'Ваш средний доход в месяц?', role: 'Какая ваша роль', multi: 'можно выбрать несколько',
       send: 'Отправить анкету', sending: 'Отправляем…',
-      need: 'Заполните, пожалуйста, все поля', fail: 'Не удалось отправить анкету. Попробуйте ещё раз через минуту.',
-      close: 'Закрыть'
+      need: 'Заполните, пожалуйста, все поля', fail: 'Не удалось отправить анкету. Попробуйте ещё раз через минуту.'
     }
   };
 
-  var ov, card, form, formView, lastFocus, done = false, busy = false;
+  var card, form, formView, done = false, busy = false;
   var refs = {};
 
   function lang() { return document.documentElement.lang === 'ru' ? 'ru' : 'ua'; }
   function el(tag, cls) { var n = document.createElement(tag); if (cls) n.className = cls; return n; }
-  function svgEl(vb, d, extra) {
-    var s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    s.setAttribute('viewBox', vb); s.setAttribute('aria-hidden', 'true');
-    var p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-    p.setAttribute('d', d); p.setAttribute('fill', 'none'); p.setAttribute('stroke', extra || '#fff');
-    p.setAttribute('stroke-width', '2.4'); p.setAttribute('stroke-linecap', 'round'); p.setAttribute('stroke-linejoin', 'round');
-    s.appendChild(p); return s;
-  }
 
   // Поле з «плаваючим» підписом: на телефоні підпис стоїть усередині поля і зсувається вгору, коли поле активне або заповнене
   // (на ПК підпис над полем, як раніше). Для ніків «@» підставляється сам, щоб було видно формат.
@@ -89,15 +79,7 @@
   }
 
   function build() {
-    ov = el('div', 'rtg-ov');
     card = el('div', 'rtg-card');
-    card.setAttribute('role', 'dialog'); card.setAttribute('aria-modal', 'true'); card.tabIndex = -1;
-
-    var x = el('button', 'rtg-x'); x.type = 'button';
-    x.appendChild(svgEl('0 0 16 16', 'M2 2l12 12M14 2L2 14'));
-    x.addEventListener('click', close);
-    refs.x = x;
-    card.appendChild(x);
 
     formView = el('div', 'rtg-form');
     var h = el('h2', 'rtg-h d');
@@ -161,17 +143,11 @@
     form.addEventListener('input', clearErr); form.addEventListener('change', clearErr);
     formView.appendChild(form);
     card.appendChild(formView);
-
-    // Екран успіху
-
-    ov.appendChild(card);
-    ov.addEventListener('mousedown', function (e) { if (e.target === ov) close(); });
-    document.body.appendChild(ov);
     texts();
   }
 
   function texts() {
-    if (!ov) return;
+    if (!card) return;
     var t = T[lang()], lg = lang();
     refs.h1.textContent = t.title1; refs.h2.textContent = t.title2;
     refs.sub.textContent = t.sub;
@@ -184,7 +160,6 @@
       G.items.forEach(function (r) { r.text.textContent = r.opt[lg]; });
     });
     refs.go.textContent = busy ? t.sending : t.send;
-    refs.x.setAttribute('aria-label', t.close);
     if (refs.msg.getAttribute('data-k')) refs.msg.textContent = t[refs.msg.getAttribute('data-k')];
   }
 
@@ -193,47 +168,19 @@
     refs.msg.setAttribute('data-k', k); refs.msg.textContent = T[lang()][k];
   }
 
-  /* Слот на першому екрані /pre-reg-form. Картка з анкетою одна: поки сторінка
-     просто гортається — вона стоїть у слоті, при кліку з ленти переїжджає в попап
-     і повертається назад після закриття. Так немає двох форм із різними станами. */
+  /* Слот на першому екрані /pre-reg-form. Картка з анкетою одна і завжди тут:
+     кнопки до неї прокручують, нікуди не переносять. */
   function slot() { return document.getElementById('prereg-slot'); }
 
   function mountInline() {
     var s = slot();
     if (!s) return;
-    if (!ov) build();
+    if (!card) build();
     texts();
     formView.hidden = done;
     ['name', 'tg', 'instagram', 'dohod'].forEach(function (k) { refs[k].sync(); });
     s.appendChild(card);
   }
-
-  function open() {
-    if (!ov) build();
-    texts();
-    lastFocus = document.activeElement;
-    formView.hidden = done;
-    ['name', 'tg', 'instagram', 'dohod'].forEach(function (k) { refs[k].sync(); });
-    ov.appendChild(card);
-    document.documentElement.classList.add('rtg-lock');
-    // поки елемент не показаний, перехід не спрацює: даємо браузеру один кадр
-    requestAnimationFrame(function () {
-      ov.classList.add('on');
-      var touch = document.documentElement.classList.contains('touch');
-      if (!touch && !done) refs.name.input.focus(); else card.focus();
-    });
-  }
-
-  function close() {
-    if (!ov) return;
-    ov.classList.remove('on');
-    document.documentElement.classList.remove('rtg-lock');
-    if (lastFocus && lastFocus.focus) { try { lastFocus.focus(); } catch (e) { /* ігноруємо */ } }
-    // повертаємо картку у слот, коли анімація закриття добігла
-    if (slot()) setTimeout(function () { if (!isOpen()) mountInline(); }, 340);
-  }
-
-  function isOpen() { return ov && ov.classList.contains('on'); }
 
   function atNick(v) {
     v = (v || '').replace(/\s+/g, '').replace(/^@+/, '');
@@ -307,26 +254,8 @@
   }
 
   /* ---------- Підключення ---------- */
-  document.addEventListener('click', function (e) {
-    var a = e.target.closest && e.target.closest('#cta-link');
-    if (!a) return;
-    e.preventDefault();
-    open();
-  });
-  document.addEventListener('keydown', function (e) {
-    if (!isOpen()) return;
-    if (e.key === 'Escape') { close(); return; }
-    if (e.key === 'Tab') {                                        // утримуємо фокус у попапі
-      var f = Array.prototype.filter.call(card.querySelectorAll('button,input,a[href]'), function (n) { return n.offsetParent !== null && n.tabIndex !== -1; });
-      if (!f.length) return;
-      var first = f[0], lastEl = f[f.length - 1];
-      if (e.shiftKey && (document.activeElement === first || document.activeElement === card)) { e.preventDefault(); lastEl.focus(); }
-      else if (!e.shiftKey && document.activeElement === lastEl) { e.preventDefault(); first.focus(); }
-    }
-  });
   document.addEventListener('vl:lang', texts);
 
   // На /pre-reg-form анкета стоїть одразу на першому екрані
   if (slot()) setTimeout(mountInline, 0);
-  // Кнопка могла бути натиснута до завантаження цього файла: тоді вона вже повела б на основний ленд, тому тут нічого не лишаємо
 })();

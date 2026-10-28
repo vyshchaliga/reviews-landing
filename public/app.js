@@ -471,7 +471,8 @@
   function watchSticky() {
     var bar = document.getElementById('cta');
     var link = document.getElementById('cta-link');
-    link.href = C.ctaUrl || link.href;
+    // на передзаписі кнопка веде до анкети на цій же сторінці, зовнішній url не підставляємо
+    if (!/^\/pre-reg-form\/?$/.test(location.pathname)) link.href = C.ctaUrl || link.href;
     var n = Math.max(1, C.stickyAfter || 5);
     var ticking = false;
     function check() {

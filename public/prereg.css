@@ -30,6 +30,11 @@
 
 .prereg h1{margin:0;font-size:clamp(20px,6vw,25px);line-height:1.2;letter-spacing:-0.005em;text-wrap:balance}
 
+/* Фото потоку на всю ширину екрана. Не обрізаємо: згасання країв запечене в самому
+   файлі, тож height:auto — інакше object-fit з'їдає саме ту зону, що має згасати. */
+.hero-pic{margin:14px -18px 0}
+.hero-pic img{display:block;width:100%;height:auto}
+
 /* ===== Бонус: рамка, без металевої підкладки ===== */
 .offer{margin-top:22px}
 /* Кнопка під бонусом веде до анкети */
@@ -71,12 +76,13 @@
   border-radius:0 0 5px 5px;background:rgba(0,0,0,0.35)}
 
 /* ===== Анкета на першому екрані ===== */
-.form-slot{margin-top:12px;min-width:0}
+/* scroll-margin — щоб кнопки доводили анкету під верх екрана, а не впритул */
+.form-slot{margin-top:12px;min-width:0;scroll-margin-top:14px}
 .form-slot .rtg-card{max-width:none;max-height:none;overflow:visible;transform:none;
   padding:18px 14px 16px;border-radius:20px;
   box-shadow:0 20px 60px rgba(0,0,0,0.5),inset 0 1px 0 rgba(255,235,200,0.08)}
 .form-slot .rtg-x{display:none}
-.form-slot .rtg-h{margin:0 0 6px;font-size:28px}
+.form-slot .rtg-h{margin:0 0 6px;font-size:26px;line-height:1.08}
 .form-slot .rtg-sub{font-size:12px;line-height:1.35;margin-bottom:14px}
 
 /* ===== Заголовок стіни відгуків ===== */
