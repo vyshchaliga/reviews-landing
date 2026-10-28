@@ -34,8 +34,8 @@
 /* Смуга з фото потоку між дескриптором і бонусом.
    Згасання країв запечене в сам файл — так воно лягає на стелю й підлогу,
    а не ріже людям голови й руки. */
-.band{margin:5px -18px 1px;height:182px}
-.band img{display:block;width:100%;height:100%;object-fit:cover;object-position:center 46%}
+.band{margin:5px -18px 1px}
+.band img{display:block;width:100%;height:auto}
 
 /* ===== Бонус: рамка, без металевої підкладки ===== */
 .offer{margin-top:0}
