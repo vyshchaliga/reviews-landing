@@ -562,8 +562,8 @@
     state.lang = pickLang();
     applyLang(state.lang);
 
-    // Версія для ретаргету (/rtg): кнопка відкриває попап-анкету замість переходу на основний ленд
-    if (/^\/(rtg|pre-reg-form)\/?$/.test(location.pathname)) {
+    // На передзаписі кнопка відкриває попап-анкету замість переходу на основний ленд
+    if (/^\/pre-reg-form\/?$/.test(location.pathname)) {
       document.documentElement.classList.add('rtg');
       var lk = document.createElement('link'); lk.rel = 'stylesheet'; lk.href = 'rtg.css'; document.head.appendChild(lk);
       var sc = document.createElement('script'); sc.src = 'rtg.js'; sc.async = true; document.head.appendChild(sc);

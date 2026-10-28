@@ -44,15 +44,6 @@
       ]
     },
     {
-      "source": "/rtg",
-      "headers": [
-        {
-          "key": "X-Robots-Tag",
-          "value": "noindex, nofollow"
-        }
-      ]
-    },
-    {
       "source": "/pre-reg-form",
       "headers": [
         {
@@ -60,16 +51,6 @@
           "value": "noindex, nofollow"
         }
       ]
-    }
-  ],
-  "rewrites": [
-    {
-      "source": "/rtg",
-      "destination": "/"
-    },
-    {
-      "source": "/rtg/",
-      "destination": "/"
     }
   ]
 }
