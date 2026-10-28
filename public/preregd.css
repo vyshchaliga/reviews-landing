@@ -101,15 +101,10 @@ html.apple .prereg h1{
   font-size:clamp(30px,8.4vw,42px);line-height:1.08;letter-spacing:-0.025em;
 }
 
-/* Портрет Саші: вирізаний PNG-подібний webp з альфою, тому лягає просто на папір.
-   Під ним — м'яка світла подушка, щоб фігура не «висіла» в порожнечі. */
-html.apple .hero-pic{position:relative;margin:18px 0 0;display:flex;justify-content:center}
-html.apple .hero-pic::before{
-  content:"";position:absolute;left:50%;bottom:6%;transform:translateX(-50%);
-  width:min(300px,72%);height:62%;border-radius:50%;
-  background:radial-gradient(closest-side,#f0f0f3 0%,rgba(240,240,243,0) 100%);
-}
-html.apple .hero-pic img{position:relative;display:block;width:min(300px,78%);height:auto}
+/* Фото потоку на всю ширину колонки. Не обрізаємо: згасання країв запечене в альфу
+   самого файла, тож height:auto — інакше object-fit з'їдає саме ту зону, що має згасати. */
+html.apple .hero-pic{margin:16px 0 0}
+html.apple .hero-pic img{display:block;width:100%;height:auto}
 
 /* ===== Бонус ===== */
 html.apple .offer{margin-top:12px;position:relative}
