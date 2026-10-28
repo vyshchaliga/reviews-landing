@@ -19,7 +19,8 @@
 
   var T = {
     ua: {
-      title1: 'Заповни анкету', title2: 'та дізнайся всі подробиці',
+      title1: 'Заповни анкету', title1a: 'Заповни', title1b: 'анкету',
+      title2: 'та дізнайся всі подробиці',
       sub: 'Уважно перевірте правильність даних, включно з ніком в інстаграмі та телеграмі.',
       name: 'Ваше ім’я', tg: 'Нік у телеграмі через @', ig: 'Нік в інстаграмі через @',
       income: 'Ваш середній дохід на місяць?', role: 'Яка ваша роль', multi: 'можна обрати кілька',
@@ -28,7 +29,8 @@
       need: 'Заповніть, будь ласка, усі поля', fail: 'Не вдалося відправити анкету. Спробуйте ще раз за хвилину.'
     },
     ru: {
-      title1: 'Заполни анкету', title2: 'и узнай все подробности',
+      title1: 'Заполни анкету', title1a: 'Заполни', title1b: 'анкету',
+      title2: 'и узнай все подробности',
       sub: 'Внимательно проверьте правильность данных, включая ник в инстаграме и телеграме.',
       name: 'Ваше имя', tg: 'Ник в телеграме через @', ig: 'Ник в инстаграме через @',
       income: 'Ваш средний доход в месяц?', role: 'Какая ваша роль', multi: 'можно выбрать несколько',
@@ -89,7 +91,15 @@
     formView = el('div', 'rtg-form');
     var h = el('h2', 'rtg-h d');
     var h1 = document.createElement('span'); var h2 = el('span', 'gold');
-    h.appendChild(h1); h.appendChild(document.createTextNode(' ')); h.appendChild(h2);
+    if (AGENT) {
+      // «Заполни [анкету]» — друге слово під маркером, як у заголовку на першому екрані
+      var mk = el('span', 'mark mark-orange');
+      h.appendChild(h1); h.appendChild(document.createTextNode(' ')); h.appendChild(mk);
+      h.appendChild(document.createElement('br')); h.appendChild(h2);
+      refs.mark = mk;
+    } else {
+      h.appendChild(h1); h.appendChild(document.createTextNode(' ')); h.appendChild(h2);
+    }
     refs.h1 = h1; refs.h2 = h2;
     card.setAttribute('aria-labelledby', 'rtg-title'); h.id = 'rtg-title';
     var sub = el('p', 'rtg-sub'); refs.sub = sub;
@@ -155,7 +165,12 @@
   function texts() {
     if (!card) return;
     var t = T[lang()], lg = lang();
-    refs.h1.textContent = t.title1; refs.h2.textContent = t.title2;
+    if (AGENT) {
+      refs.h1.textContent = t.title1a; refs.mark.textContent = t.title1b;
+    } else {
+      refs.h1.textContent = t.title1;
+    }
+    refs.h2.textContent = t.title2;
     refs.sub.textContent = t.sub;
     refs.name.label.textContent = t.name; refs.tg.label.textContent = t.tg;
     refs.instagram.label.textContent = t.ig; refs.dohod.label.textContent = t.income;

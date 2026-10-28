@@ -17,15 +17,15 @@
     }
   }
 
-  /* Заголовок не повинен розсипатись на екранах вужчих за макет: зменшуємо кегль,
-     поки він не вкладеться у чотири рядки. */
+  /* Заголовок тримається у двох рядках: перенос стоїть у розмітці, а тут
+     зменшуємо кегль, поки жоден з рядків не почне переноситись сам. */
   function fitH1() {
     var h = document.querySelector('.hero-main h1');
     if (!h) return;
-    for (var px = 30; px >= 18; px--) {
+    for (var px = 32; px >= 16; px--) {
       h.style.fontSize = px + 'px';
-      var lh = parseFloat(getComputedStyle(h).lineHeight) || px * 1.12;
-      if (h.offsetHeight / lh < 4.5) return;
+      var lh = parseFloat(getComputedStyle(h).lineHeight) || px * 1.38;
+      if (h.offsetHeight / lh < 2.5) return;
     }
   }
 
