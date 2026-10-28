@@ -50,7 +50,7 @@
 .offer-go{display:flex;align-items:center;justify-content:center;width:100%;min-height:56px;
   margin-top:14px;padding:0 18px;font-size:15px;font-weight:700;line-height:1.2;
   letter-spacing:0.03em;text-transform:uppercase;text-align:center}
-.bonus{position:relative;display:grid;grid-template-columns:90px 1fr;gap:10px;align-items:center;
+.bonus{position:relative;display:grid;grid-template-columns:82px 1fr;gap:18px;align-items:center;
   padding:13px;border-radius:20px;
   background:rgba(255,255,255,0.04);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
   box-shadow:0 10px 30px rgba(0,0,0,0.45),0 0 24px rgba(213,167,122,0.1),
