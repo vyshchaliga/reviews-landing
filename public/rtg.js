@@ -40,8 +40,12 @@
     }
   };
 
-  // На агентському ленді замість питання про роль стоїть вільне поле «Ваша ниша»
-  var AGENT = /^\/pre-reg-form-agent\/?$/.test(location.pathname);
+  // На агентському і консалтинговому лендах замість питання про роль стоїть вільне поле «Ваша ниша»
+  var NICHE = /^\/pre-reg-form-(?:agent|consult)\/?$/.test(location.pathname);
+  // Під яким типом анкета лягає в таблицю — по цьому полю потоки розділяються
+  var LEAD_TYPE = /^\/pre-reg-form-consult\/?$/.test(location.pathname) ? 'Предзапис консалт'
+    : /^\/pre-reg-form-agent\/?$/.test(location.pathname) ? 'Предзапис агенти'
+    : 'Предзапис';
 
   var card, form, formView, done = false, busy = false;
   var refs = {};
@@ -91,7 +95,7 @@
     formView = el('div', 'rtg-form');
     var h = el('h2', 'rtg-h d');
     var h1 = document.createElement('span'); var h2 = el('span', 'gold');
-    if (AGENT) {
+    if (NICHE) {
       // «Заполни [анкету]» — друге слово під маркером, як у заголовку на першому екрані
       var mk = el('span', 'mark mark-orange');
       h.appendChild(h1); h.appendChild(document.createTextNode(' ')); h.appendChild(mk);
@@ -138,7 +142,7 @@
       return fs;
     }
     form.appendChild(field('dohod', 'text', 'off'));
-    if (AGENT) form.appendChild(field('nisha', 'text', 'off'));
+    if (NICHE) form.appendChild(field('nisha', 'text', 'off'));
     else form.appendChild(group(GROUPS[0]));
 
     // Пастка для ботів: людина це поле не бачить
@@ -165,7 +169,7 @@
   function texts() {
     if (!card) return;
     var t = T[lang()], lg = lang();
-    if (AGENT) {
+    if (NICHE) {
       refs.h1.textContent = t.title1a; refs.mark.textContent = t.title1b;
     } else {
       refs.h1.textContent = t.title1;
@@ -174,8 +178,8 @@
     refs.sub.textContent = t.sub;
     refs.name.label.textContent = t.name; refs.tg.label.textContent = t.tg;
     refs.instagram.label.textContent = t.ig; refs.dohod.label.textContent = t.income;
-    if (AGENT) refs.nisha.label.textContent = t.nisha;
-    if (!AGENT) GROUPS.forEach(function (g) {
+    if (NICHE) refs.nisha.label.textContent = t.nisha;
+    if (!NICHE) GROUPS.forEach(function (g) {
       var G = refs.groups[g.key];
       G.legend.textContent = t[g.t];
       G.hint.textContent = g.multi ? t.multi : '';
@@ -194,7 +198,7 @@
      кнопки до неї прокручують, нікуди не переносять. */
   function slot() { return document.getElementById('prereg-slot'); }
 
-  var FILLED = AGENT ? ['name', 'tg', 'instagram', 'dohod', 'nisha'] : ['name', 'tg', 'instagram', 'dohod'];
+  var FILLED = NICHE ? ['name', 'tg', 'instagram', 'dohod', 'nisha'] : ['name', 'tg', 'instagram', 'dohod'];
 
   function mountInline() {
     var s = slot();
@@ -226,7 +230,7 @@
       instagram: atNick(refs.instagram.input.value),
       dohod: refs.dohod.input.value.trim()
     };
-    if (AGENT) {
+    if (NICHE) {
       // ніша їде і своїм ключем, і в колонку rol — щоб її було видно в таблиці вже зараз
       data.nisha = refs.nisha.input.value.trim();
       data.rol = data.nisha;
@@ -240,12 +244,12 @@
 
     var bad = false;
     var required = [['name', data.name], ['tg', data.nik_tg], ['instagram', data.instagram], ['dohod', data.dohod]];
-    if (AGENT) required.push(['nisha', data.nisha]);
+    if (NICHE) required.push(['nisha', data.nisha]);
     required.forEach(function (p) {
       var empty = !p[1] || p[1] === '@';
       refs[p[0]].wrap.classList.toggle('err', empty); if (empty) bad = true;
     });
-    if (!AGENT) GROUPS.forEach(function (g) {
+    if (!NICHE) GROUPS.forEach(function (g) {
       refs.groups[g.key].set.classList.toggle('err', !data[g.key]); if (!data[g.key]) bad = true;
     });
     if (bad) {
@@ -259,7 +263,7 @@
     data.website = '';
     data.referer = location.href.slice(0, 500);
     var u = utm(); for (var k in u) data[k] = u[k];
-    data.type = AGENT ? 'Предзапис агенти' : 'Предзапис';
+    data.type = LEAD_TYPE;
     data.lang = lang();
 
     busy = true; refs.go.disabled = true; texts();
