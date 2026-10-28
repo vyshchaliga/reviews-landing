@@ -7,6 +7,8 @@
 .prereg .rule{display:none}
 /* Назва програми ліворуч, перемикач мови праворуч — в одному рядку */
 .prereg .topbar{justify-content:space-between;margin-bottom:14px}
+/* перемикач мови — посилання, а не кнопки: кожна мова має свою адресу */
+.prereg .lang{text-decoration:none}
 .prereg .brand{font-size:15px;line-height:1;letter-spacing:0.01em;text-transform:uppercase;color:#FFE9C9}
 
 /* ===== Шапка офера: усе по центру, фото потоку окремою смугою ===== */
@@ -27,7 +29,8 @@
     11px 1.5px,1.5px 11px,11px 1.5px,1.5px 11px;
   background-position:left top,left top,right top,right top,
     left bottom,left bottom,right bottom,right bottom}
-.prereg .qual{margin-bottom:12px}
+/* заголовок стоїть нижче за плашку кваліфікатора */
+.prereg .qual{margin-bottom:26px}
 
 /* Заголовок у два рядки: перенос жорсткий і стоїть усередині золотого шматка,
    щоб золото тяглося з кінця першого рядка на початок другого. Кегль підбирає
@@ -36,7 +39,7 @@
 
 /* Фото потоку на всю ширину екрана. Не обрізаємо: згасання країв запечене в самому
    файлі, тож height:auto — інакше object-fit з'їдає саме ту зону, що має згасати. */
-.hero-pic{margin:20px 0 0}
+.hero-pic{margin:6px 0 0}
 .hero-pic img{display:block;width:100%;height:auto}
 
 /* ===== Бонус: рамка, без металевої підкладки =====

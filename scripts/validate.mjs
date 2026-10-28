@@ -7,9 +7,19 @@ import { COLUMNS } from './lib/csv.mjs';
 import { CSV_PATH, SHOTS_DIR, readRows, writeRows, parseArgs, cap } from './lib/common.mjs';
 import { imageSize } from './lib/imgsize.mjs';
 import { parseCSV } from './lib/csv.mjs';
+import { buildUaPage } from './build-ua-page.mjs';
 
 const args = parseArgs(process.argv.slice(2));
 const errors = [], warns = [];
+
+// Українська сторінка передзапису збирається з російської, щоб адреси не розійшлись
+try {
+  const ua = buildUaPage();
+  if (ua.changed) console.log('public/pre-reg-form/ua.html перезібрано.');
+} catch (e) {
+  console.log('  ✖ не вдалося зібрати українську сторінку передзапису: ' + e.message);
+  process.exit(1);
+}
 const { head } = parseCSV(fs.readFileSync(CSV_PATH, 'utf8'));
 for (const c of COLUMNS) if (!head.includes(c)) errors.push(`У таблиці немає колонки «${c}»`);
 if (errors.length) { report(); }

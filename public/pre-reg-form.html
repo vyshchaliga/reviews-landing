@@ -22,15 +22,16 @@
   <div class="hero-in">
     <div class="topbar">
       <span class="brand d" data-p18n="brand">Высшая Лига 6.0</span>
+      <!-- Мова прибита до адреси: ця сторінка тільки російська, UA веде на /pre-reg-form/ua -->
       <div class="langs" role="group" aria-label="Language">
-        <button type="button" class="lang" data-lang="ua">UA</button>
+        <a class="lang" href="/pre-reg-form/ua" hreflang="uk">UA</a>
         <span class="lang-sep">|</span>
-        <button type="button" class="lang" data-lang="ru">RU</button>
+        <span class="lang on" aria-current="true">RU</span>
       </div>
     </div>
 
     <div class="hero-main">
-      <p class="qual" data-p18n="qual">Премиальная программа по масштабированию инфобизнесов</p>
+      <p class="qual" data-p18n="qual">Премиальная программа<br>по масштабированию инфобизнесов</p>
       <h1 class="d"><span data-p18n="h1a">Сделай свой запуск в 2027 – </span><span class="gold" data-p18n="h1b">рекордным</span><br><span class="gold" data-p18n="h1b2">и подготовься</span><span data-p18n="h1c"> к новым реалиям рынка</span></h1>
     </div>
 
@@ -58,7 +59,7 @@
 
       <a class="btn offer-go" href="#prereg-slot" data-p18n="offerCta">Узнать детали программы</a>
 
-      <!-- Сюди rtg.js монтує анкету. При кліку з ленти та сама картка переїжджає в попап. -->
+      <!-- Сюди rtg.js монтує анкету; кнопки вище й унизу лише прокручують до неї -->
       <div class="form-slot" id="prereg-slot"></div>
     </section>
   </div>

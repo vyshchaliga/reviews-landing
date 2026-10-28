@@ -51,6 +51,15 @@
           "value": "noindex, nofollow"
         }
       ]
+    },
+    {
+      "source": "/pre-reg-form/ua",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
     }
   ]
 }

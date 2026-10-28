@@ -46,8 +46,15 @@
     current: null      // картка, що зараз грає
   };
 
+  /* Передзапис живе на двох адресах: /pre-reg-form — російська, /pre-reg-form/ua — українська.
+     Мова прибита до адреси, тому ні ?lang, ні збережений вибір на неї не впливають. */
+  function isPrereg() { return /^\/pre-reg-form(?:\/ua)?\/?$/.test(location.pathname); }
+  function isPreregUa() { return /^\/pre-reg-form\/ua\/?$/.test(location.pathname); }
+
   /* ---------- Мова ---------- */
   function pickLang() {
+    if (isPreregUa()) return 'ua';
+    if (isPrereg()) return 'ru';
     try {
       var q = new URLSearchParams(location.search).get('lang');
       if (q === 'ua' || q === 'ru') return q;
@@ -56,7 +63,6 @@
       var saved = localStorage.getItem('vl_lang');
       if (saved === 'ua' || saved === 'ru') return saved;
     } catch (e) {}
-    if (/^\/pre-reg-form\/?$/.test(location.pathname)) return 'ru';   // передзапис відкривається російською
     var langs = (navigator.languages && navigator.languages.length) ? navigator.languages : [navigator.language || 'uk'];
     var first = String(langs[0] || 'uk').toLowerCase();
     return first.indexOf('ru') === 0 ? 'ru' : 'ua';
@@ -416,7 +422,7 @@
      Нічого не телепортуємо і не скролимо кодом, тому швидкий інерційний скрол не переривається. */
   function initLoop() {
     // на передзаписі стрічка показується один раз і закінчується
-    if (/^\/pre-reg-form\/?$/.test(location.pathname)) return;
+    if (isPrereg()) return;
     if (!window.matchMedia || state.rows.length < 2) return;
     var mq = window.matchMedia('(max-width: 520px)');
     var wall = document.getElementById('wall');
@@ -477,7 +483,7 @@
     var bar = document.getElementById('cta');
     var link = document.getElementById('cta-link');
     // на передзаписі кнопка веде до анкети на цій же сторінці, зовнішній url не підставляємо
-    if (!/^\/pre-reg-form\/?$/.test(location.pathname)) link.href = C.ctaUrl || link.href;
+    if (!isPrereg()) link.href = C.ctaUrl || link.href;
     var n = Math.max(1, C.stickyAfter || 5);
     var ticking = false;
     function check() {
@@ -569,13 +575,14 @@
     applyLang(state.lang);
 
     // На передзаписі кнопка відкриває попап-анкету замість переходу на основний ленд
-    if (/^\/pre-reg-form\/?$/.test(location.pathname)) {
+    if (isPrereg()) {
       document.documentElement.classList.add('rtg');
       var lk = document.createElement('link'); lk.rel = 'stylesheet'; lk.href = 'rtg.css'; document.head.appendChild(lk);
       var sc = document.createElement('script'); sc.src = 'rtg.js'; sc.async = true; document.head.appendChild(sc);
     }
 
-    Array.prototype.forEach.call(document.querySelectorAll('[data-lang]'), function (b) {
+    // на передзаписі перемикач — звичайні посилання на сусідню адресу, вішати нічого не треба
+    if (!isPrereg()) Array.prototype.forEach.call(document.querySelectorAll('[data-lang]'), function (b) {
       b.addEventListener('click', function () {
         var l = b.getAttribute('data-lang');
         try { localStorage.setItem('vl_lang', l); } catch (e) {}
