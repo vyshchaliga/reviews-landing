@@ -8,19 +8,25 @@
   /* Дедлайн — завтра за Варшавою. Дата стоїть у двох місцях: у картці бонуса
      і на екрані телефона в кадрі, тому заповнюємо всі [data-deadline] одразу. */
   function deadline() {
-    var d = new Date(Date.now() + 86400000);
-    put('[data-deadline]', fmt({ day: 'numeric', month: 'long' }, d, 'завтра'));
-    // на екрані телефона місця на «29 октября» немає, тому там коротка дата
-    put('[data-deadline-short]', fmt({ day: '2-digit', month: '2-digit' }, d, 'завтра'));
+    var txt = 'завтра';
+    try {
+      var d = new Date(Date.now() + 86400000);
+      txt = new Intl.DateTimeFormat('ru-RU', { day: 'numeric', month: 'long', timeZone: 'Europe/Warsaw' }).format(d);
+    } catch (e) { /* лишається «завтра» */ }
+    Array.prototype.forEach.call(document.querySelectorAll('[data-deadline]'), function (el) {
+      el.textContent = txt;
+    });
+  }
 
-    function fmt(opts, date, fallback) {
-      try {
-        opts.timeZone = 'Europe/Warsaw';
-        return new Intl.DateTimeFormat('ru-RU', opts).format(date);
-      } catch (e) { return fallback; }
-    }
-    function put(sel, txt) {
-      Array.prototype.forEach.call(document.querySelectorAll(sel), function (el) { el.textContent = txt; });
+  /* Заголовок тримається у трьох рядках: переноси стоять у розмітці, а тут
+     зменшуємо кегль, поки жоден з рядків не почне переноситись сам. */
+  function fitH1() {
+    var h = document.querySelector('.hero-main h1');
+    if (!h) return;
+    for (var px = 26; px >= 14; px--) {
+      h.style.fontSize = px + 'px';
+      var lh = parseFloat(getComputedStyle(h).lineHeight) || px * 1.24;
+      if (h.offsetHeight / lh < 3.4) return;
     }
   }
 
@@ -57,5 +63,8 @@
   });
 
   deadline();
+  fitH1();
   startVideos();
+  window.addEventListener('resize', fitH1);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitH1);
 })();
