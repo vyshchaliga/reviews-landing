@@ -4,7 +4,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { COLUMNS } from './lib/csv.mjs';
-import { CSV_PATH, SHOTS_DIR, readRows, writeRows, parseArgs, cap } from './lib/common.mjs';
+import { ROOT, CSV_PATH, SHOTS_DIR, readRows, writeRows, parseArgs, cap } from './lib/common.mjs';
 import { imageSize } from './lib/imgsize.mjs';
 import { parseCSV } from './lib/csv.mjs';
 import { buildUaPage } from './build-ua-page.mjs';
@@ -19,6 +19,18 @@ try {
   if (ua.changed) console.log('public/pre-reg-form/ua.html перезібрано.');
 } catch (e) {
   console.log('  ✖ не вдалося зібрати українську сторінку передзапису: ' + e.message);
+  process.exit(1);
+}
+// Світлий ленд /pre-reg-form-d збирається тим самим кодом — структура й тексти ті самі
+try {
+  const ua = buildUaPage({
+    src: path.join(ROOT, 'public', 'pre-reg-form-d.html'),
+    out: path.join(ROOT, 'public', 'pre-reg-form-d', 'ua.html'),
+    ruHref: '/pre-reg-form-d',
+  });
+  if (ua.changed) console.log('public/pre-reg-form-d/ua.html перезібрано.');
+} catch (e) {
+  console.log('  ✖ не вдалося зібрати українську версію світлого ленда: ' + e.message);
   process.exit(1);
 }
 try {

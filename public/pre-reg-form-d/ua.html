@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="uk" class="nonames apple">
+<head>
+<meta charset="utf-8">
+<base href="/">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Анкета передзапису — Вища Ліга 6.0</title>
+<meta name="description" content="Анкета передзапису на шостий потік програми «Вища Ліга».">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#ffffff">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="preload" href="assets/fonts/manrope-cyrillic-600-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="preregd.css">
+</head>
+<body>
+
+<div class="bg" aria-hidden="true"><i class="b1"></i><i class="b2"></i><i class="b3"></i></div>
+
+<header class="hero prereg">
+  <div class="hero-in">
+    <div class="topbar">
+      <span class="brand d" data-p18n="brand">Вища Ліга 6.0</span>
+      <!-- Мова прибита до адреси: ця сторінка тільки українська, RU веде на /pre-reg-form-d -->
+      <div class="langs" role="group" aria-label="Language">
+        <span class="lang on" aria-current="true">UA</span>
+        <span class="lang-sep">|</span>
+        <a class="lang" href="/pre-reg-form-d" hreflang="ru">RU</a>
+      </div>
+    </div>
+
+    <div class="hero-main">
+      <p class="qual" data-p18n="qual">Преміальна програма<br>з масштабування інфобізнесів</p>
+      <h1 class="d" data-fit="off"><span data-p18n="h1a">Зроби свій запуск у 2027 – </span><span class="gold" data-p18n="h1b">рекордним</span><br><span class="gold" data-p18n="h1b2">і підготуйся</span><span data-p18n="h1c"> до нових реалій ринку</span></h1>
+    </div>
+
+    <!-- Портрет Саші: вирізаний файл з альфою, тому лежить просто на світлому тлі -->
+    <div class="hero-pic" aria-hidden="true">
+      <img src="assets/img/sasha-studio.webp" alt="" width="360" height="432" decoding="async" fetchpriority="high">
+    </div>
+
+    <section class="offer" aria-label="Бонус передзапису">
+      <div class="bonus">
+        <div class="lap" aria-hidden="true">
+          <div class="lap-scr">
+            <video class="lap-v" muted loop playsinline preload="none" poster="assets/video/bonus.jpg">
+              <source src="assets/video/bonus.mp4" type="video/mp4">
+            </video>
+          </div>
+          <div class="lap-base"></div>
+        </div>
+        <div class="bonus-t">
+          <span class="bonus-h"><span data-p18n="bonusA">Заповни анкету до</span> <b id="deadline">—</b></span>
+          <span class="bonus-s" data-p18n="bonusB">та гарантовано отримай бонус</span>
+          <span class="bonus-n" data-p18n="bonusN">«Розбір мого запуску на $300К»</span>
+        </div>
+      </div>
+
+      <a class="btn offer-go" href="#prereg-slot" data-p18n="offerCta">Дізнатися деталі програми</a>
+
+      <!-- Сюди rtg.js монтує анкету; кнопки вище й унизу лише прокручують до неї -->
+      <div class="form-slot" id="prereg-slot"></div>
+    </section>
+  </div>
+</header>
+
+<main class="wall-wrap">
+  <h2 class="wall-h d">
+    <span data-p18n="wallA">Результати учасників</span>
+    <span class="gold" data-p18n="wallB">Вища Ліга</span>
+  </h2>
+  <div class="wall" id="wall"></div>
+</main>
+
+<div class="cta-bar" id="cta" aria-hidden="true">
+  <div class="cta-bg"></div>
+  <div class="cta-in">
+    <a class="btn" id="cta-link" href="#prereg-slot" tabindex="-1" data-p18n="cta">Залишити анкету</a>
+  </div>
+</div>
+
+<script src="config.js"></script>
+<script src="app.js"></script>
+<script src="prereg.js"></script>
+</body>
+</html>

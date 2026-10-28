@@ -1,0 +1,301 @@
+/* Сторінка /pre-reg-form-d — та сама структура, що й /pre-reg-form, але в мові Apple:
+   світле тло, SF Pro (системний на iOS/macOS, Manrope як підміна на решті), синій #0071E3,
+   пігулкові кнопки, картки з радіусом 18px, жодного золота й жодних світінь.
+
+   Файл ставиться замість prereg.css і перекриває styles.css та rtg.css. rtg.css app.js
+   додає в <head> вже після нас, тому КОЖНЕ правило йде від html.apple — вищa вага
+   виграє незалежно від порядку підключення. Нічого з цього не торкається інших адрес. */
+
+/* ===== Manrope: підміна SF Pro там, де системного шрифту Apple немає ===== */
+@font-face{font-family:"Manrope";font-style:normal;font-weight:400;font-display:swap;src:url(assets/fonts/manrope-cyrillic-400-normal.woff2) format("woff2");unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}
+@font-face{font-family:"Manrope";font-style:normal;font-weight:400;font-display:swap;src:url(assets/fonts/manrope-latin-400-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Manrope";font-style:normal;font-weight:500;font-display:swap;src:url(assets/fonts/manrope-cyrillic-500-normal.woff2) format("woff2");unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}
+@font-face{font-family:"Manrope";font-style:normal;font-weight:500;font-display:swap;src:url(assets/fonts/manrope-latin-500-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Manrope";font-style:normal;font-weight:600;font-display:swap;src:url(assets/fonts/manrope-cyrillic-600-normal.woff2) format("woff2");unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}
+@font-face{font-family:"Manrope";font-style:normal;font-weight:600;font-display:swap;src:url(assets/fonts/manrope-latin-600-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Manrope";font-style:normal;font-weight:700;font-display:swap;src:url(assets/fonts/manrope-cyrillic-700-normal.woff2) format("woff2");unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}
+@font-face{font-family:"Manrope";font-style:normal;font-weight:700;font-display:swap;src:url(assets/fonts/manrope-latin-700-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+
+html.apple{
+  /* Палітра apple.com: чорнило, вторинний сірий, тло секцій, лінійки, синій */
+  --ink:#1d1d1f;
+  --ink2:#6e6e73;
+  --ink3:#86868b;
+  --paper:#ffffff;
+  --paper2:#f5f5f7;
+  --line:#d2d2d7;
+  --blue:#0071e3;
+  --blue-h:#0077ed;
+  --link:#0066cc;
+  --indigo:#5e5ce6;
+  --red:#e30613;
+  --r:18px;
+  --r-sm:12px;
+  --pill:980px;
+  /* SF Pro на техніці Apple — більшість трафіку з iPhone бачить рідний шрифт Apple */
+  --sf:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Segoe UI","Manrope","Helvetica Neue",Arial,sans-serif;
+  -webkit-text-size-adjust:100%;
+  background:var(--paper);
+}
+
+/* ===== База ===== */
+html.apple body{
+  background:var(--paper);color:var(--ink);
+  font-family:var(--sf);font-weight:400;
+  letter-spacing:-0.01em;
+  padding-bottom:104px;
+}
+html.apple a{color:var(--link)}
+html.apple a:hover{text-decoration:underline}
+/* .d у вихідному ленді — вузький Oswald капслоком; тут це просто щільний SF */
+html.apple .d{font-family:var(--sf);text-transform:none;font-weight:600;letter-spacing:-0.022em}
+/* золоті плями фону Apple-стилю не знають */
+html.apple .bg{display:none}
+/* акцент у заголовках: синій → індиго замість золота, без переблиску */
+html.apple .gold{
+  background:linear-gradient(95deg,var(--blue) 0%,var(--indigo) 100%);
+  background-size:100% 100%;
+  -webkit-background-clip:text;background-clip:text;
+  color:transparent;-webkit-text-fill-color:transparent;
+  animation:none;
+}
+
+/* ===== Верхня панель ===== */
+html.apple .hero{position:relative;z-index:1;padding:0 22px 40px;overflow-x:clip}
+html.apple .hero-in{max-width:520px;margin:0 auto;display:flex;flex-direction:column}
+html.apple .rule{display:none}
+/* смуга як глобальна навігація apple.com: напівпрозоре скло, волосяна лінія знизу */
+html.apple .topbar{
+  position:sticky;top:0;z-index:30;
+  display:flex;align-items:center;justify-content:space-between;
+  min-height:48px;margin:0 -22px 26px;padding:0 22px;
+  background:rgba(255,255,255,0.72);
+  -webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);
+  box-shadow:inset 0 -1px 0 rgba(0,0,0,0.08);
+}
+html.apple .brand{font-size:15px;line-height:1;font-weight:600;letter-spacing:-0.01em;color:var(--ink);text-transform:none}
+html.apple .langs{display:flex;align-items:center;gap:8px}
+html.apple .lang{font-family:var(--sf);font-size:12px;font-weight:400;letter-spacing:0;color:var(--ink2);text-decoration:none;padding:4px 2px}
+html.apple .lang:hover{color:var(--ink);text-decoration:none}
+html.apple .lang.on{color:var(--ink);font-weight:600}
+html.apple .lang-sep{color:var(--line);font-size:11px}
+
+/* ===== Перший екран ===== */
+html.apple .hero-main{min-height:0;padding:0;text-align:center}
+
+/* Кваліфікатор — м'яка «таблетка» на тлі f5f5f7, як позначки на сторінках Apple */
+html.apple .qual{
+  display:inline-block;margin:6px 0 20px;padding:7px 16px;
+  font-size:12px;line-height:1.4;font-weight:500;letter-spacing:0;
+  text-transform:none;color:var(--ink2);
+  background:var(--paper2);background-image:none;
+  border-radius:var(--pill);
+  -webkit-backdrop-filter:none;backdrop-filter:none;
+}
+
+/* Заголовок: великий, щільний, з синьо-індиговим акцентом. Кегль тримає CSS —
+   у розмітці стоїть data-fit="off", тож prereg.js його не підганяє під два рядки:
+   на Apple заголовок великий і переноситься скільки треба. */
+html.apple .prereg h1{
+  margin:0;font-weight:600;color:var(--ink);
+  font-size:clamp(30px,8.4vw,42px);line-height:1.08;letter-spacing:-0.025em;
+}
+
+/* Портрет Саші: вирізаний PNG-подібний webp з альфою, тому лягає просто на папір.
+   Під ним — м'яка світла подушка, щоб фігура не «висіла» в порожнечі. */
+html.apple .hero-pic{position:relative;margin:18px 0 0;display:flex;justify-content:center}
+html.apple .hero-pic::before{
+  content:"";position:absolute;left:50%;bottom:6%;transform:translateX(-50%);
+  width:min(300px,72%);height:62%;border-radius:50%;
+  background:radial-gradient(closest-side,#f0f0f3 0%,rgba(240,240,243,0) 100%);
+}
+html.apple .hero-pic img{position:relative;display:block;width:min(300px,78%);height:auto}
+
+/* ===== Бонус ===== */
+html.apple .offer{margin-top:12px;position:relative}
+html.apple .bonus{
+  position:relative;display:grid;grid-template-columns:96px 1fr;gap:18px;align-items:center;
+  padding:16px;border-radius:var(--r);
+  background:var(--paper2);
+  border:0;box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none;
+}
+/* металевої обводки з переблиском тут немає */
+html.apple .bonus::before{display:none}
+html.apple .bonus-t{min-width:0;text-align:left}
+html.apple .bonus-h,html.apple .bonus-s,html.apple .bonus-n{display:block;font-size:13px;line-height:1.4}
+html.apple .bonus-h{color:var(--ink);font-weight:500}
+html.apple .bonus-h b{font-weight:600;color:var(--ink);white-space:nowrap}
+html.apple .bonus-s{color:var(--ink2);font-weight:400}
+html.apple .bonus-n{margin-top:3px;font-weight:600;color:var(--ink);letter-spacing:-0.015em}
+
+/* Мокап ноутбука в дусі MacBook: світлий алюмінієвий корпус, тонка рамка, темний екран */
+html.apple .lap{position:relative;width:100%;aspect-ratio:1.62;filter:drop-shadow(0 4px 10px rgba(0,0,0,0.12))}
+html.apple .lap-scr{
+  position:absolute;left:0;right:0;top:0;bottom:11%;
+  border-radius:7px;overflow:hidden;
+  border:2px solid #c7c7cc;background:#0b0b0d;
+}
+html.apple .lap-v{width:100%;height:100%;object-fit:cover;display:block}
+html.apple .lap-base{
+  position:absolute;left:-8%;right:-8%;bottom:0;height:7%;border-radius:0 0 7px 7px;
+  background:linear-gradient(180deg,#e3e3e8 0%,#b9b9c0 100%);
+}
+html.apple .lap-base::after{
+  content:"";position:absolute;left:50%;top:0;width:18%;height:36%;transform:translateX(-50%);
+  border-radius:0 0 4px 4px;background:#aeaeb4;
+}
+
+/* ===== Кнопки: пігулка Apple ===== */
+html.apple .btn{
+  display:inline-flex;align-items:center;justify-content:center;text-align:center;
+  background:var(--blue);color:#fff;text-shadow:none;border:0;border-radius:var(--pill);
+  font-family:var(--sf);font-weight:500;letter-spacing:-0.01em;
+  cursor:pointer;text-decoration:none;overflow:visible;
+  transition:background-color .2s ease;
+}
+html.apple .btn:hover{background:var(--blue-h);color:#fff;text-decoration:none}
+html.apple .btn:active{background:#006edb}
+html.apple .btn:focus-visible{outline:4px solid rgba(0,113,227,0.35);outline-offset:2px}
+/* біжучого відблиску на кнопках Apple не буває */
+html.apple .btn::after{display:none}
+
+html.apple .offer-go{
+  display:flex;width:100%;min-height:52px;margin-top:14px;padding:0 22px;
+  font-size:17px;font-weight:500;line-height:1.2;letter-spacing:-0.01em;text-transform:none;
+}
+
+/* ===== Нижня закріплена смуга ===== */
+html.apple .cta-bar{padding:12px 22px 16px}
+html.apple .cta-bg{
+  position:absolute;left:0;right:0;top:0;bottom:0;
+  background:rgba(255,255,255,0.82);
+  -webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);
+  -webkit-mask-image:none;mask-image:none;
+  box-shadow:inset 0 1px 0 rgba(0,0,0,0.08);
+}
+html.apple .cta-in{max-width:520px}
+html.apple .cta-in .btn{width:100%;padding:0 24px;min-height:52px;font-size:17px}
+/* на ПК — та сама смуга, тільки кнопка компактна по центру */
+html.apple:not(.touch) .cta-bar{left:0;right:0;transform:translateY(110%);padding:12px 22px 16px}
+html.apple:not(.touch) .cta-bar.on{transform:none}
+html.apple:not(.touch) .cta-bg{display:block}
+html.apple:not(.touch) .cta-in{max-width:520px;margin:0 auto}
+html.apple:not(.touch) .cta-in .btn{width:100%;padding:0 24px;font-size:17px;box-shadow:none}
+
+/* ===== Анкета ===== */
+html.apple .form-slot{margin-top:14px;min-width:0;scroll-margin-top:62px}
+html.apple .form-slot .rtg-card,
+html.apple .rtg-card{
+  max-width:none;max-height:none;overflow:visible;transform:none;
+  padding:24px 20px 20px;border-radius:var(--r);
+  background:var(--paper2);border:0;box-shadow:none;color:var(--ink);
+}
+html.apple .rtg-x{display:none}
+html.apple .rtg-h{
+  margin:0 0 8px;font-family:var(--sf);font-weight:600;
+  font-size:28px;line-height:1.1;letter-spacing:-0.022em;text-transform:none;color:var(--ink);
+}
+html.apple .rtg-sub{margin:0 0 20px;font-size:14px;line-height:1.45;color:var(--ink2)}
+
+/* Поля: білі на сірій картці, підпис усередині й зсувається вгору при введенні */
+html.apple .rtg-f{display:block;position:relative;margin:0 0 10px}
+html.apple .rtg-in{
+  display:block;width:100%;height:56px;padding:21px 16px 6px;
+  border-radius:var(--r-sm);border:1px solid var(--line);
+  background:var(--paper);color:var(--ink);
+  font-family:var(--sf);font-size:17px;letter-spacing:-0.01em;outline:0;
+  transition:border-color .18s ease,box-shadow .18s ease;
+}
+html.apple .rtg-in::placeholder{color:var(--ink3)}
+html.apple .rtg-in:focus{border-color:var(--blue);background:var(--paper);box-shadow:0 0 0 4px rgba(0,113,227,0.18)}
+html.apple .rtg-f .rtg-l{
+  position:absolute;left:17px;right:17px;top:17px;margin:0;
+  font-size:17px;font-weight:400;line-height:22px;color:var(--ink2);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;pointer-events:none;
+  transition:top .16s ease,font-size .16s ease,color .16s ease;
+}
+html.apple .rtg-f:focus-within .rtg-l,html.apple .rtg-f.has .rtg-l{top:7px;font-size:11px;line-height:14px;font-weight:400;color:var(--ink3)}
+html.apple .rtg-f.err .rtg-in{border-color:var(--red);box-shadow:none}
+html.apple .rtg-f.err .rtg-l{color:var(--red)}
+
+/* Ролі: сегментовані «таблетки» Apple — білі, при виборі заливаються синім */
+html.apple .rtg-fs{border:0;margin:14px 0 14px;padding:0;min-width:0}
+html.apple .rtg-fs .rtg-l{
+  display:block;padding:0;margin:0 0 10px;
+  font-size:15px;font-weight:600;letter-spacing:-0.01em;color:var(--ink);
+}
+html.apple .rtg-hint{margin-left:8px;font-size:13px;font-weight:400;color:var(--ink2)}
+html.apple .rtg-chips{display:flex;flex-wrap:wrap;gap:8px}
+html.apple .rtg-opt{
+  position:relative;display:flex;align-items:center;gap:8px;
+  padding:9px 15px 9px 11px;border:1px solid var(--line);border-radius:var(--pill);
+  background:var(--paper);color:var(--ink);
+  font-size:15px;line-height:19px;letter-spacing:-0.01em;cursor:pointer;
+  transition:border-color .18s ease,background-color .18s ease,color .18s ease;
+}
+html.apple .rtg-opt:hover{border-color:#b9b9bf}
+html.apple .rtg-dot{
+  flex:none;width:17px;height:17px;border-radius:50%;
+  border:1.5px solid var(--ink3);background:transparent;
+  display:flex;align-items:center;justify-content:center;transition:border-color .18s ease,background-color .18s ease;
+}
+html.apple .rtg-dot::after{content:"";width:9px;height:9px;border-radius:50%;background:#fff;transform:scale(0);transition:transform .18s ease}
+html.apple .rtg-dot.sq{border-radius:5px}
+html.apple .rtg-dot.sq::after{width:4px;height:8px;margin-top:-2px;border-radius:0;background:none;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg) scale(0)}
+html.apple .rtg-opt input:checked + .rtg-dot{border-color:#fff;background:transparent}
+html.apple .rtg-opt input:checked + .rtg-dot::after{transform:scale(1)}
+html.apple .rtg-opt input:checked + .rtg-dot.sq::after{transform:rotate(45deg) scale(1)}
+html.apple .rtg-opt.on{background:var(--blue);border-color:var(--blue);color:#fff}
+html.apple .rtg-opt input:focus-visible + .rtg-dot{box-shadow:0 0 0 4px rgba(0,113,227,0.3)}
+html.apple .rtg-fs.err .rtg-opt{border-color:var(--red)}
+html.apple .rtg-fs.err .rtg-dot{border-color:var(--red)}
+
+html.apple .rtg-msg{margin:-2px 0 12px;font-size:13px;line-height:1.4;color:var(--red)}
+html.apple .rtg-go{width:100%;min-height:52px;margin-top:4px;padding:0 24px;font-size:17px;border-radius:var(--pill)}
+html.apple .rtg-go[disabled]{opacity:.5;cursor:progress}
+
+/* ===== Стіна відгуків ===== */
+html.apple .wall-wrap{padding:44px 22px 60px;max-width:1440px;margin:0 auto}
+html.apple .wall-h{
+  margin:0 auto 24px;max-width:520px;
+  font-family:var(--sf);font-weight:600;text-transform:none;
+  font-size:clamp(26px,6.4vw,34px);line-height:1.1;letter-spacing:-0.022em;
+  color:var(--ink);text-align:center;
+}
+html.apple .wall{column-gap:14px}
+html.apple .item{margin-bottom:14px}
+html.apple .shot{border-radius:14px;background:var(--paper);box-shadow:0 1px 3px rgba(0,0,0,0.08),0 8px 24px rgba(0,0,0,0.06)}
+html.apple .ring{border-color:var(--red);border-radius:6px}
+html.apple .reel{border-radius:14px;background:var(--paper2);box-shadow:0 1px 3px rgba(0,0,0,0.08),0 8px 24px rgba(0,0,0,0.06)}
+html.apple .reel video{background:var(--paper2)}
+/* кругла кнопка відтворення — скляна, як у плеєрах Apple */
+html.apple .play{
+  width:56px;height:56px;margin:-28px 0 0 -28px;
+  background:rgba(255,255,255,0.82);
+  -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
+  box-shadow:0 2px 12px rgba(0,0,0,0.18);
+}
+html.apple .play:hover{transform:scale(1.04);background:rgba(255,255,255,0.94)}
+html.apple .play svg{width:18px;height:22px}
+html.apple .snd{background:rgba(0,0,0,0.38)}
+html.apple .zoom-bg{background:rgba(255,255,255,0.72)}
+html.apple .zoom-fly .shot{box-shadow:0 20px 70px rgba(0,0,0,0.25)}
+
+/* ===== Адаптив ===== */
+@media (max-width:600px){
+  html.apple body{padding-bottom:96px}
+  html.apple .hero{padding:0 18px 30px}
+  html.apple .topbar{margin:0 -18px 22px;padding:0 18px;min-height:44px}
+  html.apple .qual{font-size:11px;padding:6px 14px;margin-bottom:16px}
+  html.apple .hero-pic{margin-top:14px}
+  html.apple .bonus{grid-template-columns:86px 1fr;gap:14px;padding:14px}
+  html.apple .wall-wrap{padding:34px 18px 40px}
+  html.apple .cta-bar{padding:10px 18px calc(16px + env(safe-area-inset-bottom,0px))}
+  html.apple .cta-in{max-width:520px}
+  html.apple .cta-in .btn{font-size:17px;min-height:52px;padding:0 20px}
+  html.apple .form-slot .rtg-card{padding:20px 16px 18px}
+  html.apple .rtg-h{font-size:24px}
+}
+@media (prefers-reduced-motion:reduce){
+  html.apple .btn,html.apple .rtg-in,html.apple .rtg-opt,html.apple .rtg-f .rtg-l{transition:none}
+}

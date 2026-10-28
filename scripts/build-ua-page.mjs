@@ -1,6 +1,7 @@
 // Збирає українську сторінку передзапису з російської.
 // Розмітка одна на дві адреси, тексти беруться з того самого словника, що й на клієнті,
 // тому /pre-reg-form і /pre-reg-form/ua не можуть розійтись ані структурою, ані словами.
+// Тим самим кодом збирається і світлий ленд /pre-reg-form-d — йому передаються свої шляхи.
 // Запускається перед кожним деплоєм з validate.mjs.
 import fs from 'node:fs';
 import path from 'node:path';
@@ -37,12 +38,16 @@ const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, 
 // \n у словнику = жорсткий перенос, так само як це робить prereg.js у браузері
 const html = (s) => esc(s).split('\n').join('<br>');
 
-export function buildUaPage() {
+/** @param {{src?:string,out?:string,ruHref?:string}} [opts] шляхи іншої пари сторінок (типово /pre-reg-form) */
+export function buildUaPage(opts = {}) {
+  const src = opts.src || SRC;
+  const out = opts.out || OUT;
+  const ruHref = opts.ruHref || '/pre-reg-form';
   const t = readUaDict();
   const need = ['pageTitle', 'pageDesc'];
   for (const k of need) if (!t[k]) throw new Error(`у словнику ua немає ключа «${k}»`);
 
-  let page = fs.readFileSync(SRC, 'utf8');
+  let page = fs.readFileSync(src, 'utf8');
   const was = page;
 
   page = page.replace('<html lang="ru"', '<html lang="uk"');
@@ -51,18 +56,23 @@ export function buildUaPage() {
   page = page.replace('aria-label="Бонус предзаписи"', 'aria-label="Бонус передзапису"');
 
   // перемикач дзеркалимо: активна тут українська, посилання веде на російську
+  const beforeLangs = page;
   page = page.replace(
-    /<!-- Мова прибита[\s\S]*?<\/div>\n(\s*)<\/div>/,
+    // \r?\n — у робочій копії на Windows рядки бувають CRLF, інакше заміна тихо не спрацює
+    /<!-- Мова прибита[\s\S]*?<\/div>\r?\n([ \t]*)<\/div>/,
     [
-      '<!-- Мова прибита до адреси: ця сторінка тільки українська, RU веде на /pre-reg-form -->',
+      `<!-- Мова прибита до адреси: ця сторінка тільки українська, RU веде на ${ruHref} -->`,
       '      <div class="langs" role="group" aria-label="Language">',
       '        <span class="lang on" aria-current="true">UA</span>',
       '        <span class="lang-sep">|</span>',
-      '        <a class="lang" href="/pre-reg-form" hreflang="ru">RU</a>',
+      `        <a class="lang" href="${ruHref}" hreflang="ru">RU</a>`,
       '      </div>',
       '$1</div>',
-    ].join('\n')
+    ].join(page.indexOf('\r\n') >= 0 ? '\r\n' : '\n')
   );
+
+  // мовчазний промах тут колись уже підсунув у UA-сторінку російський перемикач — краще впасти
+  if (page === beforeLangs) throw new Error("не вдалося перемкнути мовний перемикач: розмітка topbar змінилась");
 
   // тексти в розмітці — це те, що видно до старту скриптів, тому вони теж мають бути українські
   const missing = [];
@@ -76,9 +86,9 @@ export function buildUaPage() {
   if (missing.length) throw new Error(`у словнику ua немає ключів: ${missing.join(', ')}`);
   if (page === was) throw new Error('українська сторінка вийшла байт у байт як російська — заміни не спрацювали');
 
-  fs.mkdirSync(path.dirname(OUT), { recursive: true });
-  const old = fs.existsSync(OUT) ? fs.readFileSync(OUT, 'utf8') : null;
-  if (old !== page) fs.writeFileSync(OUT, page);
+  fs.mkdirSync(path.dirname(out), { recursive: true });
+  const old = fs.existsSync(out) ? fs.readFileSync(out, 'utf8') : null;
+  if (old !== page) fs.writeFileSync(out, page);
   return { changed: old !== page, keys: Object.keys(t).length };
 }
 

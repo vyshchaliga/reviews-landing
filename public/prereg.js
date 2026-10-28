@@ -66,6 +66,8 @@
   function fitH1() {
     var h = document.querySelector('.prereg h1');
     if (!h) return;
+    // data-fit="off" — кегль заголовка цілком віддано CSS (так живе світлий ленд /pre-reg-form-d)
+    if (h.getAttribute('data-fit') === 'off') { h.style.fontSize = ''; return; }
     for (var px = 24; px >= 14; px--) {
       h.style.fontSize = px + 'px';
       var lh = parseFloat(getComputedStyle(h).lineHeight) || px * 1.16;

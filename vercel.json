@@ -80,6 +80,24 @@
       ]
     },
     {
+      "source": "/pre-reg-form-d",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
+    },
+    {
+      "source": "/pre-reg-form-d/ua",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
+    },
+    {
       "source": "/pre-reg-form-consult",
       "headers": [
         {

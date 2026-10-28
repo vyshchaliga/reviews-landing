@@ -48,10 +48,10 @@
 
   /* Передзапис живе на кількох адресах: /pre-reg-form і /pre-reg-form-agent — російські,
      /pre-reg-form/ua і /pre-reg-form-agent/ua — українські, /pre-reg-form-consult — консалтинг
-     (поки тільки російський).
+     (поки тільки російський), /pre-reg-form-d — той самий офер у світлому дизайні.
      Мова прибита до адреси, тому ні ?lang, ні збережений вибір на неї не впливають. */
-  function isPrereg() { return /^\/pre-reg-form(?:-agent|-consult)?(?:\/ua)?\/?$/.test(location.pathname); }
-  function isPreregUa() { return /^\/pre-reg-form(?:-agent)?\/ua\/?$/.test(location.pathname); }
+  function isPrereg() { return /^\/pre-reg-form(?:-agent|-consult|-d)?(?:\/ua)?\/?$/.test(location.pathname); }
+  function isPreregUa() { return /^\/pre-reg-form(?:-agent|-d)?\/ua\/?$/.test(location.pathname); }
 
   /* ---------- Мова ---------- */
   function pickLang() {
