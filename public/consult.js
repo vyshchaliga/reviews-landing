@@ -5,15 +5,22 @@
 (function () {
   'use strict';
 
-  /* Дедлайн — завтра за Варшавою. */
+  /* Дедлайн — завтра за Варшавою. Дата стоїть у двох місцях: у картці бонуса
+     і на екрані телефона в кадрі, тому заповнюємо всі [data-deadline] одразу. */
   function deadline() {
-    var el = document.getElementById('deadline');
-    if (!el) return;
-    try {
-      var d = new Date(Date.now() + 86400000);
-      el.textContent = new Intl.DateTimeFormat('ru-RU', { day: 'numeric', month: 'long', timeZone: 'Europe/Warsaw' }).format(d);
-    } catch (e) {
-      el.textContent = 'завтра';
+    var d = new Date(Date.now() + 86400000);
+    put('[data-deadline]', fmt({ day: 'numeric', month: 'long' }, d, 'завтра'));
+    // на екрані телефона місця на «29 октября» немає, тому там коротка дата
+    put('[data-deadline-short]', fmt({ day: '2-digit', month: '2-digit' }, d, 'завтра'));
+
+    function fmt(opts, date, fallback) {
+      try {
+        opts.timeZone = 'Europe/Warsaw';
+        return new Intl.DateTimeFormat('ru-RU', opts).format(date);
+      } catch (e) { return fallback; }
+    }
+    function put(sel, txt) {
+      Array.prototype.forEach.call(document.querySelectorAll(sel), function (el) { el.textContent = txt; });
     }
   }
 

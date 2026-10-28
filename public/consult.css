@@ -63,14 +63,22 @@
   font-size:12px;line-height:1.35;font-weight:500;letter-spacing:0;text-transform:none}
 .consult h1{margin:0;font-size:26px;line-height:1.24;letter-spacing:-0.015em;color:var(--ink-strong);font-weight:700}
 
-/* ===== Фото: кадр не ріжемо, за ним — фірмове червоне коло ПУМБ ===== */
-.consult .hero-pic{position:relative;margin:22px 0 0;background:none;border-radius:0;overflow:visible}
-.consult .hero-pic::before{content:"";position:absolute;z-index:0;right:-7%;top:-5%;
-  width:46%;aspect-ratio:1;border-radius:50%;background:var(--red)}
-.consult .hero-pic::after{content:"";position:absolute;z-index:0;left:-6%;bottom:6%;
-  width:26%;aspect-ratio:1;border-radius:50%;background:var(--tint)}
-.consult .hero-pic img{position:relative;z-index:1;display:block;width:100%;height:auto;
-  border-radius:var(--r-card)}
+/* ===== Фото: червоне коло ПУМБ уже всередині кадру, тому під картинкою нічого не малюємо ===== */
+.consult .hero-pic{position:relative;margin:14px 0 0;background:none;border-radius:0;overflow:visible;
+  container-type:inline-size}
+.consult .hero-pic::before,.consult .hero-pic::after{display:none}
+.consult .hero-pic img{position:relative;z-index:1;display:block;width:100%;height:auto;border-radius:0}
+
+/* Дата на екрані телефона. Біла підкладка затуляє напис, що вмальований у кадр,
+   нахил повторює нахил телефона, кегль рахується від ширини самої картинки (cqw),
+   щоб напис тримався на екрані на будь-якій ширині. */
+.consult .phone-note{position:absolute;z-index:2;left:65.8%;top:30.4%;width:18.9%;height:8.1%;
+  margin:0;padding:0;display:flex;align-items:center;justify-content:center;background:#FFFFFF}
+.consult .phone-note-in{display:flex;flex-direction:column;align-items:center;
+  transform:rotate(-7deg);color:#111111;text-align:center;line-height:1.1;text-transform:uppercase;
+  font-family:"Manrope",system-ui,sans-serif;white-space:nowrap}
+.consult .phone-note-s{font-size:1.9cqw;font-weight:700;letter-spacing:0.01em}
+.consult .phone-note-d{font-size:3.4cqw;font-weight:800;letter-spacing:-0.01em}
 
 /* ===== Бонус =====
    Структура мокапа ноутбука живе в prereg.css, який сюди не підключений,
