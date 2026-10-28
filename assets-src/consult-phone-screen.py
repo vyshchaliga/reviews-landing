@@ -9,6 +9,7 @@
 # Потрібні Pillow і numpy. Якщо міняється скрін застосунку, досить покласти новий
 # consult-phone-screen.png і запустити знову.
 import os
+from collections import deque
 
 import numpy as np
 from PIL import Image, ImageDraw, ImageFilter
@@ -140,23 +141,49 @@ for (dx, dy), (sx, sy) in zip(quad, [(0, 0), (mw, 0), (mw, mh), (0, mh)]):
 coeffs = np.linalg.solve(np.array(A, float), np.array(B, float))
 warped = mock.transform(hero.size, Image.PERSPECTIVE, coeffs, Image.BICUBIC)
 
-# Малюємо тільки там, де екран справді видно: кути в телефона заокруглені, тому
-# форму беремо в координатах макета і проводимо через те саме перетворення —
-# так вона лягає в кути рівно, а не зрізає рамку.
-RADIUS = 0.085                 # радіус заокруглення, частка ширини екрана
-shape = Image.new("L", (mw * 2, mh * 2), 0)
-ImageDraw.Draw(shape).rounded_rectangle([0, 0, mw * 2 - 1, mh * 2 - 1],
-                                        radius=int(mw * 2 * RADIUS), fill=255)
-big = np.array(coeffs, float)
-big[0:3] *= 2; big[3:6] *= 2   # перетворення в подвоєний масштаб макета
-inside = np.asarray(shape.transform(hero.size, Image.PERSPECTIVE, big, Image.BILINEAR)) > 127
+# Малюємо рівно по тому екрану, що видно на фото, а не по розрахованому
+# чотирикутнику: чотирикутник потрібен тільки для перспективи, а межу дає сам
+# кадр. Так рамка телефона лишається цілою, заокруглення кутів — справжні,
+# а пальці, що лежать на екрані, самі себе виключають.
+white = (r > 228) & (g > 228) & (b > 228)
+# заливка могла б просочитись крізь світлу щілину в рамці — тримаємо її в межах граней
+yy, xx = np.mgrid[0:H, 0:W]
+white &= (xx > mL * yy + cL - 2) & (xx < mR * yy + cR + 2)
+white &= (yy > mT * xx + cT - 2) & (yy < mB * xx + cB + 2)
+screen = np.zeros_like(white)             # біле поле екрана, залите з середини
+seed = deque([(500, 950)])                # точка всередині екрана
+screen[500, 950] = True
+while seed:
+    y, x = seed.popleft()
+    for dy, dx in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+        ny, nx = y + dy, x + dx
+        if 0 <= ny < H and 0 <= nx < W and white[ny, nx] and not screen[ny, nx]:
+            screen[ny, nx] = True
+            seed.append((ny, nx))
+x0, x1 = int(min(c[0] for c in quad)) - 2, int(max(c[0] for c in quad)) + 3
+y0, y1 = int(min(c[1] for c in quad)) - 2, int(max(c[1] for c in quad)) + 3
+box = np.zeros_like(screen)
+box[y0:y1, x0:x1] = True
+# Старі картка й напис — це дірки всередині білого поля. Заливаємо «не-екран»
+# від рамки прямокутника: до чого вона не дістала, те й є дірки.
+out_fill = np.zeros_like(screen)
+stack = [(y, x) for y in (y0, y1 - 1) for x in range(x0, x1)]
+stack += [(y, x) for x in (x0, x1 - 1) for y in range(y0, y1)]
+stack = [p for p in stack if not screen[p]]
+for p in stack:
+    out_fill[p] = True
+stack = deque(stack)
+while stack:
+    y, x = stack.popleft()
+    for dy, dx in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+        ny, nx = y + dy, x + dx
+        if y0 <= ny < y1 and x0 <= nx < x1 and not screen[ny, nx] and not out_fill[ny, nx]:
+            out_fill[ny, nx] = True
+            stack.append((ny, nx))
+screen |= box & ~out_fill                 # дірки всередині екрана — теж екран
 
-# Пальці лишаються зверху: шкіра — червоний більший за зелений, зелений за синій.
-skin = (r > 110) & (r > g + 8) & (g > b + 4)
-m = Image.fromarray(((inside & ~skin) * 255).astype(np.uint8), "L")
-# дрібні дірки від підсвічених країв старого напису закриваємо, пальці лишаються
-m = m.filter(ImageFilter.MaxFilter(11)).filter(ImageFilter.MinFilter(11))
-m = m.filter(ImageFilter.GaussianBlur(0.6))
+m = Image.fromarray((screen * 255).astype(np.uint8), "L")
+m = m.filter(ImageFilter.GaussianBlur(0.5))   # не розширюємо: рамка тут тонка
 
 out = hero.copy()
 out.paste(warped, (0, 0), m)
