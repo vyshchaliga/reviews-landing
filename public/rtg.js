@@ -231,9 +231,8 @@
       dohod: refs.dohod.input.value.trim()
     };
     if (NICHE) {
-      // ніша їде і своїм ключем, і в колонку rol — щоб її було видно в таблиці вже зараз
+      // у таблиці для ніші є своя колонка nisha, тому rol лишається порожнім
       data.nisha = refs.nisha.input.value.trim();
-      data.rol = data.nisha;
     } else {
       GROUPS.forEach(function (g) {
         data[g.key] = '';
