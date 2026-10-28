@@ -49,7 +49,7 @@
   /* Передзапис живе на трьох адресах: /pre-reg-form — російська, /pre-reg-form/ua —
      українська, /pre-reg-form-agent — агентства (поки тільки російська).
      Мова прибита до адреси, тому ні ?lang, ні збережений вибір на неї не впливають. */
-  function isPrereg() { return /^\/pre-reg-form(?:\/ua|-agent)?\/?$/.test(location.pathname); }
+  function isPrereg() { return /^\/pre-reg-form(?:\/ua|-agent|-consult)?\/?$/.test(location.pathname); }
   function isPreregUa() { return /^\/pre-reg-form\/ua\/?$/.test(location.pathname); }
 
   /* ---------- Мова ---------- */
