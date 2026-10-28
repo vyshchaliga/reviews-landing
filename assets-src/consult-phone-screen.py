@@ -18,8 +18,47 @@ HERO = os.path.join(ROOT, "assets-src", "consult-hero-original.webp")
 MOCK = os.path.join(ROOT, "assets-src", "consult-phone-screen.png")
 OUT = os.path.join(ROOT, "public", "assets", "img", "consult-hero.webp")
 
-# де в макеті скріна закінчується корпус телефона і починається сам екран
-MOCK_SCREEN = (102, 100, 468, 926)
+
+def prepare_mock(path, aspect):
+    """Скрін застосунку → прямокутник під пропорції екрана телефона.
+
+    Макет лежить на білому тлі й має заокруглені кути. Спершу обрізаємо його по
+    самому екрану, потім у кожному рядку розтягуємо крайній піксель до країв —
+    так зникають білі кутики. Наприкінці добиваємо ширину до потрібних пропорцій
+    тим самим розтягуванням країв, щоб нічого не стискати й не різати.
+    """
+    im = Image.open(path).convert("RGB")
+    a = np.asarray(im).astype(np.int16)
+    panel = a.sum(2) < 750
+    ys, xs = np.nonzero(panel)
+    x0, x1, y0, y1 = xs.min(), xs.max(), ys.min(), ys.max()
+    crop = a[y0:y1 + 1, x0:x1 + 1].copy()
+    rows = panel[y0:y1 + 1, x0:x1 + 1]
+    for i, row in enumerate(rows):
+        seg = np.nonzero(row)[0]
+        if not len(seg):
+            continue
+        crop[i, :seg[0]] = crop[i, seg[0]]
+        crop[i, seg[-1] + 1:] = crop[i, seg[-1]]
+    h, w = crop.shape[:2]
+    need = int(round(h * aspect))
+    if need > w:
+        pad = (need - w) // 2
+        crop = np.concatenate([
+            np.repeat(crop[:, :1], pad, axis=1),
+            crop,
+            np.repeat(crop[:, -1:], need - w - pad, axis=1),
+        ], axis=1)
+    elif need < w:                      # екран телефона вужчий — доточуємо зверху й знизу
+        need_h = int(round(w / aspect))
+        pad = (need_h - h) // 2
+        crop = np.concatenate([
+            np.repeat(crop[:1], pad, axis=0),
+            crop,
+            np.repeat(crop[-1:], need_h - h - pad, axis=0),
+        ], axis=0)
+    return Image.fromarray(crop.astype(np.uint8), "RGB")
+
 
 hero = Image.open(HERO).convert("RGB")
 a = np.asarray(hero).astype(np.int16)
@@ -87,8 +126,11 @@ mid = sum(quad) / 4
 quad = [c + (c - mid) * 0.004 for c in quad]
 print("кути екрана:", [tuple(c.round().astype(int)) for c in quad])
 
-mock = Image.open(MOCK).convert("RGB").crop(MOCK_SCREEN)
+side = lambda p, q: float(np.hypot(*(p - q)))
+aspect = ((side(tl, tr) + side(bl, br)) / 2) / ((side(tl, bl) + side(tr, br)) / 2)
+mock = prepare_mock(MOCK, aspect)
 mw, mh = mock.size
+print("пропорції екрана:", round(aspect, 4), "макет:", mock.size)
 
 # коефіцієнти PIL перетворюють координату виходу в координату входу, тому пари йдуть dst -> src
 A, B = [], []
@@ -98,11 +140,18 @@ for (dx, dy), (sx, sy) in zip(quad, [(0, 0), (mw, 0), (mw, mh), (0, mh)]):
 coeffs = np.linalg.solve(np.array(A, float), np.array(B, float))
 warped = mock.transform(hero.size, Image.PERSPECTIVE, coeffs, Image.BICUBIC)
 
-# Малюємо тільки там, де екран справді видно: чотирикутник мінус пальці.
-# Шкіра — червоний більший за зелений, зелений за синій; екран під це не підпадає.
-shape = Image.new("L", (W * 2, H * 2), 0)
-ImageDraw.Draw(shape).polygon([tuple(c * 2) for c in quad], fill=255)
-inside = np.asarray(shape.resize((W, H), Image.BILINEAR)) > 127
+# Малюємо тільки там, де екран справді видно: кути в телефона заокруглені, тому
+# форму беремо в координатах макета і проводимо через те саме перетворення —
+# так вона лягає в кути рівно, а не зрізає рамку.
+RADIUS = 0.085                 # радіус заокруглення, частка ширини екрана
+shape = Image.new("L", (mw * 2, mh * 2), 0)
+ImageDraw.Draw(shape).rounded_rectangle([0, 0, mw * 2 - 1, mh * 2 - 1],
+                                        radius=int(mw * 2 * RADIUS), fill=255)
+big = np.array(coeffs, float)
+big[0:3] *= 2; big[3:6] *= 2   # перетворення в подвоєний масштаб макета
+inside = np.asarray(shape.transform(hero.size, Image.PERSPECTIVE, big, Image.BILINEAR)) > 127
+
+# Пальці лишаються зверху: шкіра — червоний більший за зелений, зелений за синій.
 skin = (r > 110) & (r > g + 8) & (g > b + 4)
 m = Image.fromarray(((inside & ~skin) * 255).astype(np.uint8), "L")
 # дрібні дірки від підсвічених країв старого напису закриваємо, пальці лишаються
