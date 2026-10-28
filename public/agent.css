@@ -112,7 +112,7 @@
 
 /* ===== Стіна відгуків ===== */
 .agent .wall-wrap{padding:0 18px 36px}
-.agent .wall-h{margin:0 auto 18px;max-width:520px;font-size:26px;line-height:1.42;color:var(--ink);text-align:left}
+.agent .wall-h{margin:0 auto 18px;max-width:520px;font-size:26px;line-height:1.42;color:var(--ink);text-align:center}
 .agent .shot{border-radius:var(--r-field);background:var(--surface)}
 .agent .reel{border-radius:var(--r-field);background:#E4E4E4}
 .agent .reel video{background:#E4E4E4}
