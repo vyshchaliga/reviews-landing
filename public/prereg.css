@@ -6,7 +6,7 @@
 .prereg .hero-in{max-width:520px;margin:0 auto;display:flex;flex-direction:column}
 .prereg .rule{display:none}
 /* Назва програми ліворуч, перемикач мови праворуч — в одному рядку */
-.prereg .topbar{justify-content:space-between;margin-bottom:24px}
+.prereg .topbar{justify-content:space-between;margin-bottom:14px}
 .prereg .brand{font-size:15px;line-height:1;letter-spacing:0.01em;text-transform:uppercase;color:#FFE9C9}
 
 /* ===== Шапка офера: усе по центру, фото потоку окремою смугою ===== */
@@ -27,16 +27,23 @@
     11px 1.5px,1.5px 11px,11px 1.5px,1.5px 11px;
   background-position:left top,left top,right top,right top,
     left bottom,left bottom,right bottom,right bottom}
+.prereg .qual{margin-bottom:12px}
 
-.prereg h1{margin:0;font-size:clamp(20px,6vw,25px);line-height:1.2;letter-spacing:-0.005em;text-wrap:balance}
+/* Три рядки заголовка задані розміткою, а не переносом тексту: кожен span — свій рядок.
+   Кегль підбирає prereg.js так, щоб жоден з рядків не поїхав у два. */
+.prereg h1{margin:0;font-size:22px;line-height:1.16;letter-spacing:-0.005em}
+.prereg h1 .h1-l{display:block}
+.prereg h1 .h1-big{font-size:1.34em;line-height:1.04}
 
 /* Фото потоку на всю ширину екрана. Не обрізаємо: згасання країв запечене в самому
    файлі, тож height:auto — інакше object-fit з'їдає саме ту зону, що має згасати. */
-.hero-pic{margin:14px -18px 0}
+.hero-pic{margin:2px -18px 0}
 .hero-pic img{display:block;width:100%;height:auto}
 
-/* ===== Бонус: рамка, без металевої підкладки ===== */
-.offer{margin-top:22px}
+/* ===== Бонус: рамка, без металевої підкладки =====
+   Від'ємний відступ заводить бонус у нижню зону згасання фото: там альфа вже
+   майже нульова, тож нічого не перекривається, а перший екран коротшає. */
+.offer{margin-top:-40px;position:relative}
 /* Кнопка під бонусом веде до анкети */
 .offer-go{display:flex;align-items:center;justify-content:center;width:100%;min-height:56px;
   margin-top:14px;padding:0 18px;font-size:15px;font-weight:700;line-height:1.2;
