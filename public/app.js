@@ -410,6 +410,8 @@
      з ДРУГОГО (перший під заголовком не повторюється, перший екран більше не з'являється).
      Нічого не телепортуємо і не скролимо кодом, тому швидкий інерційний скрол не переривається. */
   function initLoop() {
+    // на передзаписі стрічка показується один раз і закінчується
+    if (/^\/pre-reg-form\/?$/.test(location.pathname)) return;
     if (!window.matchMedia || state.rows.length < 2) return;
     var mq = window.matchMedia('(max-width: 520px)');
     var wall = document.getElementById('wall');

@@ -25,7 +25,6 @@
       income: 'Ваш середній дохід на місяць?', role: 'Яка ваша роль', multi: 'можна обрати кілька',
       send: 'Відправити анкету', sending: 'Відправляємо…',
       need: 'Заповніть, будь ласка, усі поля', fail: 'Не вдалося відправити анкету. Спробуйте ще раз за хвилину.',
-      okTitle: 'Ваша анкета прийнята', okText: 'Запрошуємо в канал передзапису', okBtn: 'У канал передзапису',
       close: 'Закрити'
     },
     ru: {
@@ -35,12 +34,11 @@
       income: 'Ваш средний доход в месяц?', role: 'Какая ваша роль', multi: 'можно выбрать несколько',
       send: 'Отправить анкету', sending: 'Отправляем…',
       need: 'Заполните, пожалуйста, все поля', fail: 'Не удалось отправить анкету. Попробуйте ещё раз через минуту.',
-      okTitle: 'Ваша анкета принята', okText: 'Приглашаем в канал предзаписи', okBtn: 'В канал предзаписи',
       close: 'Закрыть'
     }
   };
 
-  var ov, card, form, okView, formView, lastFocus, done = false, busy = false;
+  var ov, card, form, formView, lastFocus, done = false, busy = false;
   var refs = {};
 
   function lang() { return document.documentElement.lang === 'ru' ? 'ru' : 'ua'; }
@@ -165,13 +163,6 @@
     card.appendChild(formView);
 
     // Екран успіху
-    okView = el('div', 'rtg-ok'); okView.hidden = true;
-    var tick = el('div', 'rtg-tick'); tick.appendChild(svgEl('0 0 36 36', 'M7 19l8 8 14-16'));
-    var oh = el('h2', 'rtg-h d'); refs.okTitle = oh;
-    var op = el('p'); refs.okText = op;
-    var ob = el('a', 'btn'); ob.href = CHANNEL_URL; refs.okBtn = ob;
-    okView.appendChild(tick); okView.appendChild(oh); okView.appendChild(op); okView.appendChild(ob);
-    card.appendChild(okView);
 
     ov.appendChild(card);
     ov.addEventListener('mousedown', function (e) { if (e.target === ov) close(); });
@@ -194,7 +185,6 @@
     });
     refs.go.textContent = busy ? t.sending : t.send;
     refs.x.setAttribute('aria-label', t.close);
-    refs.okTitle.textContent = t.okTitle; refs.okText.textContent = t.okText; refs.okBtn.textContent = t.okBtn;
     if (refs.msg.getAttribute('data-k')) refs.msg.textContent = t[refs.msg.getAttribute('data-k')];
   }
 
@@ -213,7 +203,7 @@
     if (!s) return;
     if (!ov) build();
     texts();
-    formView.hidden = done; okView.hidden = !done;
+    formView.hidden = done;
     ['name', 'tg', 'instagram', 'dohod'].forEach(function (k) { refs[k].sync(); });
     s.appendChild(card);
   }
@@ -222,7 +212,7 @@
     if (!ov) build();
     texts();
     lastFocus = document.activeElement;
-    formView.hidden = done; okView.hidden = !done;
+    formView.hidden = done;
     ['name', 'tg', 'instagram', 'dohod'].forEach(function (k) { refs[k].sync(); });
     ov.appendChild(card);
     document.documentElement.classList.add('rtg-lock');
@@ -309,75 +299,11 @@
     });
   }
 
+  /* Анкету прийнято — одразу ведемо в канал. Проміжного екрана з кнопкою
+     і конфеті більше немає: людина має потрапити в канал без зайвого кроку. */
   function finish() {
     done = true;
-    texts();
-    formView.hidden = true; okView.hidden = false;
-    card.scrollTop = 0; card.focus();
-    // на /pre-reg-form тригер із бонусами більше не потрібен — анкету вже прийнято
-    var hero = document.querySelector('.hero.prereg');
-    if (hero) hero.classList.add('done');
-    confetti();
-  }
-
-  /* ---------- Конфеті: чорне, золоте, біле — з лівого й правого боків, знизу і зверху ---------- */
-  function confetti() {
-    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    var cv = el('canvas', 'rtg-conf');
-    var dpr = Math.min(window.devicePixelRatio || 1, 2);
-    var W = window.innerWidth, H = window.innerHeight;
-    cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
-    document.body.appendChild(cv);
-    var ctx = cv.getContext('2d');
-    if (!ctx) { cv.remove(); return; }
-    ctx.scale(dpr, dpr);
-
-    var COLORS = ['#0B0B0B', '#0B0B0B', '#E3B877', '#C9954F', '#F6D9A0', '#FFFFFF', '#FFFFFF'];
-    var parts = [];
-    var small = W < 600;
-    function burst(x, y, a0, a1, n, speed) {
-      for (var i = 0; i < n; i++) {
-        var a = a0 + Math.random() * (a1 - a0), v = speed * (0.55 + Math.random() * 0.6);
-        parts.push({
-          x: x, y: y, vx: Math.cos(a) * v, vy: Math.sin(a) * v,
-          w: 6 + Math.random() * 7, h: 9 + Math.random() * 9, r: Math.random() * 6.28, vr: (Math.random() - 0.5) * 0.4,
-          c: COLORS[(Math.random() * COLORS.length) | 0], t: 0, life: 150 + Math.random() * 70, ph: Math.random() * 6.28
-        });
-      }
-    }
-    var PI = Math.PI, sp = small ? 17 : 24, n = small ? 46 : 70;
-    burst(-10, H * 0.72, -PI * 0.42, -PI * 0.14, n, sp);        // зліва вгору-вправо
-    burst(W + 10, H * 0.72, -PI * 0.86, -PI * 0.58, n, sp);     // справа вгору-вліво
-    burst(W * 0.5, H + 10, -PI * 0.65, -PI * 0.35, n, sp * 1.15); // знизу по центру
-    setTimeout(function () {                                    // друга хвиля + «дощ» зверху
-      burst(-10, H * 0.55, -PI * 0.38, -PI * 0.1, n * 0.7, sp);
-      burst(W + 10, H * 0.55, -PI * 0.9, -PI * 0.62, n * 0.7, sp);
-      for (var i = 0; i < (small ? 30 : 50); i++) burst(Math.random() * W, -20, PI * 0.35, PI * 0.65, 1, 3 + Math.random() * 3);
-    }, 380);
-
-    var last = performance.now();
-    function frame(now) {
-      var dt = Math.min((now - last) / 16.67, 2.5); last = now;
-      ctx.clearRect(0, 0, W, H);
-      var alive = 0;
-      for (var i = 0; i < parts.length; i++) {
-        var p = parts[i];
-        p.t += dt; if (p.t > p.life) continue;
-        alive++;
-        p.vx *= Math.pow(0.975, dt); p.vy = p.vy * Math.pow(0.975, dt) + 0.42 * dt;
-        p.x += p.vx * dt + Math.sin(p.t * 0.09 + p.ph) * 0.6; p.y += p.vy * dt; p.r += p.vr * dt;
-        var fade = p.t > p.life - 40 ? Math.max(0, (p.life - p.t) / 40) : 1;
-        ctx.save();
-        ctx.globalAlpha = fade;
-        ctx.translate(p.x, p.y); ctx.rotate(p.r);
-        ctx.scale(1, Math.cos(p.t * 0.17 + p.ph));              // «переворот» аркуша
-        ctx.fillStyle = p.c; ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
-        if (p.c === '#0B0B0B') { ctx.strokeStyle = 'rgba(255,235,200,0.45)'; ctx.lineWidth = 1; ctx.strokeRect(-p.w / 2, -p.h / 2, p.w, p.h); }
-        ctx.restore();
-      }
-      if (alive) requestAnimationFrame(frame); else cv.remove();
-    }
-    requestAnimationFrame(frame);
+    location.href = CHANNEL_URL;
   }
 
   /* ---------- Підключення ---------- */

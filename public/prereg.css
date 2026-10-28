@@ -85,6 +85,3 @@
 /* ===== Заголовок стіни відгуків ===== */
 .wall-h{margin:0 auto 18px;max-width:520px;font-size:clamp(24px,7vw,32px);line-height:1.1;
   color:#fff;text-align:center}
-
-/* Анкету прийнято — бонус більше не потрібен */
-.prereg.done .bonus{display:none}
