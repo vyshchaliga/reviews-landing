@@ -20,44 +20,35 @@ MOCK = os.path.join(ROOT, "assets-src", "consult-phone-screen.png")
 OUT = os.path.join(ROOT, "public", "assets", "img", "consult-hero.webp")
 
 
-def prepare_mock(path, aspect):
-    """Скрін застосунку → прямокутник під пропорції екрана телефона.
+def prepare_mock(path):
+    """Скрін застосунку → чистий прямокутник самого екрана.
 
-    Макет лежить на білому тлі й має заокруглені кути. Спершу обрізаємо його по
-    самому екрану, потім у кожному рядку розтягуємо крайній піксель до країв —
-    так зникають білі кутики. Наприкінці добиваємо ширину до потрібних пропорцій
-    тим самим розтягуванням країв, щоб нічого не стискати й не різати.
+    Скрін може приходити з білими полями по краях і чорною обводкою з
+    заокругленими кутами. Беремо тільки справжній вміст (не майже біле і не
+    майже чорне), обрізаємо по ньому, а потім у кожному рядку й стовпці
+    розтягуємо крайній піксель вмісту до краю — так зникають і поля, і кутики.
+    Пропорції не підганяємо: скрін дозволено трохи розтягнути під екран.
     """
-    im = Image.open(path).convert("RGB")
-    a = np.asarray(im).astype(np.int16)
-    panel = a.sum(2) < 750
-    ys, xs = np.nonzero(panel)
-    x0, x1, y0, y1 = xs.min(), xs.max(), ys.min(), ys.max()
+    a = np.asarray(Image.open(path).convert("RGB")).astype(np.int16)
+    s = a.sum(2)
+    content = (s > 60) & (s < 735)
+    ys, xs = np.nonzero(content)
+    y0, y1, x0, x1 = ys.min(), ys.max(), xs.min(), xs.max()
     crop = a[y0:y1 + 1, x0:x1 + 1].copy()
-    rows = panel[y0:y1 + 1, x0:x1 + 1]
-    for i, row in enumerate(rows):
-        seg = np.nonzero(row)[0]
+    keep = content[y0:y1 + 1, x0:x1 + 1]
+    for i in range(crop.shape[0]):                  # поля зліва й справа
+        seg = np.nonzero(keep[i])[0]
         if not len(seg):
             continue
         crop[i, :seg[0]] = crop[i, seg[0]]
         crop[i, seg[-1] + 1:] = crop[i, seg[-1]]
-    h, w = crop.shape[:2]
-    need = int(round(h * aspect))
-    if need > w:
-        pad = (need - w) // 2
-        crop = np.concatenate([
-            np.repeat(crop[:, :1], pad, axis=1),
-            crop,
-            np.repeat(crop[:, -1:], need - w - pad, axis=1),
-        ], axis=1)
-    elif need < w:                      # екран телефона вужчий — доточуємо зверху й знизу
-        need_h = int(round(w / aspect))
-        pad = (need_h - h) // 2
-        crop = np.concatenate([
-            np.repeat(crop[:1], pad, axis=0),
-            crop,
-            np.repeat(crop[-1:], need_h - h - pad, axis=0),
-        ], axis=0)
+        keep[i] = True
+    for j in range(crop.shape[1]):                  # рядки, де вмісту не було зовсім
+        seg = np.nonzero(keep[:, j])[0]
+        if not len(seg):
+            continue
+        crop[:seg[0], j] = crop[seg[0], j]
+        crop[seg[-1] + 1:, j] = crop[seg[-1], j]
     return Image.fromarray(crop.astype(np.uint8), "RGB")
 
 
@@ -129,7 +120,7 @@ print("кути екрана:", [tuple(c.round().astype(int)) for c in quad])
 
 side = lambda p, q: float(np.hypot(*(p - q)))
 aspect = ((side(tl, tr) + side(bl, br)) / 2) / ((side(tl, bl) + side(tr, br)) / 2)
-mock = prepare_mock(MOCK, aspect)
+mock = prepare_mock(MOCK)
 mw, mh = mock.size
 print("пропорції екрана:", round(aspect, 4), "макет:", mock.size)
 
@@ -148,8 +139,8 @@ warped = mock.transform(hero.size, Image.PERSPECTIVE, coeffs, Image.BICUBIC)
 white = (r > 228) & (g > 228) & (b > 228)
 # заливка могла б просочитись крізь світлу щілину в рамці — тримаємо її в межах граней
 yy, xx = np.mgrid[0:H, 0:W]
-white &= (xx > mL * yy + cL - 2) & (xx < mR * yy + cR + 2)
-white &= (yy > mT * xx + cT - 2) & (yy < mB * xx + cB + 2)
+white &= (xx > mL * yy + cL - 8) & (xx < mR * yy + cR + 8)
+white &= (yy > mT * xx + cT - 8) & (yy < mB * xx + cB + 8)
 screen = np.zeros_like(white)             # біле поле екрана, залите з середини
 seed = deque([(500, 950)])                # точка всередині екрана
 screen[500, 950] = True
@@ -183,7 +174,12 @@ while stack:
 screen |= box & ~out_fill                 # дірки всередині екрана — теж екран
 
 m = Image.fromarray((screen * 255).astype(np.uint8), "L")
-m = m.filter(ImageFilter.GaussianBlur(0.5))   # не розширюємо: рамка тут тонка
+# По краю екрана йде смуга напівтонів, яка в білу заливку не потрапила: якщо її
+# не закрити, стара світла облямівка світиться зубцями поверх нового скріна.
+# Тому маску розширюємо на піксель і згладжуємо сходинки розмиттям з порогом.
+m = m.filter(ImageFilter.MaxFilter(3))
+m = m.filter(ImageFilter.GaussianBlur(1.2)).point(lambda v: 255 if v > 110 else 0)
+m = m.filter(ImageFilter.GaussianBlur(0.6))
 
 out = hero.copy()
 out.paste(warped, (0, 0), m)
