@@ -101,10 +101,14 @@ html.apple .prereg h1{
   font-size:clamp(30px,8.4vw,42px);line-height:1.08;letter-spacing:-0.025em;
 }
 
-/* Фото потоку на всю ширину колонки. Не обрізаємо: згасання країв запечене в альфу
-   самого файла, тож height:auto — інакше object-fit з'їдає саме ту зону, що має згасати. */
-html.apple .hero-pic{margin:16px 0 0}
-html.apple .hero-pic img{display:block;width:100%;height:auto}
+/* Герой: Саша зліва, за спиною — крива зростання виручки від запуску до запуску.
+   Графік окремим шаром під фігурою, тому його початок природно ховається за Сашею,
+   а підписи сум стоять правіше, уже на чистому полі. Низ фото розчинений в альфу,
+   тож точка «0» у самому низу кадру читається крізь нього. */
+html.apple .hero-pic{position:relative;margin:10px 0 0;aspect-ratio:900/640}
+html.apple .hero-chart{position:absolute;inset:0;width:100%;height:100%}
+html.apple .hero-chart-n{font-family:var(--sf);font-weight:600;font-size:36px;letter-spacing:-0.02em}
+html.apple .hero-pic img{position:absolute;left:1%;bottom:0;width:44%;height:auto}
 
 /* ===== Бонус ===== */
 html.apple .offer{margin-top:12px;position:relative}

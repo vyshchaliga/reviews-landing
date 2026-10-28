@@ -35,9 +35,37 @@
       <h1 class="d" data-fit="off"><span data-p18n="h1a">Сделай свой запуск в 2027 – </span><span class="gold" data-p18n="h1b">рекордным</span><br><span class="gold" data-p18n="h1b2">и подготовься</span><span data-p18n="h1c"> к новым реалиям рынка</span></h1>
     </div>
 
-    <!-- Фото потоку: краї згашені в альфу в самому файлі, тому лягає просто на світле тло -->
+    <!-- Герой: Саша зліва, за ним крива зростання виручки від запуску до запуску.
+         Графік лежить шаром нижче фото, тому його початок ховається за фігурою,
+         а підписи сум стоять правіше — уже на чистому полі. -->
     <div class="hero-pic" aria-hidden="true">
-      <img src="assets/img/team-fade.webp" alt="" width="780" height="520" decoding="async" fetchpriority="high">
+      <svg class="hero-chart" viewBox="0 0 900 640" preserveAspectRatio="xMidYMax meet" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="chartLine" x1="0" y1="640" x2="900" y2="40" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#0071E3"/>
+            <stop offset="1" stop-color="#5E5CE6"/>
+          </linearGradient>
+          <linearGradient id="chartArea" x1="0" y1="60" x2="0" y2="640" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#0071E3" stop-opacity="0.15"/>
+            <stop offset="1" stop-color="#0071E3" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+        <path d="M0 612C6.7 608.7 21.7 592.7 40 592C58.3 591.3 85.0 614.7 110 608C135.0 601.3 164.2 557.5 190 552C215.8 546.5 239.2 580.3 265 575C290.8 569.7 310.8 540.0 345 520C379.2 500.0 436.7 461.7 470 455C503.3 448.3 523.3 491.7 545 480C566.7 468.3 582.5 413.3 600 385C617.5 356.7 631.7 317.8 650 310C668.3 302.2 690.8 351.3 710 338C729.2 324.7 748.0 263.0 765 230C782.0 197.0 795.8 160.0 812 140C828.2 120.0 847.3 123.7 862 110C876.7 96.3 893.7 66.7 900 58L900 640L0 640Z" fill="url(#chartArea)"/>
+        <path d="M0 612C6.7 608.7 21.7 592.7 40 592C58.3 591.3 85.0 614.7 110 608C135.0 601.3 164.2 557.5 190 552C215.8 546.5 239.2 580.3 265 575C290.8 569.7 310.8 540.0 345 520C379.2 500.0 436.7 461.7 470 455C503.3 448.3 523.3 491.7 545 480C566.7 468.3 582.5 413.3 600 385C617.5 356.7 631.7 317.8 650 310C668.3 302.2 690.8 351.3 710 338C729.2 324.7 748.0 263.0 765 230C782.0 197.0 795.8 160.0 812 140C828.2 120.0 847.3 123.7 862 110C876.7 96.3 893.7 66.7 900 58" fill="none" stroke="url(#chartLine)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+        <g fill="#FFFFFF" stroke="url(#chartLine)" stroke-width="5">
+          <circle cx="40" cy="592" r="9"/>
+          <circle cx="470" cy="455" r="9"/>
+          <circle cx="650" cy="310" r="9"/>
+          <circle cx="812" cy="140" r="12"/>
+        </g>
+        <g class="hero-chart-n" fill="#1D1D1F">
+          <text x="40" y="634" text-anchor="middle">0</text>
+          <text x="470" y="418" text-anchor="middle">$100K</text>
+          <text x="650" y="273" text-anchor="middle">$300K</text>
+          <text x="812" y="98" text-anchor="middle">$600K</text>
+        </g>
+      </svg>
+      <img src="assets/img/sasha-hero.webp" alt="" width="572" height="810" decoding="async" fetchpriority="high">
     </div>
 
     <section class="offer" aria-label="Бонус предзаписи">

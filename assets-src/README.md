@@ -11,6 +11,7 @@
 | `arrow-original.webp` | золота стрілка, надана Дмитром | була `public/assets/img/arrow.webp` (знята з лендінга 28.10) |
 | `consult-hero-original.webp` | згенерований кадр: Саша на червоному колі з телефоном, на екрані вмальований напис | основа для `public/assets/img/consult-hero.webp` |
 | `consult-phone-screen.png` | макет екрана застосунку з карткою «Вища Ліга 6.0» | вклеюється в екран телефона на тому ж кадрі |
+| `sasha-hero-original.jpg` | студійне фото Саші на білому | `public/assets/img/sasha-hero.webp` — вирізаний із фону, обрізаний по стегна, низ розчинений у прозорість |
 
 Кадр героя для `/pre-reg-form-consult` збирається скриптом
 `python assets-src/consult-phone-screen.py` (треба Pillow і numpy). Він сам
