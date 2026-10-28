@@ -10,6 +10,7 @@
   var DICT = {
     ua: {
       title: 'Що говорять учасники про Вищу Лігу',
+      desc: 'Відгуки учасників програми «Вища Ліга».',
       h1a: 'Що говорять', h1b: 'учасники', h1bg: 'про', h1c: 'Вищу Лігу',
       cta: 'Хочу у Вищу Лігу',
       s1n: '$8 000 000+', s1c: 'сумарно заробили наші учасники на своїх запусках за весь час існування Ліги',
@@ -21,6 +22,7 @@
     },
     ru: {
       title: 'Что говорят участники о Высшей Лиге',
+      desc: 'Отзывы участников программы «Высшая Лига».',
       h1a: 'Что говорят', h1b: 'участники', h1bg: 'о', h1c: 'Высшей Лиге',
       cta: 'Хочу в Высшую Лигу',
       s1n: '$8 000 000+', s1c: 'суммарно заработали наши участники на своих запусках за всё время существования Лиги',
@@ -54,7 +56,7 @@
       var saved = localStorage.getItem('vl_lang');
       if (saved === 'ua' || saved === 'ru') return saved;
     } catch (e) {}
-    if (/^\/pre-reg-form\/?$/.test(location.pathname)) return 'ua';   // передзапис відкривається українською
+    if (/^\/pre-reg-form\/?$/.test(location.pathname)) return 'ru';   // передзапис відкривається російською
     var langs = (navigator.languages && navigator.languages.length) ? navigator.languages : [navigator.language || 'uk'];
     var first = String(langs[0] || 'uk').toLowerCase();
     return first.indexOf('ru') === 0 ? 'ru' : 'ua';
@@ -70,6 +72,9 @@
     document.documentElement.lang = lang === 'ru' ? 'ru' : 'uk';
     try { document.dispatchEvent(new CustomEvent('vl:lang', { detail: lang })); } catch (e) { /* старі браузери */ }
     document.title = t.title;
+    // опис сторінки видно в прев'ю посилання, тому він теж іде за мовою
+    var md = document.querySelector('meta[name="description"]');
+    if (md && t.desc) md.setAttribute('content', t.desc);
     Array.prototype.forEach.call(document.querySelectorAll('[data-i18n]'), function (n) {
       var k = n.getAttribute('data-i18n');
       if (t[k] != null) n.textContent = t[k];
