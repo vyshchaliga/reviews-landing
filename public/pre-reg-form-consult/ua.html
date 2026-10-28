@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="uk" class="nonames consult">
+<head>
+<meta charset="utf-8">
+<base href="/">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Анкета передзапису — Вища Ліга 6.0 для експертів і послуг</title>
+<meta name="description" content="Анкета передзапису на шостий потік програми «Вища Ліга» для експертів, продюсерів і сервісних проєктів.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#FFFFFF">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="preload" href="assets/fonts/manrope-cyrillic-700-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/manrope-cyrillic-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="consult.css">
+</head>
+<body>
+
+<header class="hero prereg">
+  <div class="hero-in">
+    <div class="topbar">
+      <span class="brand d" data-c18n="brand">Вища Ліга 6.0</span>
+      <!-- Мова прибита до адреси: ця сторінка тільки українська, RU веде на /pre-reg-form-consult -->
+      <div class="langs" role="group" aria-label="Language">
+        <span class="lang on" aria-current="true">UA</span>
+        <span class="lang-sep">|</span>
+        <a class="lang" href="/pre-reg-form-consult" hreflang="ru">RU</a>
+      </div>
+    </div>
+
+    <div class="hero-main">
+      <p class="qual"><span data-c18n="qualA">Преміальна програма з масштабування</span><br><span data-c18n="qualB">продажів інфопродуктів і послуг</span></p>
+      <!-- Переноси стоять у розмітці: заголовок тримається в трьох рядках, кегль підганяє consult.js -->
+      <h1 class="d"><span data-c18n="h1a">Побудуй</span> <span class="mark" data-c18n="h1b">масштабовану систему</span><br><span data-c18n="h1c">залучення клієнтів на твої</span><br><span data-c18n="h1d">послуги через Instagram і запуски</span></h1>
+    </div>
+
+    <!-- Саша Горевич на червоному колі ПУМБ. Коло і напис на екрані телефона вмальовані в кадр,
+         тому зверху нічого не домальовуємо. -->
+    <div class="hero-pic">
+      <img src="assets/img/consult-hero.webp" alt="" width="1254" height="1254" decoding="async" fetchpriority="high">
+    </div>
+
+    <section class="offer" aria-label="Бонус передзапису">
+      <div class="bonus">
+        <div class="lap" aria-hidden="true">
+          <div class="lap-scr">
+            <video class="lap-v" muted loop playsinline preload="none" poster="assets/video/bonus.jpg">
+              <source src="assets/video/bonus.mp4" type="video/mp4">
+            </video>
+          </div>
+          <div class="lap-base"></div>
+        </div>
+        <div class="bonus-t">
+          <span class="bonus-h"><span data-c18n="bonusA">Заповни анкету до</span> <b data-deadline>—</b></span>
+          <span class="bonus-s" data-c18n="bonusB">і гарантовано забери бонус</span>
+          <span class="bonus-n" data-c18n="bonusN">«Система залучення клієнтів, яка приносить $20-50К на місяць у блозі з 700 переглядами сторіс»</span>
+        </div>
+      </div>
+
+      <a class="btn offer-go" href="#prereg-slot" data-c18n="offerCta">Дізнатися деталі програми</a>
+
+      <!-- Сюди rtg.js монтує анкету; кнопки вище й унизу лише прокручують до неї -->
+      <div class="form-slot" id="prereg-slot"></div>
+    </section>
+  </div>
+</header>
+
+<main class="wall-wrap">
+  <h2 class="wall-h d"><span data-c18n="wallA">Результати учасників</span> <span class="mark mark-cyan" data-c18n="wallB">Вища Ліга</span></h2>
+  <div class="wall" id="wall"></div>
+</main>
+
+<div class="cta-bar" id="cta" aria-hidden="true">
+  <div class="cta-bg"></div>
+  <div class="cta-in">
+    <a class="btn" id="cta-link" href="#prereg-slot" tabindex="-1" data-c18n="cta">Залишити анкету</a>
+  </div>
+</div>
+
+<script src="config.js"></script>
+<script src="app.js"></script>
+<script src="consult.js"></script>
+</body>
+</html>

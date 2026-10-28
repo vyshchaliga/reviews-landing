@@ -105,6 +105,15 @@
           "value": "noindex, nofollow"
         }
       ]
+    },
+    {
+      "source": "/pre-reg-form-consult/ua",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
     }
   ]
 }

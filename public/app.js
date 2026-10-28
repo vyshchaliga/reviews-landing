@@ -51,7 +51,7 @@
      (поки тільки російський), /pre-reg-form-d — той самий офер у світлому дизайні.
      Мова прибита до адреси, тому ні ?lang, ні збережений вибір на неї не впливають. */
   function isPrereg() { return /^\/pre-reg-form(?:-agent|-consult|-d)?(?:\/ua)?\/?$/.test(location.pathname); }
-  function isPreregUa() { return /^\/pre-reg-form(?:-agent|-d)?\/ua\/?$/.test(location.pathname); }
+  function isPreregUa() { return /^\/pre-reg-form(?:-agent|-consult|-d)?\/ua\/?$/.test(location.pathname); }
 
   /* ---------- Мова ---------- */
   function pickLang() {

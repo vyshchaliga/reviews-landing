@@ -8,10 +8,11 @@
   /* Дедлайн — завтра за Варшавою. Дата стоїть у двох місцях: у картці бонуса
      і на екрані телефона в кадрі, тому заповнюємо всі [data-deadline] одразу. */
   function deadline() {
-    var txt = 'завтра';
+    var txt = 'завтра';                       // однаково обома мовами
+    var ua = document.documentElement.lang !== 'ru';
     try {
       var d = new Date(Date.now() + 86400000);
-      txt = new Intl.DateTimeFormat('ru-RU', { day: 'numeric', month: 'long', timeZone: 'Europe/Warsaw' }).format(d);
+      txt = new Intl.DateTimeFormat(ua ? 'uk-UA' : 'ru-RU', { day: 'numeric', month: 'long', timeZone: 'Europe/Warsaw' }).format(d);
     } catch (e) { /* лишається «завтра» */ }
     Array.prototype.forEach.call(document.querySelectorAll('[data-deadline]'), function (el) {
       el.textContent = txt;

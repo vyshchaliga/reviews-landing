@@ -20,17 +20,19 @@
 <header class="hero prereg">
   <div class="hero-in">
     <div class="topbar">
-      <span class="brand d">Высшая Лига 6.0</span>
-      <!-- Поки ленд тільки російський; перемикач UA|RU додамо, коли з'явиться українська версія -->
-      <div class="langs" aria-label="Language">
+      <span class="brand d" data-c18n="brand">Высшая Лига 6.0</span>
+      <!-- Мова прибита до адреси: ця сторінка тільки російська, UA веде на /pre-reg-form-consult/ua -->
+      <div class="langs" role="group" aria-label="Language">
+        <a class="lang" href="/pre-reg-form-consult/ua" hreflang="uk">UA</a>
+        <span class="lang-sep">|</span>
         <span class="lang on" aria-current="true">RU</span>
       </div>
     </div>
 
     <div class="hero-main">
-      <p class="qual">Премиальная программа по масштабированию<br>продаж инфопродуктов и услуг</p>
+      <p class="qual"><span data-c18n="qualA">Премиальная программа по масштабированию</span><br><span data-c18n="qualB">продаж инфопродуктов и услуг</span></p>
       <!-- Переноси стоять у розмітці: заголовок тримається в трьох рядках, кегль підганяє consult.js -->
-      <h1 class="d">Построй <span class="mark">масштабируемую систему</span><br>привлечения клиентов на твои<br>услуги через Instagram и запуски</h1>
+      <h1 class="d"><span data-c18n="h1a">Построй</span> <span class="mark" data-c18n="h1b">масштабируемую систему</span><br><span data-c18n="h1c">привлечения клиентов на твои</span><br><span data-c18n="h1d">услуги через Instagram и запуски</span></h1>
     </div>
 
     <!-- Саша Горевич на червоному колі ПУМБ. Коло і напис на екрані телефона вмальовані в кадр,
@@ -50,13 +52,13 @@
           <div class="lap-base"></div>
         </div>
         <div class="bonus-t">
-          <span class="bonus-h">Заполни анкету до <b data-deadline>—</b></span>
-          <span class="bonus-s">и гарантированно забери бонус</span>
-          <span class="bonus-n">«Система привлечения клиентов, которая приносит $20-50К в месяц в блоге с 700 просмотров сторис»</span>
+          <span class="bonus-h"><span data-c18n="bonusA">Заполни анкету до</span> <b data-deadline>—</b></span>
+          <span class="bonus-s" data-c18n="bonusB">и гарантированно забери бонус</span>
+          <span class="bonus-n" data-c18n="bonusN">«Система привлечения клиентов, которая приносит $20-50К в месяц в блоге с 700 просмотров сторис»</span>
         </div>
       </div>
 
-      <a class="btn offer-go" href="#prereg-slot">Узнать детали программы</a>
+      <a class="btn offer-go" href="#prereg-slot" data-c18n="offerCta">Узнать детали программы</a>
 
       <!-- Сюди rtg.js монтує анкету; кнопки вище й унизу лише прокручують до неї -->
       <div class="form-slot" id="prereg-slot"></div>
@@ -65,14 +67,14 @@
 </header>
 
 <main class="wall-wrap">
-  <h2 class="wall-h d">Результаты участников <span class="mark mark-cyan">Высшая Лига</span></h2>
+  <h2 class="wall-h d"><span data-c18n="wallA">Результаты участников</span> <span class="mark mark-cyan" data-c18n="wallB">Высшая Лига</span></h2>
   <div class="wall" id="wall"></div>
 </main>
 
 <div class="cta-bar" id="cta" aria-hidden="true">
   <div class="cta-bg"></div>
   <div class="cta-in">
-    <a class="btn" id="cta-link" href="#prereg-slot" tabindex="-1">Оставить анкету</a>
+    <a class="btn" id="cta-link" href="#prereg-slot" tabindex="-1" data-c18n="cta">Оставить анкету</a>
   </div>
 </div>
 

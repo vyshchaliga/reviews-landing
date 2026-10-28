@@ -9,6 +9,7 @@ import { imageSize } from './lib/imgsize.mjs';
 import { parseCSV } from './lib/csv.mjs';
 import { buildUaPage } from './build-ua-page.mjs';
 import { buildAgentUaPage } from './build-agent-ua-page.mjs';
+import { buildConsultUaPage } from './build-consult-ua-page.mjs';
 
 const args = parseArgs(process.argv.slice(2));
 const errors = [], warns = [];
@@ -38,6 +39,13 @@ try {
   if (ua.changed) console.log('public/pre-reg-form-agent/ua.html перезібрано.');
 } catch (e) {
   console.log('  ✖ не вдалося зібрати українську сторінку для агенцій: ' + e.message);
+  process.exit(1);
+}
+try {
+  const ua = buildConsultUaPage();
+  if (ua.changed) console.log('public/pre-reg-form-consult/ua.html перезібрано.');
+} catch (e) {
+  console.log('  ✖ не вдалося зібрати українську сторінку консалтингу: ' + e.message);
   process.exit(1);
 }
 const { head } = parseCSV(fs.readFileSync(CSV_PATH, 'utf8'));
