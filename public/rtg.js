@@ -41,10 +41,10 @@
   };
 
   // На агентському і консалтинговому лендах замість питання про роль стоїть вільне поле «Ваша ниша»
-  var NICHE = /^\/pre-reg-form-(?:agent|consult)\/?$/.test(location.pathname);
+  var NICHE = /^\/pre-reg-form-(?:agent|consult)(?:\/ua)?\/?$/.test(location.pathname);
   // Під яким типом анкета лягає в таблицю — по цьому полю потоки розділяються
-  var LEAD_TYPE = /^\/pre-reg-form-consult\/?$/.test(location.pathname) ? 'Предзапис консалт'
-    : /^\/pre-reg-form-agent\/?$/.test(location.pathname) ? 'Предзапис агенти'
+  var LEAD_TYPE = /^\/pre-reg-form-consult(?:\/ua)?\/?$/.test(location.pathname) ? 'Предзапис консалт'
+    : /^\/pre-reg-form-agent(?:\/ua)?\/?$/.test(location.pathname) ? 'Предзапис агенти'
     : 'Предзапис';
 
   var card, form, formView, done = false, busy = false;

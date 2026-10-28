@@ -71,6 +71,15 @@
       ]
     },
     {
+      "source": "/pre-reg-form-agent/ua",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
+    },
+    {
       "source": "/pre-reg-form-consult",
       "headers": [
         {

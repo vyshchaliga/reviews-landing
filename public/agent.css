@@ -46,8 +46,11 @@
 .agent .rule{display:none}
 .agent .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
 .agent .brand{font-size:15px;line-height:1;letter-spacing:-0.01em;color:var(--ink)}
-.agent .lang{color:var(--muted);font-family:"e-Ukraine",sans-serif;font-size:12px;font-weight:500}
+/* Перемикач мови стоїть у лівому верхньому куті, назва програми — праворуч (порядок у розмітці) */
+.agent .lang{color:var(--muted);font-family:"e-Ukraine",sans-serif;font-size:12px;font-weight:500;text-decoration:none}
+.agent .lang:hover{color:var(--ink)}
 .agent .lang.on{color:var(--ink)}
+.agent .lang-sep{color:var(--line);font-size:11px}
 
 .agent .hero-main{min-height:0;padding:0;text-align:center}
 .agent .qual{display:block;margin:0 0 18px;padding:12px 18px;border-radius:var(--r-pill);

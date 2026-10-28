@@ -1,6 +1,6 @@
-/* Сторінка /pre-reg-form-agent. Тексти тут статичні (ленд поки тільки російською),
-   тому словника немає — лишається дата дедлайну, відео в мокапі і прокрутка до анкети.
-   Те саме, що prereg.js робить для /pre-reg-form, тільки без перемикання мови. */
+/* Сторінки /pre-reg-form-agent і /pre-reg-form-agent/ua. Тексти в розмітці статичні —
+   українську сторінку збирає scripts/build-agent-ua-page.mjs, — тому словника тут немає.
+   Лишається дата дедлайну, відео в мокапі і прокрутка до анкети. */
 (function () {
   'use strict';
 
@@ -9,11 +9,12 @@
   function deadline() {
     var el = document.getElementById('deadline');
     if (!el) return;
+    var ua = document.documentElement.lang !== 'ru';
     try {
       var d = new Date(Date.now() + 86400000);
-      el.textContent = new Intl.DateTimeFormat('ru-RU', { day: 'numeric', month: 'long', timeZone: 'Europe/Warsaw' }).format(d);
+      el.textContent = new Intl.DateTimeFormat(ua ? 'uk-UA' : 'ru-RU', { day: 'numeric', month: 'long', timeZone: 'Europe/Warsaw' }).format(d);
     } catch (e) {
-      el.textContent = 'завтра';
+      el.textContent = 'завтра';   // однаково обома мовами
     }
   }
 

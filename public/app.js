@@ -46,11 +46,12 @@
     current: null      // картка, що зараз грає
   };
 
-  /* Передзапис живе на трьох адресах: /pre-reg-form — російська, /pre-reg-form/ua —
-     українська, /pre-reg-form-agent — агентства (поки тільки російська).
+  /* Передзапис живе на кількох адресах: /pre-reg-form і /pre-reg-form-agent — російські,
+     /pre-reg-form/ua і /pre-reg-form-agent/ua — українські, /pre-reg-form-consult — консалтинг
+     (поки тільки російський).
      Мова прибита до адреси, тому ні ?lang, ні збережений вибір на неї не впливають. */
-  function isPrereg() { return /^\/pre-reg-form(?:\/ua|-agent|-consult)?\/?$/.test(location.pathname); }
-  function isPreregUa() { return /^\/pre-reg-form\/ua\/?$/.test(location.pathname); }
+  function isPrereg() { return /^\/pre-reg-form(?:-agent|-consult)?(?:\/ua)?\/?$/.test(location.pathname); }
+  function isPreregUa() { return /^\/pre-reg-form(?:-agent)?\/ua\/?$/.test(location.pathname); }
 
   /* ---------- Мова ---------- */
   function pickLang() {
@@ -78,10 +79,13 @@
     // інакше вони перемальовуються в попередню мову
     document.documentElement.lang = lang === 'ru' ? 'ru' : 'uk';
     try { document.dispatchEvent(new CustomEvent('vl:lang', { detail: lang })); } catch (e) { /* старі браузери */ }
-    document.title = t.title;
-    // опис сторінки видно в прев'ю посилання, тому він теж іде за мовою
-    var md = document.querySelector('meta[name="description"]');
-    if (md && t.desc) md.setAttribute('content', t.desc);
+    // у передзапису свої заголовок і опис — вони вже написані потрібною мовою в розмітці
+    if (!isPrereg()) {
+      document.title = t.title;
+      // опис сторінки видно в прев'ю посилання, тому він теж іде за мовою
+      var md = document.querySelector('meta[name="description"]');
+      if (md && t.desc) md.setAttribute('content', t.desc);
+    }
     Array.prototype.forEach.call(document.querySelectorAll('[data-i18n]'), function (n) {
       var k = n.getAttribute('data-i18n');
       if (t[k] != null) n.textContent = t[k];
