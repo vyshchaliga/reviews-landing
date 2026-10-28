@@ -6,7 +6,7 @@
 .prereg .hero-in{max-width:520px;margin:0 auto;display:flex;flex-direction:column}
 .prereg .rule{display:none}
 /* Назва програми ліворуч, перемикач мови праворуч — в одному рядку */
-.prereg .topbar{justify-content:space-between;margin-bottom:14px}
+.prereg .topbar{justify-content:space-between;margin-bottom:24px}
 /* перемикач мови — посилання, а не кнопки: кожна мова має свою адресу */
 .prereg .lang{text-decoration:none}
 .prereg .brand{font-size:15px;line-height:1;letter-spacing:0.01em;text-transform:uppercase;color:#FFE9C9}
