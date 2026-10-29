@@ -572,8 +572,35 @@
   }
 
   /* ---------- Старт ---------- */
+  /* Текст у картці бонуса має лишатись щонайбільше в чотирьох рядках. Довжина рядка
+     залежить і від ширини екрана, і від мови, тому кегль не зашиваємо в CSS, а міряємо
+     на місці й зменшуємо всі три рядки разом, поки картка не вкладеться. */
+  function fitBonus() {
+    var box = document.querySelector('.bonus-t');
+    if (!box || !box.offsetHeight) return;
+    var parts = box.querySelectorAll('.bonus-h,.bonus-s,.bonus-n');
+    if (!parts.length) return;
+    var i, px;
+    for (i = 0; i < parts.length; i++) parts[i].style.fontSize = '';
+    var max = parseFloat(getComputedStyle(parts[0]).fontSize) || 13;
+    for (px = max; px >= 11; px -= 0.25) {
+      for (i = 0; i < parts.length; i++) parts[i].style.fontSize = px + 'px';
+      var lines = 0;
+      for (i = 0; i < parts.length; i++) {
+        var cs = getComputedStyle(parts[i]);
+        var lh = parseFloat(cs.lineHeight) || px * 1.4;
+        lines += Math.round(parts[i].getBoundingClientRect().height / lh);
+      }
+      if (lines <= 4) return;
+    }
+  }
+
   function init() {
     initStats();
+    fitBonus();
+    window.addEventListener('resize', fitBonus);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitBonus).catch(function () {});
+    setTimeout(fitBonus, 400);
     state.touch = !!(window.matchMedia && window.matchMedia('(hover: none) and (pointer: coarse)').matches);
     if (state.touch) document.documentElement.classList.add('touch');
     state.lang = pickLang();

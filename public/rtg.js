@@ -19,8 +19,8 @@
 
   var T = {
     ua: {
-      title1: 'Заповни анкету', title1a: 'Заповни', title1b: 'анкету',
-      title2: 'та дізнайся всі подробиці',
+      title1: 'ЗАПОВНИ АНКЕТУ –', title1a: 'ЗАПОВНИ', title1b: 'АНКЕТУ',
+      title2: 'ОТРИМАЙ РОЗБІР СВОГО ПРОЄКТУ ТА УМОВИ ПРОГРАМИ',
       sub: 'Уважно перевір правильність даних, включно з ніком в інстаграмі та телеграмі.',
       name: 'Твоє ім’я', tg: 'Нік у телеграмі через @', ig: 'Нік в інстаграмі через @',
       income: 'Твій середній дохід на місяць?', role: 'Яка твоя роль', multi: 'можна обрати кілька',
@@ -29,8 +29,8 @@
       need: 'Заповни, будь ласка, усі поля', fail: 'Не вдалося відправити анкету. Спробуй ще раз за хвилину.'
     },
     ru: {
-      title1: 'Заполни анкету', title1a: 'Заполни', title1b: 'анкету',
-      title2: 'и узнай все подробности',
+      title1: 'ЗАПОЛНИ АНКЕТУ –', title1a: 'ЗАПОЛНИ', title1b: 'АНКЕТУ',
+      title2: 'ПОЛУЧИ РАЗБОР СВОЕГО ПРОЕКТА И УСЛОВИЯ ПРОГРАММЫ',
       sub: 'Внимательно проверь правильность данных, включая ник в инстаграме и телеграме.',
       name: 'Твоё имя', tg: 'Ник в телеграме через @', ig: 'Ник в инстаграме через @',
       income: 'Твой средний доход в месяц?', role: 'Какая твоя роль', multi: 'можно выбрать несколько',
@@ -99,12 +99,12 @@
       // «Заполни [анкету]» — друге слово під маркером, як у заголовку на першому екрані
       var mk = el('span', 'mark mark-orange');
       h.appendChild(h1); h.appendChild(document.createTextNode(' ')); h.appendChild(mk);
-      h.appendChild(document.createElement('br')); h.appendChild(h2);
+      h.appendChild(document.createTextNode(' – ')); h.appendChild(h2);
       refs.mark = mk;
     } else {
       h.appendChild(h1); h.appendChild(document.createTextNode(' ')); h.appendChild(h2);
     }
-    refs.h1 = h1; refs.h2 = h2;
+    refs.h1 = h1; refs.h2 = h2; refs.h = h;
     card.setAttribute('aria-labelledby', 'rtg-title'); h.id = 'rtg-title';
     var sub = el('p', 'rtg-sub'); refs.sub = sub;
     formView.appendChild(h); formView.appendChild(sub);
@@ -187,6 +187,29 @@
     });
     refs.go.textContent = busy ? t.sending : t.send;
     if (refs.msg.getAttribute('data-k')) refs.msg.textContent = t[refs.msg.getAttribute('data-k')];
+    fitH(); refit();
+  }
+
+  /* Перший замір випадає на момент, коли шрифт ще не став на місце, і кегль
+     лишається завеликим. Тому міряємо ще раз, коли шрифти доїхали. */
+  var refitT;
+  function refit() {
+    clearTimeout(refitT); refitT = setTimeout(fitH, 350);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitH).catch(function () {});
+  }
+
+  /* Заголовок анкети має лишатись строго у двох рядках. Текст довгий, мов дві,
+     а кегль на чотирьох лендах різний, тому не зашиваємо його в CSS, а міряємо на місці:
+     беремо той розмір, що дав CSS, і зменшуємо, поки заголовок не вкладеться. */
+  function fitH() {
+    var h = refs.h; if (!h || !h.offsetHeight) return;
+    h.style.fontSize = '';
+    var max = Math.round(parseFloat(getComputedStyle(h).fontSize)) || 24;
+    for (var px = max; px >= 10; px--) {
+      h.style.fontSize = px + 'px';
+      var lh = parseFloat(getComputedStyle(h).lineHeight) || px * 1.15;
+      if (h.offsetHeight / lh < 2.5) return;   // 2 рядки з запасом на округлення
+    }
   }
 
   function showMsg(k) {
@@ -299,6 +322,7 @@
 
   /* ---------- Підключення ---------- */
   document.addEventListener('vl:lang', texts);
+  window.addEventListener('resize', fitH);
 
   // На /pre-reg-form анкета стоїть одразу на першому екрані
   if (slot()) setTimeout(mountInline, 0);
