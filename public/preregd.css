@@ -119,13 +119,13 @@ html.apple .hero-pic img{position:absolute;left:9%;bottom:0;width:50%;height:aut
   to{clip-path:inset(-30px -30px -30px -30px)}
 }
 html.apple .hero-chart .ch-area,
-html.apple .hero-chart .ch-done{animation:ch-draw 1.5s cubic-bezier(.3,.7,.3,1) .2s both}
+html.apple .hero-chart .ch-done{animation:ch-draw 1.5s cubic-bezier(.3,.7,.3,1) .2s backwards}
 /* ділянка після $300K — це план, тому йде пунктиром і домальовується останньою */
-html.apple .hero-chart .ch-plan{animation:ch-draw .55s linear 1.7s both}
+html.apple .hero-chart .ch-plan{animation:ch-draw .55s linear 1.7s backwards}
 
-html.apple .hero-chart .ch-dot,html.apple .hero-chart .ch-n{opacity:0;
+html.apple .hero-chart .ch-dot,html.apple .hero-chart .ch-n{
   transform-box:fill-box;transform-origin:center;
-  animation:ch-pop .4s cubic-bezier(.22,1.2,.3,1) both}
+  animation:ch-pop .4s cubic-bezier(.22,1.2,.3,1) backwards}
 @keyframes ch-pop{from{opacity:0;transform:scale(.4)}to{opacity:1;transform:scale(1)}}
 /* затримки підігнані під те, коли лінія доходить до кожної точки */
 html.apple .hero-chart .d0{animation-delay:.35s}
@@ -327,5 +327,4 @@ html.apple .zoom-fly .shot{box-shadow:0 20px 70px rgba(0,0,0,0.25)}
   html.apple .hero-chart .ch-area,html.apple .hero-chart .ch-done,
   html.apple .hero-chart .ch-plan,html.apple .hero-chart .ch-dot,
   html.apple .hero-chart .ch-n,html.apple .hero-chart .ch-pulse{animation:none;clip-path:none}
-  html.apple .hero-chart .ch-dot,html.apple .hero-chart .ch-n{opacity:1}
 }
