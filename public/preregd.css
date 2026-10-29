@@ -158,7 +158,7 @@ html.apple .bonus{
 /* металевої обводки з переблиском тут немає */
 html.apple .bonus::before{display:none}
 html.apple .bonus-t{min-width:0;text-align:left}
-html.apple .bonus-h,html.apple .bonus-s,html.apple .bonus-n{display:block;font-size:13px;line-height:1.4}
+html.apple .bonus-h,html.apple .bonus-s,html.apple .bonus-n{display:block;font-size:clamp(11px,3vw,13px);line-height:1.4}
 html.apple .bonus-h{color:var(--ink);font-weight:500}
 html.apple .bonus-h b{font-weight:600;color:var(--ink);white-space:nowrap}
 html.apple .bonus-s{color:var(--ink2);font-weight:400}
@@ -324,7 +324,8 @@ html.apple .zoom-fly .shot{box-shadow:0 20px 70px rgba(0,0,0,0.25)}
   html.apple .topbar{margin:0 -18px 22px;padding:0 18px;min-height:44px}
   html.apple .qual{font-size:11px;padding:7px 22px;margin-bottom:21px}
   html.apple .hero-pic{margin-top:14px}
-  html.apple .bonus{grid-template-columns:86px 1fr;gap:14px;padding:14px}
+  html.apple .bonus{grid-template-columns:clamp(67px,19.5vw,86px) 1fr;
+    gap:clamp(10px,3.2vw,14px);padding:clamp(11px,3.2vw,14px)}
   html.apple .wall-wrap{padding:34px 18px 40px}
   html.apple .cta-bar{padding:10px 18px calc(16px + env(safe-area-inset-bottom,0px))}
   html.apple .cta-in{max-width:520px}

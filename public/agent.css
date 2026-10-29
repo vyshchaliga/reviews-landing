@@ -73,13 +73,14 @@
 .agent .lap-base::after{content:"";position:absolute;left:50%;top:0;width:17%;height:34%;
   transform:translateX(-50%);border-radius:0 0 5px 5px}
 .agent .bonus-t{min-width:0}
-.agent .bonus{position:relative;display:grid;grid-template-columns:82px 1fr;gap:18px;align-items:center;
-  padding:16px;border-radius:var(--r-card);background:var(--surface);
+.agent .bonus{position:relative;display:grid;grid-template-columns:clamp(64px,18.6vw,82px) 1fr;
+  gap:clamp(12px,4.1vw,18px);align-items:center;
+  padding:clamp(12px,3.6vw,16px);border-radius:var(--r-card);background:var(--surface);
   border:1px solid var(--line);box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none}
 .agent .bonus::before{display:none}
-.agent .bonus-h,.agent .bonus-s{display:block;color:var(--ink);font-size:13px;line-height:1.4;font-weight:400}
+.agent .bonus-h,.agent .bonus-s{display:block;color:var(--ink);font-size:clamp(11px,3vw,13px);line-height:1.4;font-weight:400}
 .agent .bonus-h b{color:var(--ink);font-weight:500;white-space:nowrap}
-.agent .bonus-n{display:block;margin-top:4px;color:var(--ink);font-size:13px;line-height:1.4;font-weight:500}
+.agent .bonus-n{display:block;margin-top:4px;color:var(--ink);font-size:clamp(11px,3vw,13px);line-height:1.4;font-weight:500}
 .agent .lap{filter:none}
 .agent .lap-scr{border:2px solid #D8D8D8;background:#111}
 .agent .lap-base{background:linear-gradient(180deg,#D8D8D8 0%,#AFAFAF 100%)}
