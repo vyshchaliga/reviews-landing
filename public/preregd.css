@@ -145,7 +145,10 @@ html.apple .hero-chart .ch-pulse{transform-box:fill-box;transform-origin:center;
 @keyframes ch-pulse{0%{opacity:.5;transform:scale(1)}70%,100%{opacity:0;transform:scale(4.6)}}
 
 /* ===== Бонус ===== */
-html.apple .offer{margin-top:12px;position:relative}
+/* Картка бонуса заходить на низ кадру: вона й прикриває рівний зріз Саші по бюст.
+   .offer позиційований і стоїть у розмітці після .hero-pic, тому малюється поверх
+   абсолютного фото — окремий z-index не потрібен. */
+html.apple .offer{margin-top:-22px;position:relative}
 html.apple .bonus{
   position:relative;display:grid;grid-template-columns:96px 1fr;gap:18px;align-items:center;
   padding:16px;border-radius:var(--r);
