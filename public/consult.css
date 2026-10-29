@@ -91,7 +91,13 @@
 .consult .bonus-h,.consult .bonus-s{display:block;color:var(--ink);font-size:clamp(11px,3vw,13px);line-height:1.4;font-weight:400}
 .consult .bonus-h b{color:var(--red);font-weight:700;white-space:nowrap}
 .consult .bonus-n{display:block;margin-top:6px;color:var(--ink-strong);font-size:clamp(11px,3vw,13px);line-height:1.4;font-weight:700}
-.consult .bonus-n b{color:var(--red);font-weight:700;white-space:nowrap}
+/* Темно-синій тут майже не відрізнявся від основного тексту картки, тому
+   різницю даємо інакше: слова червоним, а сума — білим на червоній плашці. */
+.consult .bonus-n b{font-weight:700;white-space:nowrap}
+.consult .bonus-n .k1,.consult .bonus-n .k3{color:var(--red)}
+.consult .bonus-n .k2{background:var(--red);color:#fff;
+  box-decoration-break:clone;-webkit-box-decoration-break:clone;
+  padding:.08em .2em;margin:0 -.03em;border-radius:5px}
 .consult .lap{filter:none}
 .consult .lap-scr{border:2px solid #D8D8D8;background:#111}
 .consult .lap-base{background:linear-gradient(180deg,#E3E3EA 0%,#B6B6BF 100%)}

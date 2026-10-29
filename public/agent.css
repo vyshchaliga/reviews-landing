@@ -82,10 +82,13 @@
 .agent .bonus-h b{color:var(--ink);font-weight:500;white-space:nowrap}
 .agent .bonus-n{display:block;margin-top:4px;color:var(--ink);font-size:clamp(11px,3vw,13px);line-height:1.4;font-weight:500}
 /* Акцентні слова в назві бонуса беремо тим самим маркером, що й у заголовках:
-   чорний жирний на чорному тексті тут не читався. */
-.agent .bonus-n b{background:var(--orange);color:var(--ink);font-weight:500;white-space:nowrap;
+   чорний жирний на чорному тексті тут не читався. Кольори різні, щоб слова
+   не зливались в одну пляму: блакитний і жовтий — обидва вже є на ленді. */
+.agent .bonus-n b{color:var(--ink);font-weight:500;white-space:nowrap;
   box-decoration-break:clone;-webkit-box-decoration-break:clone;
   padding:.08em .2em;margin:0 -.03em;border-radius:5px}
+.agent .bonus-n .k1{background:var(--cyan)}
+.agent .bonus-n .k2{background:var(--orange)}
 .agent .lap{filter:none}
 .agent .lap-scr{border:2px solid #D8D8D8;background:#111}
 .agent .lap-base{background:linear-gradient(180deg,#D8D8D8 0%,#AFAFAF 100%)}
