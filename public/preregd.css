@@ -105,10 +105,10 @@ html.apple .prereg h1{
    Графік окремим шаром під фігурою, тому його початок природно ховається за Сашею,
    а підписи сум стоять правіше, уже на чистому полі. Низ фото розчинений в альфу,
    тож точка «0» у самому низу кадру читається крізь нього. */
-html.apple .hero-pic{position:relative;margin:10px 0 0;aspect-ratio:900/640}
+html.apple .hero-pic{position:relative;margin:10px 0 0;aspect-ratio:1000/620}
 html.apple .hero-chart{position:absolute;inset:0;width:100%;height:100%}
 html.apple .hero-chart-n{font-family:var(--sf);font-weight:600;font-size:36px;letter-spacing:-0.02em}
-html.apple .hero-pic img{position:absolute;left:1%;bottom:0;width:44%;height:auto}
+html.apple .hero-pic img{position:absolute;left:1%;bottom:0;width:52%;height:auto}
 
 /* ===== Бонус ===== */
 html.apple .offer{margin-top:12px;position:relative}

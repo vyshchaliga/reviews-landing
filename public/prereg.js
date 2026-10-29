@@ -66,12 +66,15 @@
   function fitH1() {
     var h = document.querySelector('.prereg h1');
     if (!h) return;
-    // data-fit="off" — кегль заголовка цілком віддано CSS (так живе світлий ленд /pre-reg-form-d)
-    if (h.getAttribute('data-fit') === 'off') { h.style.fontSize = ''; return; }
-    for (var px = 24; px >= 14; px--) {
+    // Скільки рядків дозволено і в яких межах кегль — каже сама розмітка.
+    // Без атрибутів лишається старе: два рядки й 24-14px, як на /pre-reg-form.
+    var lines = parseInt(h.getAttribute('data-fit-lines'), 10) || 2;
+    var max = parseInt(h.getAttribute('data-fit-max'), 10) || 24;
+    var min = parseInt(h.getAttribute('data-fit-min'), 10) || 14;
+    for (var px = max; px >= min; px--) {
       h.style.fontSize = px + 'px';
       var lh = parseFloat(getComputedStyle(h).lineHeight) || px * 1.16;
-      if (h.offsetHeight / lh < 2.5) return;           // два рядки з запасом на округлення
+      if (h.offsetHeight / lh < lines + 0.5) return;   // з запасом на округлення
     }
   }
 
