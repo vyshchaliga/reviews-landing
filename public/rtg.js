@@ -19,8 +19,8 @@
 
   var T = {
     ua: {
-      title1: 'ЗАПОВНИ АНКЕТУ –', title1a: 'ЗАПОВНИ', title1b: 'АНКЕТУ',
-      title2: 'ОТРИМАЙ РОЗБІР СВОГО ПРОЄКТУ ТА УМОВИ ПРОГРАМИ',
+      titleKey: 'ЗАПОВНИ АНКЕТУ', titleMid: ' – ОТРИМАЙ РОЗБІР',
+      titleTail: 'СВОГО ПРОЄКТУ ТА УМОВИ ПРОГРАМИ',
       sub: 'Уважно перевір правильність даних, включно з ніком в інстаграмі та телеграмі.',
       name: 'Твоє ім’я', tg: 'Нік у телеграмі через @', ig: 'Нік в інстаграмі через @',
       income: 'Твій середній дохід на місяць?', role: 'Яка твоя роль', multi: 'можна обрати кілька',
@@ -29,8 +29,8 @@
       need: 'Заповни, будь ласка, усі поля', fail: 'Не вдалося відправити анкету. Спробуй ще раз за хвилину.'
     },
     ru: {
-      title1: 'ЗАПОЛНИ АНКЕТУ –', title1a: 'ЗАПОЛНИ', title1b: 'АНКЕТУ',
-      title2: 'ПОЛУЧИ РАЗБОР СВОЕГО ПРОЕКТА И УСЛОВИЯ ПРОГРАММЫ',
+      titleKey: 'ЗАПОЛНИ АНКЕТУ', titleMid: ' – ПОЛУЧИ РАЗБОР',
+      titleTail: 'СВОЕГО ПРОЕКТА И УСЛОВИЯ ПРОГРАММЫ',
       sub: 'Внимательно проверь правильность данных, включая ник в инстаграме и телеграме.',
       name: 'Твоё имя', tg: 'Ник в телеграме через @', ig: 'Ник в инстаграме через @',
       income: 'Твой средний доход в месяц?', role: 'Какая твоя роль', multi: 'можно выбрать несколько',
@@ -94,17 +94,14 @@
 
     formView = el('div', 'rtg-form');
     var h = el('h2', 'rtg-h d');
-    var h1 = document.createElement('span'); var h2 = el('span', 'gold');
-    if (NICHE) {
-      // «Заполни [анкету]» — друге слово під маркером, як у заголовку на першому екрані
-      var mk = el('span', 'mark mark-orange');
-      h.appendChild(h1); h.appendChild(document.createTextNode(' ')); h.appendChild(mk);
-      h.appendChild(document.createTextNode(' – ')); h.appendChild(h2);
-      refs.mark = mk;
-    } else {
-      h.appendChild(h1); h.appendChild(document.createTextNode(' ')); h.appendChild(h2);
-    }
-    refs.h1 = h1; refs.h2 = h2; refs.h = h;
+    // «Заполни анкету» — ключова фраза, вона під акцентом: на агентському й
+    // консалтинговому під маркером, на решті — кольором, як у заголовку першого екрана.
+    var key = el('span', NICHE ? 'mark mark-orange' : 'gold');
+    var mid = document.createElement('span');
+    var tail = document.createElement('span');
+    h.appendChild(key); h.appendChild(mid);
+    h.appendChild(document.createElement('br')); h.appendChild(tail);
+    refs.hKey = key; refs.hMid = mid; refs.hTail = tail; refs.h = h;
     card.setAttribute('aria-labelledby', 'rtg-title'); h.id = 'rtg-title';
     var sub = el('p', 'rtg-sub'); refs.sub = sub;
     formView.appendChild(h); formView.appendChild(sub);
@@ -169,12 +166,9 @@
   function texts() {
     if (!card) return;
     var t = T[lang()], lg = lang();
-    if (NICHE) {
-      refs.h1.textContent = t.title1a; refs.mark.textContent = t.title1b;
-    } else {
-      refs.h1.textContent = t.title1;
-    }
-    refs.h2.textContent = t.title2;
+    refs.hKey.textContent = t.titleKey;
+    refs.hMid.textContent = t.titleMid;
+    refs.hTail.textContent = t.titleTail;
     refs.sub.textContent = t.sub;
     refs.name.label.textContent = t.name; refs.tg.label.textContent = t.tg;
     refs.instagram.label.textContent = t.ig; refs.dohod.label.textContent = t.income;
@@ -205,7 +199,7 @@
     var h = refs.h; if (!h || !h.offsetHeight) return;
     h.style.fontSize = '';
     var max = Math.round(parseFloat(getComputedStyle(h).fontSize)) || 24;
-    for (var px = max; px >= 10; px--) {
+    for (var px = max; px >= 12; px--) {
       h.style.fontSize = px + 'px';
       var lh = parseFloat(getComputedStyle(h).lineHeight) || px * 1.15;
       if (h.offsetHeight / lh < 2.5) return;   // 2 рядки з запасом на округлення
