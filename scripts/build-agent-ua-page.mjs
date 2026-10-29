@@ -22,12 +22,15 @@ const UA = {
   h1c: 'в агентському бізнесі у 2027',
   bonusA: 'Заповни анкету до',
   bonusB: 'і гарантовано забери бонус',
-  bonusN: '«Система залучення клієнтів, яка приносить $20-50К на місяць»',
+  bonusN: '«<b>Система</b> залучення клієнтів, яка приносить <b>$20-50К на місяць</b>»',
   offerCta: 'Дізнатися деталі програми',
   wallA: 'Результати учасників',
   wallB: 'Вища Ліга',
   cta: 'Залишити анкету',
 };
+
+// У bonusN є <b> навколо акцентних слів — це розмітка, а не текст, тож не екрануємо.
+const RAW = new Set(['bonusN']);
 
 const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
@@ -60,7 +63,7 @@ export function buildAgentUaPage() {
     (all, open, tag, key, inner) => {
       if (UA[key] == null) { missing.push(key); return all; }
       was_ru.push(inner.trim());
-      return open + esc(UA[key]) + `</${tag}>`;
+      return open + (RAW.has(key) ? UA[key] : esc(UA[key])) + `</${tag}>`;
     }
   );
   if (missing.length) throw new Error(`у словнику немає ключів: ${missing.join(', ')}`);
