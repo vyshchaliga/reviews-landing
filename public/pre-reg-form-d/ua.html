@@ -32,12 +32,12 @@
 
     <div class="hero-main">
       <p class="qual" data-p18n="qual">Преміальна програма<br>з масштабування інфобізнесів</p>
-      <h1 class="d" data-fit-lines="3" data-fit-max="44" data-fit-min="22"><span data-p18n="h1a">Зроби свій запуск у 2027 – </span><span class="gold" data-p18n="h1b">рекордним</span> <span class="gold" data-p18n="h1b2">і підготуйся</span><span data-p18n="h1c"> до нових реалій ринку</span></h1>
+      <h1 class="d" data-fit-lines="2" data-fit-max="28" data-fit-min="14"><span data-p18n="h1a">Зроби свій запуск у 2027 – </span><span class="gold" data-p18n="h1b">рекордним</span><br><span class="gold" data-p18n="h1b2">і підготуйся</span><span data-p18n="h1c"> до нових реалій ринку</span></h1>
     </div>
 
-    <!-- Герой: бюст Саші зліва, крива зростання виручки від запуску до запуску — за ним.
-         Графік лежить шаром нижче фото, тому вся ліва, низька частина кривої ховається
-         за його плечима й грудьми, а підписи сум стоять правіше, уже на чистому полі. -->
+    <!-- Герой: Саша зліва, за ним крива зростання виручки від запуску до запуску.
+         До $300K лінія суцільна — це вже досягнуте, далі пунктир: план вийти на $600K.
+         Анімацію малювання й появу точок тримає preregd.css, скриптів тут немає. -->
     <div class="hero-pic" aria-hidden="true">
       <svg class="hero-chart" viewBox="0 0 1000 620" preserveAspectRatio="xMidYMax meet" xmlns="http://www.w3.org/2000/svg">
         <defs>
@@ -50,22 +50,24 @@
             <stop offset="1" stop-color="#0071E3" stop-opacity="0"/>
           </linearGradient>
         </defs>
-        <path d="M0 560C10.0 557.5 36.7 544.0 60 545C83.3 546.0 112.5 574.3 140 566C167.5 557.7 197.5 502.3 225 495C252.5 487.7 278.3 531.2 305 522C331.7 512.8 358.3 448.7 385 440C411.7 431.3 439.2 476.7 465 470C490.8 463.3 515.0 415.3 540 400C565.0 384.7 590.8 377.2 615 378C639.2 378.8 661.7 421.0 685 405C708.3 389.0 732.2 297.8 755 282C777.8 266.2 797.0 337.3 822 310C847.0 282.7 882.8 155.0 905 118C927.2 81.0 939.2 99.7 955 88C970.8 76.3 992.5 54.7 1000 48L1000 620L0 620Z" fill="url(#chartArea)"/>
-        <path d="M0 560C10.0 557.5 36.7 544.0 60 545C83.3 546.0 112.5 574.3 140 566C167.5 557.7 197.5 502.3 225 495C252.5 487.7 278.3 531.2 305 522C331.7 512.8 358.3 448.7 385 440C411.7 431.3 439.2 476.7 465 470C490.8 463.3 515.0 415.3 540 400C565.0 384.7 590.8 377.2 615 378C639.2 378.8 661.7 421.0 685 405C708.3 389.0 732.2 297.8 755 282C777.8 266.2 797.0 337.3 822 310C847.0 282.7 882.8 155.0 905 118C927.2 81.0 939.2 99.7 955 88C970.8 76.3 992.5 54.7 1000 48" fill="none" stroke="url(#chartLine)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path class="ch-area" d="M0 578C8.3 575.0 28.3 558.7 50 560C71.7 561.3 101.7 592.3 130 586C158.3 579.7 190.0 528.0 220 522C250.0 516.0 280.0 558.3 310 550C340.0 541.7 369.2 480.0 400 472C430.8 464.0 466.7 508.7 495 502C523.3 495.3 545.0 449.8 570 432C595.0 414.2 623.3 397.0 645 395C666.7 393.0 680.8 438.3 700 420C719.2 401.7 739.2 303.0 760 285L760 620L0 620Z" fill="url(#chartArea)"/>
+        <path class="ch-done" d="M0 578C8.3 575.0 28.3 558.7 50 560C71.7 561.3 101.7 592.3 130 586C158.3 579.7 190.0 528.0 220 522C250.0 516.0 280.0 558.3 310 550C340.0 541.7 369.2 480.0 400 472C430.8 464.0 466.7 508.7 495 502C523.3 495.3 545.0 449.8 570 432C595.0 414.2 623.3 397.0 645 395C666.7 393.0 680.8 438.3 700 420C719.2 401.7 739.2 303.0 760 285" fill="none" stroke="url(#chartLine)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path class="ch-plan" d="M760 285C780.8 267.0 800.8 339.8 825 312C849.2 284.2 883.3 155.3 905 118C926.7 80.7 939.2 99.7 955 88C970.8 76.3 992.5 54.7 1000 48" fill="none" stroke="url(#chartLine)" stroke-width="5" stroke-linecap="round" stroke-dasharray="16 18"/>
+        <circle class="ch-pulse" cx="760" cy="285" r="9" fill="#0071E3"/>
         <g fill="#FFFFFF" stroke="url(#chartLine)" stroke-width="5">
-          <circle cx="60" cy="545" r="9"/>
-          <circle cx="615" cy="378" r="9"/>
-          <circle cx="755" cy="282" r="9"/>
-          <circle cx="905" cy="118" r="12"/>
+          <circle class="ch-dot d0" cx="50" cy="560" r="9"/>
+          <circle class="ch-dot d1" cx="645" cy="395" r="9"/>
+          <circle class="ch-dot d2" cx="760" cy="285" r="9"/>
+          <circle class="ch-dot d3" cx="905" cy="118" r="12"/>
         </g>
         <g class="hero-chart-n" fill="#1D1D1F">
-          <text x="60" y="602" text-anchor="middle">0</text>
-          <text x="615" y="336" text-anchor="middle">$100K</text>
-          <text x="755" y="240" text-anchor="middle">$300K</text>
-          <text x="905" y="76" text-anchor="middle">$600K</text>
+          <text class="ch-n d0" x="50" y="606" text-anchor="middle">$0</text>
+          <text class="ch-n d1" x="645" y="353" text-anchor="middle">$100K</text>
+          <text class="ch-n d2" x="760" y="243" text-anchor="middle">$300K</text>
+          <text class="ch-n d3" x="905" y="76" text-anchor="middle">$600K</text>
         </g>
       </svg>
-      <img src="assets/img/sasha-hero.webp" alt="" width="506" height="557" decoding="async" fetchpriority="high">
+      <img src="assets/img/sasha-hero.webp" alt="" width="506" height="564" decoding="async" fetchpriority="high">
     </div>
 
     <section class="offer" aria-label="Бонус передзапису">

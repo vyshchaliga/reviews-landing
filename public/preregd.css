@@ -108,7 +108,34 @@ html.apple .prereg h1{
 html.apple .hero-pic{position:relative;margin:10px 0 0;aspect-ratio:1000/620}
 html.apple .hero-chart{position:absolute;inset:0;width:100%;height:100%}
 html.apple .hero-chart-n{font-family:var(--sf);font-weight:600;font-size:36px;letter-spacing:-0.02em}
-html.apple .hero-pic img{position:absolute;left:1%;bottom:0;width:52%;height:auto}
+html.apple .hero-pic img{position:absolute;left:9%;bottom:0;width:50%;height:auto}
+
+/* Крива малює себе зліва направо, за нею по черзі спалахують точки.
+   Витирання робимо clip-path прямо на лініях, а не маскою: Chrome не перемальовує
+   вміст <mask>, коли його анімують, і графік зникає зовсім. Скриптів тут немає —
+   інлайновий JS однаково зрізав би CSP. */
+@keyframes ch-draw{
+  from{clip-path:inset(-30px calc(100% + 30px) -30px -30px)}
+  to{clip-path:inset(-30px -30px -30px -30px)}
+}
+html.apple .hero-chart .ch-area,
+html.apple .hero-chart .ch-done{animation:ch-draw 1.5s cubic-bezier(.3,.7,.3,1) .2s both}
+/* ділянка після $300K — це план, тому йде пунктиром і домальовується останньою */
+html.apple .hero-chart .ch-plan{animation:ch-draw .55s linear 1.7s both}
+
+html.apple .hero-chart .ch-dot,html.apple .hero-chart .ch-n{opacity:0;
+  transform-box:fill-box;transform-origin:center;
+  animation:ch-pop .4s cubic-bezier(.22,1.2,.3,1) both}
+@keyframes ch-pop{from{opacity:0;transform:scale(.4)}to{opacity:1;transform:scale(1)}}
+/* затримки підігнані під те, коли лінія доходить до кожної точки */
+html.apple .hero-chart .d0{animation-delay:.35s}
+html.apple .hero-chart .d1{animation-delay:1.5s}
+html.apple .hero-chart .d2{animation-delay:1.72s}
+html.apple .hero-chart .d3{animation-delay:2.05s}
+/* $300K — вершина, яку вже взяли, тому вона пульсує */
+html.apple .hero-chart .ch-pulse{transform-box:fill-box;transform-origin:center;opacity:0;
+  animation:ch-pulse 2.2s ease-out 2.2s infinite}
+@keyframes ch-pulse{0%{opacity:.45;transform:scale(1)}70%,100%{opacity:0;transform:scale(2.8)}}
 
 /* ===== Бонус ===== */
 html.apple .offer{margin-top:12px;position:relative}
@@ -297,4 +324,8 @@ html.apple .zoom-fly .shot{box-shadow:0 20px 70px rgba(0,0,0,0.25)}
 }
 @media (prefers-reduced-motion:reduce){
   html.apple .btn,html.apple .rtg-in,html.apple .rtg-opt,html.apple .rtg-f .rtg-l{transition:none}
+  html.apple .hero-chart .ch-area,html.apple .hero-chart .ch-done,
+  html.apple .hero-chart .ch-plan,html.apple .hero-chart .ch-dot,
+  html.apple .hero-chart .ch-n,html.apple .hero-chart .ch-pulse{animation:none;clip-path:none}
+  html.apple .hero-chart .ch-dot,html.apple .hero-chart .ch-n{opacity:1}
 }
