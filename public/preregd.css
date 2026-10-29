@@ -85,30 +85,32 @@ html.apple .hero-main{min-height:0;padding:0;text-align:center}
 
 /* Кваліфікатор — м'яка «таблетка» на тлі f5f5f7, як позначки на сторінках Apple */
 html.apple .qual{
-  display:inline-block;margin:6px 0 20px;padding:7px 16px;
-  font-size:12px;line-height:1.4;font-weight:500;letter-spacing:0;
+  display:inline-block;margin:6px 0 25px;padding:8px 26px;
+  font-size:12px;line-height:1.4;font-weight:600;letter-spacing:0;
   text-transform:none;color:var(--ink2);
   background:var(--paper2);background-image:none;
   border-radius:var(--pill);
   -webkit-backdrop-filter:none;backdrop-filter:none;
 }
 
-/* Заголовок: великий, щільний, з синьо-індиговим акцентом. Кегль тримає CSS —
-   у розмітці стоїть data-fit="off", тож prereg.js його не підганяє під два рядки:
-   на Apple заголовок великий і переноситься скільки треба. */
+/* Заголовок: щільний, з синьо-індиговим акцентом. Кегль підбирає prereg.js
+   заміром під ширину екрана — у розмітці стоїть data-fit-lines="2", тож він
+   зменшує кегль, поки заголовок не вкладеться у два рядки. CSS тут лише запасний
+   варіант на випадок, якщо скрипт не доїхав. */
 html.apple .prereg h1{
   margin:0;font-weight:600;color:var(--ink);
   font-size:clamp(30px,8.4vw,42px);line-height:1.08;letter-spacing:-0.025em;
 }
 
 /* Герой: Саша зліва, за спиною — крива зростання виручки від запуску до запуску.
-   Графік окремим шаром під фігурою, тому його початок природно ховається за Сашею,
-   а підписи сум стоять правіше, уже на чистому полі. Низ фото розчинений в альфу,
-   тож точка «0» у самому низу кадру читається крізь нього. */
+   Графік окремим шаром під фігурою, тому його початок природно ховається за Сашею.
+   Ширину фігури підібрано так, щоб зліва лишалось поле під точку $0, а справа —
+   під $100K, і щоб правий край стояв рівно на 59%: на цю межу зав'язаний
+   проміжний кадр @keyframes, де малювання лінії сповільнюється. */
 html.apple .hero-pic{position:relative;margin:10px 0 0;aspect-ratio:1000/620}
 html.apple .hero-chart{position:absolute;inset:0;width:100%;height:100%}
 html.apple .hero-chart-n{font-family:var(--sf);font-weight:600;font-size:36px;letter-spacing:-0.02em}
-html.apple .hero-pic img{position:absolute;left:9%;bottom:0;width:50%;height:auto}
+html.apple .hero-pic img{position:absolute;left:7%;bottom:0;width:52%;height:auto}
 
 /* Крива малює себе зліва направо, за нею по черзі проявляються суми.
    Витирання робимо clip-path прямо на лінії, а не маскою: Chrome не перемальовує
@@ -317,7 +319,7 @@ html.apple .zoom-fly .shot{box-shadow:0 20px 70px rgba(0,0,0,0.25)}
   html.apple body{padding-bottom:96px}
   html.apple .hero{padding:0 18px 30px}
   html.apple .topbar{margin:0 -18px 22px;padding:0 18px;min-height:44px}
-  html.apple .qual{font-size:11px;padding:6px 14px;margin-bottom:16px}
+  html.apple .qual{font-size:11px;padding:7px 22px;margin-bottom:21px}
   html.apple .hero-pic{margin-top:14px}
   html.apple .bonus{grid-template-columns:86px 1fr;gap:14px;padding:14px}
   html.apple .wall-wrap{padding:34px 18px 40px}
