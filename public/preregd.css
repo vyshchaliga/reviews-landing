@@ -115,12 +115,15 @@ html.apple .hero-pic img{position:absolute;left:9%;bottom:0;width:50%;height:aut
    вміст <mask>, коли його анімують, і графік зникає зовсім. Швидкість малювання
    лінійна — інакше затримки підписів розійдуться з тим, де зараз лінія.
    Скриптів тут немає, інлайновий JS однаково зрізав би CSP. */
+/* Темп рваний навмисно: ділянку за фігурою (до 59% ширини — там кінчається Саша)
+   лінія пробігає за 0,4 с, а видиму частину домальовує втричі повільніше. */
 @keyframes ch-draw{
   from{clip-path:inset(-30px calc(100% + 30px) -30px -30px)}
+  33%{clip-path:inset(-30px calc(41% + 30px) -30px -30px)}
   to{clip-path:inset(-30px -30px -30px -30px)}
 }
 html.apple .hero-chart .ch-area,
-html.apple .hero-chart .ch-done{animation:ch-draw .67s linear .2s backwards}
+html.apple .hero-chart .ch-done{animation:ch-draw 1.22s linear .2s backwards}
 
 /* Суми й точки саме проявляються, без під'їзду збоку чи стрибка масштабу */
 html.apple .hero-chart .ch-dot,html.apple .hero-chart .ch-n{animation:ch-fade .35s ease both}
@@ -129,14 +132,14 @@ html.apple .hero-chart .ch-glow{animation:ch-fade .9s ease backwards}
 @keyframes ch-fade{from{opacity:0}to{opacity:1}}
 /* затримки підігнані під те, коли лінія доходить до кожної точки */
 html.apple .hero-chart .d0{animation-delay:.23s}
-html.apple .hero-chart .d1{animation-delay:.63s}
-html.apple .hero-chart .d2{animation-delay:.71s}
-html.apple .hero-chart .d3{animation-delay:.81s}
+html.apple .hero-chart .d1{animation-delay:.71s}
+html.apple .hero-chart .d2{animation-delay:.94s}
+html.apple .hero-chart .d3{animation-delay:1.23s}
 
 /* $300K — вершина, яку вже взяли: підпис більший, жирніший і синій, точка пульсує */
 html.apple .hero-chart .ch-peak{font-size:48px;font-weight:700}
 html.apple .hero-chart .ch-pulse{transform-box:fill-box;transform-origin:center;opacity:0;
-  animation:ch-pulse 2.4s ease-out 1.1s infinite}
+  animation:ch-pulse 2.4s ease-out 1.3s infinite}
 @keyframes ch-pulse{0%{opacity:.5;transform:scale(1)}70%,100%{opacity:0;transform:scale(4.6)}}
 
 /* ===== Бонус ===== */
