@@ -120,21 +120,23 @@ html.apple .hero-pic img{position:absolute;left:9%;bottom:0;width:50%;height:aut
   to{clip-path:inset(-30px -30px -30px -30px)}
 }
 html.apple .hero-chart .ch-area,
-html.apple .hero-chart .ch-done{animation:ch-draw 2s linear .2s backwards}
+html.apple .hero-chart .ch-done{animation:ch-draw .67s linear .2s backwards}
 
 /* Суми й точки саме проявляються, без під'їзду збоку чи стрибка масштабу */
-html.apple .hero-chart .ch-dot,html.apple .hero-chart .ch-n{animation:ch-fade .5s ease both}
+html.apple .hero-chart .ch-dot,html.apple .hero-chart .ch-n{animation:ch-fade .35s ease both}
+/* м'яке синє коло за Сашею — найнижчий шар, просто проявляється */
+html.apple .hero-chart .ch-glow{animation:ch-fade .9s ease backwards}
 @keyframes ch-fade{from{opacity:0}to{opacity:1}}
 /* затримки підігнані під те, коли лінія доходить до кожної точки */
-html.apple .hero-chart .d0{animation-delay:.3s}
-html.apple .hero-chart .d1{animation-delay:1.49s}
-html.apple .hero-chart .d2{animation-delay:1.72s}
-html.apple .hero-chart .d3{animation-delay:2.01s}
+html.apple .hero-chart .d0{animation-delay:.23s}
+html.apple .hero-chart .d1{animation-delay:.63s}
+html.apple .hero-chart .d2{animation-delay:.71s}
+html.apple .hero-chart .d3{animation-delay:.81s}
 
 /* $300K — вершина, яку вже взяли: підпис більший, жирніший і синій, точка пульсує */
 html.apple .hero-chart .ch-peak{font-size:48px;font-weight:700}
 html.apple .hero-chart .ch-pulse{transform-box:fill-box;transform-origin:center;opacity:0;
-  animation:ch-pulse 2.4s ease-out 2.3s infinite}
+  animation:ch-pulse 2.4s ease-out 1.1s infinite}
 @keyframes ch-pulse{0%{opacity:.5;transform:scale(1)}70%,100%{opacity:0;transform:scale(4.6)}}
 
 /* ===== Бонус ===== */
@@ -326,6 +328,6 @@ html.apple .zoom-fly .shot{box-shadow:0 20px 70px rgba(0,0,0,0.25)}
   html.apple .btn,html.apple .rtg-in,html.apple .rtg-opt,html.apple .rtg-f .rtg-l{transition:none}
   html.apple .hero-chart .ch-area,html.apple .hero-chart .ch-done,
   html.apple .hero-chart .ch-dot,html.apple .hero-chart .ch-n,
-  html.apple .hero-chart .ch-pulse{animation:none;clip-path:none}
+  html.apple .hero-chart .ch-glow,html.apple .hero-chart .ch-pulse{animation:none;clip-path:none}
   html.apple .hero-chart .ch-pulse{opacity:0}
 }
