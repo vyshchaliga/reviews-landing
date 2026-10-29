@@ -275,7 +275,7 @@
       if (!r.ok) throw new Error('http ' + r.status);
       return r.json().catch(function () { return {}; });
     }).then(function () {
-      clearTimeout(to); busy = false; refs.go.disabled = false; finish();
+      clearTimeout(to); busy = false; refs.go.disabled = false; finish(true);
     }).catch(function () {
       clearTimeout(to); busy = false; refs.go.disabled = false; texts(); showMsg('fail');
     });
@@ -283,9 +283,18 @@
 
   /* Анкету прийнято — одразу ведемо в канал. Проміжного екрана з кнопкою
      і конфеті більше немає: людина має потрапити в канал без зайвого кроку. */
-  function finish() {
+  function finish(real) {
     done = true;
-    location.href = CHANNEL_URL;
+    var go = function () { location.href = CHANNEL_URL; };
+    // real — анкета справді пішла в таблицю: тоді віддаємо Lead у Meta Pixel.
+    // Перехід чекає 300 мс, інакше браузер обриває запит піксела на вивантаженні.
+    if (real && typeof window.fbq === 'function') {
+      try { window.fbq('track', 'Lead', { content_name: LEAD_TYPE, content_category: lang() }); }
+      catch (e) { go(); return; }
+      setTimeout(go, 300);
+      return;
+    }
+    go();
   }
 
   /* ---------- Підключення ---------- */
