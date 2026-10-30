@@ -2,7 +2,9 @@
  * Сповіщення про нові анкети в Telegram.
  *
  * Куди ставити: таблиця «Анкети з Tilda - ВЛ 60», Розширення → Apps Script,
- * окремий файл у тому ж проєкті (або новий проєкт, прив'язаний до цієї таблиці).
+ * окремий файл у тому ж проєкті. Можна і окремим проєктом на script.google.com —
+ * таблиця береться за id, прив'язка до неї не обов'язкова. Розгортати (Deploy)
+ * нічого не треба: це не веб-застосунок, він працює за розкладом.
  *
  * Чому не onEdit/onChange: рядки в цю таблицю пише не людина, а Тільда (через
  * Google Sheets API) і наш веб-застосунок (через інший скрипт). Google НЕ запускає
@@ -14,14 +16,19 @@
  *   TG_CHAT  — куди слати: id чату, групи або каналу (див. showChatId нижче)
  * Токен у властивостях, а не в коді: код видно всім, у кого є доступ до таблиці.
  */
+// Таблиця вказана за id, а не через getActiveSpreadsheet(): так скрипт працює
+// і прив'язаним до таблиці, і окремим проєктом.
+var SHEET_ID = '1n4dPYxS-Gz7OjA2suN24ugGKu_f_o6cxu5STYCe_rrg';   // «Анкети з Tilda - ВЛ 60»
 var NOTIFY_SHEET = 'Лист1';          // вкладка, куди падають анкети
 var CURSOR_KEY = 'tg_last_row';      // останній рядок, про який уже відзвітували
+
+function book_() { return SpreadsheetApp.openById(SHEET_ID); }
 
 function notifyNewLeads() {
   var lock = LockService.getScriptLock();
   if (!lock.tryLock(5000)) return;   // попередній запуск ще не добіг — пропускаємо
   try {
-    var sh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(NOTIFY_SHEET);
+    var sh = book_().getSheetByName(NOTIFY_SHEET);
     if (!sh) return;
 
     var props = PropertiesService.getScriptProperties();
@@ -107,7 +114,7 @@ function showChatId() {
 
 /* Перевірка: шле в Telegram останній рядок таблиці, нічого не змінюючи. */
 function testLastRow() {
-  var sh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(NOTIFY_SHEET);
+  var sh = book_().getSheetByName(NOTIFY_SHEET);
   var last = sh.getLastRow();
   var head = sh.getRange(1, 1, 1, sh.getLastColumn()).getDisplayValues()[0];
   var row = sh.getRange(last, 1, 1, sh.getLastColumn()).getDisplayValues()[0];
