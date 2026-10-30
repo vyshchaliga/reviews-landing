@@ -79,17 +79,29 @@ function send_(text) {
 
 /* ===== Разові помічники (запускати вручну з редактора) ===== */
 
-/* Дізнатися id чату: спочатку написати боту будь-що в особисті (або додати його
-   в групу й написати там), потім запустити цю функцію і подивитись у Виконання → Журнал. */
+/* Дізнатися id чату. Перед запуском дати боту привід «побачити» потрібне місце:
+   в особистих — написати йому будь-що; у групі — написати «/start@ім'я_бота»
+   (просте повідомлення бот не бачить, у нього ввімкнено режим приватності);
+   у каналі — зробити бота адміністратором і запостити будь-що.
+   Потім запустити цю функцію і подивитись у Виконання → Журнал.
+   Id групи й каналу — завжди від'ємне число, це нормально. */
 function showChatId() {
   var token = PropertiesService.getScriptProperties().getProperty('TG_TOKEN');
   var r = UrlFetchApp.fetch('https://api.telegram.org/bot' + token + '/getUpdates', { muteHttpExceptions: true });
   var j = JSON.parse(r.getContentText() || '{}');
   var list = j.result || [];
-  if (!list.length) { Logger.log('Порожньо. Напиши боту повідомлення і запусти ще раз.'); return; }
+  if (!list.length) { Logger.log('Порожньо. Дай боту привід побачити чат (див. коментар вище) і запусти ще раз.'); return; }
+  var seen = {};
   for (var i = 0; i < list.length; i++) {
-    var m = list[i].message || list[i].channel_post || {};
-    if (m.chat) Logger.log('chat_id: ' + m.chat.id + '  (' + (m.chat.title || m.chat.username || m.chat.type) + ')');
+    var u = list[i];
+    // Тип оновлення може бути різний: повідомлення, пост у каналі, додавання бота
+    // в групу. Чат лежить у кожному з них, тому просто шукаємо .chat де завгодно.
+    for (var k in u) {
+      var chat = u[k] && u[k].chat;
+      if (!chat || seen[chat.id]) continue;
+      seen[chat.id] = true;
+      Logger.log('chat_id: ' + chat.id + '   ' + (chat.title || chat.username || '') + '   [' + chat.type + ']');
+    }
   }
 }
 
