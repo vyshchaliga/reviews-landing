@@ -22,6 +22,12 @@ var SHEET_ID = '1n4dPYxS-Gz7OjA2suN24ugGKu_f_o6cxu5STYCe_rrg';   // «Анкет
 var NOTIFY_SHEET = 'Лист1';          // вкладка, куди падають анкети
 var CURSOR_KEY = 'tg_last_row';      // останній рядок, про який уже відзвітували
 
+// CRM: сюди кожна нова анкета лягає окремим рядком.
+var CRM_ID = '1SbsCUs4BURdoKK98SR8LhdfdXhAcx3OjTO4iZXl5hb8';     // «ТИМЧАСОВА - CRM ВЛ 6.0»
+var CRM_SHEET = 'Лиды ВЛ 6.0';
+var CRM_CURSOR = 'crm_last_row';     // лічильник окремий від телеграмного, щоб одне не ламало інше
+var CRM_STATUS = 'Новый';            // статус, з яким заявка заходить у воронку
+
 function book_() { return SpreadsheetApp.openById(SHEET_ID); }
 
 function notifyNewLeads() {
@@ -123,12 +129,13 @@ function testLastRow() {
 
 /* Ставить щохвилинний тригер (старий такий самий прибирає, щоб не задвоївся). */
 function installTrigger() {
+  var jobs = ['notifyNewLeads', 'crmSync'];
   var all = ScriptApp.getProjectTriggers();
   for (var i = 0; i < all.length; i++) {
-    if (all[i].getHandlerFunction() === 'notifyNewLeads') ScriptApp.deleteTrigger(all[i]);
+    if (jobs.indexOf(all[i].getHandlerFunction()) >= 0) ScriptApp.deleteTrigger(all[i]);
   }
-  ScriptApp.newTrigger('notifyNewLeads').timeBased().everyMinutes(1).create();
-  Logger.log('Тригер поставлено: notifyNewLeads щохвилини');
+  for (var j = 0; j < jobs.length; j++) ScriptApp.newTrigger(jobs[j]).timeBased().everyMinutes(1).create();
+  Logger.log('Тригери поставлено щохвилини: ' + jobs.join(', '));
 }
 
 /* Разово дослати в канал заявки, які вже є в таблиці (ті, що впали до того,
@@ -150,4 +157,90 @@ function sendSince() {
     n++;
   }
   Logger.log('Надіслано заявок: ' + n);
+}
+
+/* ===== Вигрузка в CRM ===== */
+
+/* Кожна нова анкета лягає рядком у вкладку «Лиды ВЛ 6.0».
+   Заповнюємо тільки те, що анкета справді знає: дату, ім'я, телеграм, джерело
+   і статус. Менеджера, тариф, суми й коментар ставлять руками — ці колонки
+   лишаємо порожніми, щоб нічого не затерти.
+   Лічильник окремий від телеграмного: якщо одне впаде, друге працює далі. */
+function crmSync() {
+  var lock = LockService.getScriptLock();
+  if (!lock.tryLock(5000)) return;
+  try {
+    var sh = book_().getSheetByName(NOTIFY_SHEET);
+    var crm = SpreadsheetApp.openById(CRM_ID).getSheetByName(CRM_SHEET);
+    if (!sh || !crm) return;
+
+    var props = PropertiesService.getScriptProperties();
+    var last = sh.getLastRow();
+    var seen = parseInt(props.getProperty(CRM_CURSOR), 10);
+
+    // Перший запуск: нічого не переносимо заднім числом, лише запам'ятовуємо позицію.
+    if (!seen) { props.setProperty(CRM_CURSOR, String(last)); return; }
+    if (last <= seen) { props.setProperty(CRM_CURSOR, String(last)); return; }
+
+    var head = sh.getRange(1, 1, 1, sh.getLastColumn()).getDisplayValues()[0];
+    var rows = sh.getRange(seen + 1, 1, last - seen, sh.getLastColumn()).getDisplayValues();
+
+    for (var i = 0; i < rows.length; i++) {
+      crmAppend_(crm, pick_(head, rows[i]));
+      props.setProperty(CRM_CURSOR, String(seen + 1 + i));
+    }
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+/* Рядок анкети → поля, які нас цікавлять, за назвами колонок. */
+function pick_(head, row) {
+  var o = {};
+  for (var i = 0; i < head.length; i++) o[String(head[i]).trim()] = String(row[i] == null ? '' : row[i]).trim();
+  return o;
+}
+
+/* Дописує рядок у CRM. Колонки шукаємо за назвою в першому рядку, а не за
+   номером: у CRM їх можуть переставити, і тоді дані не поїдуть не в ті поля. */
+function crmAppend_(crm, d) {
+  var head = crm.getRange(1, 1, 1, crm.getLastColumn()).getDisplayValues()[0];
+  var val = {
+    'Дата': crmDate_(d.sent),
+    'Ім\'я': d.name,
+    'Telegram': d.nik_tg,
+    'Источник': d.type || 'Передзапис',
+    'Статус': CRM_STATUS
+  };
+  var row = head.map(function (h) {
+    var k = String(h).trim();
+    return val.hasOwnProperty(k) ? val[k] : '';
+  });
+  crm.getRange(crm.getLastRow() + 1, 1, 1, row.length).setValues([row]);
+}
+
+/* sent лежить текстом «yyyy-MM-dd HH:mm:ss». Віддаємо справжню дату, бо дашборд
+   фільтрує період по датах — текст він би просто не побачив. */
+function crmDate_(sent) {
+  var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(sent || ''));
+  if (!m) return new Date();
+  return new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
+}
+
+/* Разово перенести в CRM заявки, які вже є в таблиці, від заданої дати. */
+function crmSendSince() {
+  var FROM_DATE = '2026-10-31';   // формат yyyy-MM-dd
+
+  var sh = book_().getSheetByName(NOTIFY_SHEET);
+  var crm = SpreadsheetApp.openById(CRM_ID).getSheetByName(CRM_SHEET);
+  var head = sh.getRange(1, 1, 1, sh.getLastColumn()).getDisplayValues()[0];
+  var rows = sh.getRange(2, 1, sh.getLastRow() - 1, sh.getLastColumn()).getDisplayValues();
+  var col = head.indexOf('sent');
+  var n = 0;
+  for (var i = 0; i < rows.length; i++) {
+    if (String(rows[i][col]).trim() < FROM_DATE) continue;
+    crmAppend_(crm, pick_(head, rows[i]));
+    n++;
+  }
+  Logger.log('Перенесено в CRM: ' + n);
 }
