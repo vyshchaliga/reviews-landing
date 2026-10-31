@@ -130,3 +130,24 @@ function installTrigger() {
   ScriptApp.newTrigger('notifyNewLeads').timeBased().everyMinutes(1).create();
   Logger.log('Тригер поставлено: notifyNewLeads щохвилини');
 }
+
+/* Разово дослати в канал заявки, які вже є в таблиці (ті, що впали до того,
+   як запрацював тригер). Шле всі рядки, у яких sent не раніший за FROM_DATE.
+   Позначку «докуди дочитано» не чіпає, тому на автоматику не впливає —
+   але якщо тригер уже працює, свіжі заявки можуть продублюватись. */
+function sendSince() {
+  var FROM_DATE = '2026-10-31';   // формат yyyy-MM-dd, можна і з часом: '2026-10-31 09:00:00'
+
+  var sh = book_().getSheetByName(NOTIFY_SHEET);
+  var head = sh.getRange(1, 1, 1, sh.getLastColumn()).getDisplayValues()[0];
+  var rows = sh.getRange(2, 1, sh.getLastRow() - 1, sh.getLastColumn()).getDisplayValues();
+  var col = head.indexOf('sent');
+  var n = 0;
+  for (var i = 0; i < rows.length; i++) {
+    // Дата лежить як текст yyyy-MM-dd HH:mm:ss, тому звичайне порівняння рядків працює.
+    if (String(rows[i][col]).trim() < FROM_DATE) continue;
+    send_(format_(head, rows[i]));
+    n++;
+  }
+  Logger.log('Надіслано заявок: ' + n);
+}
