@@ -186,7 +186,8 @@ function crmSync() {
     var rows = sh.getRange(seen + 1, 1, last - seen, sh.getLastColumn()).getDisplayValues();
 
     for (var i = 0; i < rows.length; i++) {
-      crmAppend_(crm, pick_(head, rows[i]));
+      var d = pick_(head, rows[i]);
+      if (!isTest_(d)) crmAppend_(crm, d);
       props.setProperty(CRM_CURSOR, String(seen + 1 + i));
     }
   } finally {
@@ -209,7 +210,6 @@ function crmAppend_(crm, d) {
     'Дата': crmDate_(d.sent),
     'Ім\'я': d.name,
     'Telegram': d.nik_tg,
-    'Источник': d.type || 'Передзапис',
     'Статус': CRM_STATUS
   };
   var row = head.map(function (h) {
@@ -227,20 +227,32 @@ function crmDate_(sent) {
   return new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
 }
 
-/* Разово перенести в CRM заявки, які вже є в таблиці, від заданої дати. */
-function crmSendSince() {
-  var FROM_DATE = '2026-10-31';   // формат yyyy-MM-dd
-
+/* Разово перенести в CRM усі заявки, що вже є в таблиці. Запускати один раз,
+   коли щойно поставив скрипт. Тестові пропускає. Після переносу зсуває лічильник
+   на кінець таблиці, щоб щохвилинний тригер не продублював те саме. */
+function crmSendAll() {
   var sh = book_().getSheetByName(NOTIFY_SHEET);
   var crm = SpreadsheetApp.openById(CRM_ID).getSheetByName(CRM_SHEET);
+  var last = sh.getLastRow();
   var head = sh.getRange(1, 1, 1, sh.getLastColumn()).getDisplayValues()[0];
-  var rows = sh.getRange(2, 1, sh.getLastRow() - 1, sh.getLastColumn()).getDisplayValues();
-  var col = head.indexOf('sent');
-  var n = 0;
+  var rows = sh.getRange(2, 1, last - 1, sh.getLastColumn()).getDisplayValues();
+  var n = 0, skip = 0;
   for (var i = 0; i < rows.length; i++) {
-    if (String(rows[i][col]).trim() < FROM_DATE) continue;
-    crmAppend_(crm, pick_(head, rows[i]));
+    var d = pick_(head, rows[i]);
+    if (isTest_(d)) { skip++; continue; }
+    crmAppend_(crm, d);
     n++;
   }
-  Logger.log('Перенесено в CRM: ' + n);
+  PropertiesService.getScriptProperties().setProperty(CRM_CURSOR, String(last));
+  Logger.log("Перенесено в CRM: " + n + ", пропущено тестових: " + skip);
+}
+
+/* Тестові заявки в CRM не пускаємо. Дивимось у поля, які людина заповнює сама:
+   якщо десь трапилось «тест» чи «test» у будь-якій формі — рядок не наш. */
+function isTest_(d) {
+  var fields = ["name", "nik_tg", "instagram", "nisha", "dohod", "rol"];
+  for (var i = 0; i < fields.length; i++) {
+    if (/тест|test/i.test(d[fields[i]] || "")) return true;
+  }
+  return false;
 }
