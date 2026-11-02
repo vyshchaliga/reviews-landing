@@ -168,45 +168,69 @@
     return hlsPromise;
   }
 
-  function attach(card) {
-    if (card.attached) return card.attached;
+  /* Джерело чіпляємо заздалегідь — щойно картка здалася на екрані. Інакше play()
+     довелося б кликати вже після завантаження маніфесту, а до того часу браузер
+     устигає забути про клік і не дає звук без нового жесту. */
+  function wire(card) {
+    if (card.wired) return;
+    card.wired = true;
     var v = card.video, url = 'https://' + CDN + '/' + card.row.media + '/playlist.m3u8';
-    if (v.canPlayType('application/vnd.apple.mpegurl')) {
-      v.src = url;
-      card.attached = Promise.resolve();
+    if (window.Hls && window.Hls.isSupported()) {
+      var h = new window.Hls({ capLevelToPlayerSize: true, maxBufferLength: 12, backBufferLength: 10 });
+      card.hls = h;
+      h.loadSource(url);
+      h.attachMedia(v);                               // джерело з'являється одразу, дані підтягнуться самі
     } else {
-      card.attached = loadHls().then(function () {
-        if (window.Hls && window.Hls.isSupported()) {
-          var h = new window.Hls({ capLevelToPlayerSize: true, maxBufferLength: 12, backBufferLength: 10 });
-          card.hls = h;
-          h.loadSource(url);
-          h.attachMedia(v);
-        } else {
-          v.src = url;
-        }
-      });
+      v.src = url;                                    // iPhone грає HLS сам
     }
-    return card.attached;
+    if (card.wants && v.paused) tryPlay(card);
+  }
+
+  function attach(card) {
+    if (card.wired) return;
+    // Питати браузер, чи вміє він HLS, не можна: Chrome на canPlayType відповідає
+    // 'maybe', а насправді не грає його зовсім, і відгук мовчки зависав на першому
+    // кадрі. Тому головний шлях — hls.js, а власний HLS браузера лишається тільки
+    // там, де немає MediaSource (iPhone).
+    if (window.Hls || !window.MediaSource) wire(card);
+    else loadHls().then(function () { wire(card); });
   }
 
   /* ---------- Керування відтворенням ---------- */
   function pauseCard(c) {
-    if (c && c.video && !c.video.paused) c.video.pause();
+    if (!c || !c.video) return;
+    c.wants = false;
+    if (!c.video.paused) c.video.pause();
+  }
+
+  function needTap(c) {
+    c.wants = false;
+    c.reel.classList.add('needs-tap');
+    c.reel.classList.remove('is-playing');
+  }
+
+  function tryPlay(c) {
+    var v = c.video, p = v.play();
+    if (!p || !p.catch) return;
+    p.catch(function () {
+      // Звук без жесту користувача заборонений — пробуємо хоча б без звуку
+      if (!v.muted) {
+        v.muted = true;
+        var q = v.play();
+        if (q && q.catch) q.catch(function () { needTap(c); });
+      } else {
+        needTap(c);
+      }
+    });
   }
 
   function playCard(c) {
     if (state.current && state.current !== c) pauseCard(state.current);
     state.current = c;
-    attach(c).then(function () {
-      var v = c.video;
-      v.muted = state.touch ? state.muted : false;
-      var p = v.play();
-      if (p && p.catch) p.catch(function () {
-        // Браузер заборонив автозапуск (економія батареї, вбудований браузер): даємо тап-кнопку
-        c.reel.classList.add('needs-tap');
-        c.reel.classList.remove('is-playing');
-      });
-    });
+    c.wants = true;
+    c.video.muted = state.touch ? state.muted : false;
+    if (c.wired) tryPlay(c);
+    else attach(c);                                   // wire() запустить відтворення сам
   }
 
   function toggleSound(fromCard) {
@@ -248,6 +272,8 @@
     reel.addEventListener('contextmenu', function (e) { e.preventDefault(); });
 
     v.addEventListener('playing', function () { reel.classList.add('is-playing'); reel.classList.remove('needs-tap'); });
+    // Коли клікнули раніше, ніж під'їхали дані, запускаємо щойно є що показати
+    v.addEventListener('canplay', function () { if (card.wants && v.paused) tryPlay(card); });
     v.addEventListener('pause', function () { reel.classList.remove('is-playing'); });
     v.addEventListener('ended', function () { reel.classList.remove('is-playing'); });
 
@@ -378,6 +404,8 @@
     });
     applyLang(state.lang);
     observeVideos();
+    // Бібліотеку тягнемо заздалегідь: у момент кліку чекати на неї вже пізно
+    if (state.videos.length && window.MediaSource) loadHls();
     watchSticky();
     initLoop();
   }
@@ -390,6 +418,7 @@
     entries.forEach(function (en) {
       var c = en.target._card; if (!c) return;
       c.ratio = en.intersectionRatio; c.visible = en.isIntersecting;
+      if (en.isIntersecting) attach(c);               // готуємо джерело до того, як на нього клікнуть
     });
     if (state.touch) {
       var best = null;
@@ -412,6 +441,7 @@
     var i = state.videos.indexOf(c); if (i > -1) state.videos.splice(i, 1);
     pauseCard(c);
     if (c.hls) { try { c.hls.destroy(); } catch (e) { /* ігноруємо */ } c.hls = null; }
+    c.wired = false;
     if (state.current === c) state.current = null;
   }
 
