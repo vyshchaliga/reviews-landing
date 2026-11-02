@@ -256,3 +256,28 @@ function isTest_(d) {
   }
   return false;
 }
+
+/* Дослати в CRM заявки за проміжок, який випав: ставиш дату, з якої переносити,
+   і запускаєш один раз. Тестові пропускає, лічильник зсуває на кінець таблиці,
+   щоб щохвилинний тригер не продублював те саме. */
+function crmSendSince() {
+  var FROM_DATE = '2026-10-31 13:00:00';   // формат yyyy-MM-dd HH:mm:ss
+
+  var sh = book_().getSheetByName(NOTIFY_SHEET);
+  var crm = SpreadsheetApp.openById(CRM_ID).getSheetByName(CRM_SHEET);
+  var last = sh.getLastRow();
+  var head = sh.getRange(1, 1, 1, sh.getLastColumn()).getDisplayValues()[0];
+  var rows = sh.getRange(2, 1, last - 1, sh.getLastColumn()).getDisplayValues();
+  var col = head.indexOf('sent');
+  var n = 0, skip = 0;
+  for (var i = 0; i < rows.length; i++) {
+    // sent лежить текстом yyyy-MM-dd HH:mm:ss, тому звичайне порівняння рядків працює.
+    if (String(rows[i][col]).trim() < FROM_DATE) continue;
+    var d = pick_(head, rows[i]);
+    if (isTest_(d)) { skip++; continue; }
+    crmAppend_(crm, d);
+    n++;
+  }
+  PropertiesService.getScriptProperties().setProperty(CRM_CURSOR, String(last));
+  Logger.log('Перенесено в CRM: ' + n + ', пропущено тестових: ' + skip);
+}
