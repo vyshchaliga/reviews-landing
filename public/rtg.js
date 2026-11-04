@@ -20,15 +20,19 @@
   };
   var API = '/api/lead';
 
-  // Радіо-питання. v — значення, яке потрапляє в таблицю (як в анкеті на Tilda, російською); ua/ru — підписи.
-  var GROUPS = [
-    // multi: можна обрати кілька (у таблицю йдуть через кому); solo: варіант, що виключає інші
-    { key: 'rol', t: 'role', multi: true, opts: [
-      { v: 'Продюсер',                        ua: 'Продюсер',                         ru: 'Продюсер' },
-      { v: 'Эксперт',                         ua: 'Експерт',                          ru: 'Эксперт' },
-      { v: 'Маркетолог / в команде проекта',  ua: 'Маркетолог / у команді проєкту',   ru: 'Маркетолог / в команде проекта' },
-      { v: 'Пока не в инфобизнесе',           ua: 'Поки не в інфобізнесі',            ru: 'Пока не в инфобизнесе', solo: true } ] }
-  ];
+  // Радіо-питання. v — значення, яке потрапляє в таблицю; ua/ru — підписи.
+  // multi: можна обрати кілька (у таблицю йдуть через кому); solo: варіант, що виключає інші.
+  // Дохід — самі цифри, тому підпис і значення однакові в обох мовах.
+  var INCOME = { key: 'dohod', t: 'income', opts: [
+    { v: 'до 2500$',    ua: 'до 2500$',    ru: 'до 2500$' },
+    { v: '2500$-5000$', ua: '2500$-5000$', ru: '2500$-5000$' },
+    { v: '5000-15000$', ua: '5000-15000$', ru: '5000-15000$' },
+    { v: '15000$+',     ua: '15000$+',     ru: '15000$+' } ] };
+  var ROLE = { key: 'rol', t: 'role', multi: true, opts: [
+    { v: 'Продюсер',                        ua: 'Продюсер',                         ru: 'Продюсер' },
+    { v: 'Эксперт',                         ua: 'Експерт',                          ru: 'Эксперт' },
+    { v: 'Маркетолог / в команде проекта',  ua: 'Маркетолог / у команді проєкту',   ru: 'Маркетолог / в команде проекта' },
+    { v: 'Пока не в инфобизнесе',           ua: 'Поки не в інфобізнесі',            ru: 'Пока не в инфобизнесе', solo: true } ] };
 
   var T = {
     ua: {
@@ -55,6 +59,8 @@
 
   // На агентському і консалтинговому лендах замість питання про роль стоїть вільне поле «Ваша ниша»
   var NICHE = /^\/pre-reg-form-(?:agent|consult)(?:\/ua)?\/?$/.test(location.pathname);
+  // Дохід питають скрізь, роль — тільки там, де замість неї немає поля ніші
+  var GROUPS = NICHE ? [INCOME] : [INCOME, ROLE];
   // Під яким типом анкета лягає в таблицю — по цьому полю потоки розділяються
   var LEAD_TYPE = /^\/pre-reg-form-consult(?:\/ua)?\/?$/.test(location.pathname) ? 'Предзапис консалт'
     : /^\/pre-reg-form-agent(?:\/ua)?\/?$/.test(location.pathname) ? 'Предзапис агенти'
@@ -75,7 +81,7 @@
     var i = el('input', 'rtg-in');
     i.id = id; i.name = key; i.type = type || 'text'; i.maxLength = 200;
     i.autocomplete = autocomplete || 'off';
-    i.setAttribute('enterkeyhint', key === 'dohod' ? 'done' : 'next');
+    i.setAttribute('enterkeyhint', key === (NICHE ? 'nisha' : 'instagram') ? 'done' : 'next');
     if (inputmode) i.setAttribute('inputmode', inputmode);
     var nick = key === 'tg' || key === 'instagram';
     if (nick) { i.setAttribute('autocapitalize', 'none'); i.setAttribute('autocorrect', 'off'); i.spellcheck = false; }
@@ -151,9 +157,9 @@
       refs.groups[g.key] = { def: g, set: fs, legend: lgT, hint: lgH, items: items };
       return fs;
     }
-    form.appendChild(field('dohod', 'text', 'off'));
+    form.appendChild(group(INCOME));
     if (NICHE) form.appendChild(field('nisha', 'text', 'off'));
-    else form.appendChild(group(GROUPS[0]));
+    else form.appendChild(group(ROLE));
 
     // Пастка для ботів: людина це поле не бачить
     var hp = el('div', 'rtg-hp'); hp.setAttribute('aria-hidden', 'true');
@@ -184,9 +190,9 @@
     refs.hTail.textContent = t.titleTail;
     refs.sub.textContent = t.sub;
     refs.name.label.textContent = t.name; refs.tg.label.textContent = t.tg;
-    refs.instagram.label.textContent = t.ig; refs.dohod.label.textContent = t.income;
+    refs.instagram.label.textContent = t.ig;
     if (NICHE) refs.nisha.label.textContent = t.nisha;
-    if (!NICHE) GROUPS.forEach(function (g) {
+    GROUPS.forEach(function (g) {
       var G = refs.groups[g.key];
       G.legend.textContent = t[g.t];
       G.hint.textContent = g.multi ? t.multi : '';
@@ -228,7 +234,7 @@
      кнопки до неї прокручують, нікуди не переносять. */
   function slot() { return document.getElementById('prereg-slot'); }
 
-  var FILLED = NICHE ? ['name', 'tg', 'instagram', 'dohod', 'nisha'] : ['name', 'tg', 'instagram', 'dohod'];
+  var FILLED = NICHE ? ['name', 'tg', 'instagram', 'nisha'] : ['name', 'tg', 'instagram'];
 
   function mountInline() {
     var s = slot();
@@ -257,28 +263,23 @@
     var data = {
       name: refs.name.input.value.trim(),
       nik_tg: atNick(refs.tg.input.value),
-      instagram: atNick(refs.instagram.input.value),
-      dohod: refs.dohod.input.value.trim()
+      instagram: atNick(refs.instagram.input.value)
     };
-    if (NICHE) {
-      // у таблиці для ніші є своя колонка nisha, тому rol лишається порожнім
-      data.nisha = refs.nisha.input.value.trim();
-    } else {
-      GROUPS.forEach(function (g) {
-        data[g.key] = '';
-        data[g.key] = refs.groups[g.key].items.filter(function (r) { return r.input.checked; })
-          .map(function (r) { return r.opt.v; }).join(', ');
-      });
-    }
+    GROUPS.forEach(function (g) {
+      data[g.key] = refs.groups[g.key].items.filter(function (r) { return r.input.checked; })
+        .map(function (r) { return r.opt.v; }).join(', ');
+    });
+    // у таблиці для ніші є своя колонка nisha, тому rol на цих лендах лишається порожнім
+    if (NICHE) data.nisha = refs.nisha.input.value.trim();
 
     var bad = false;
-    var required = [['name', data.name], ['tg', data.nik_tg], ['instagram', data.instagram], ['dohod', data.dohod]];
+    var required = [['name', data.name], ['tg', data.nik_tg], ['instagram', data.instagram]];
     if (NICHE) required.push(['nisha', data.nisha]);
     required.forEach(function (p) {
       var empty = !p[1] || p[1] === '@';
       refs[p[0]].wrap.classList.toggle('err', empty); if (empty) bad = true;
     });
-    if (!NICHE) GROUPS.forEach(function (g) {
+    GROUPS.forEach(function (g) {
       refs.groups[g.key].set.classList.toggle('err', !data[g.key]); if (!data[g.key]) bad = true;
     });
     if (bad) {
