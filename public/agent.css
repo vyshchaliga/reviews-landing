@@ -120,6 +120,33 @@
 .agent .rtg-msg{color:#F25648}
 .agent .rtg-go{min-height:56px;font-size:16px;border-radius:var(--r-pill)}
 
+/* Варіанти відповіді. У rtg.css вони намальовані під темний ленд і на білому
+   просто не читаються, тому тут свої: пігулки на кшталт кнопок, обраний —
+   чорний, як решта кнопок на ленді. */
+.agent .rtg-fs{border:0;margin:14px 0;padding:0;min-width:0}
+.agent .rtg-fs .rtg-l{display:block;padding:0;margin:0 0 10px;font-size:14px;color:var(--ink);font-weight:400}
+.agent .rtg-hint{margin-left:8px;font-size:12px;font-weight:400;color:var(--muted)}
+.agent .rtg-chips{display:flex;flex-wrap:wrap;gap:8px}
+.agent .rtg-opt{position:relative;display:flex;align-items:center;gap:8px;
+  padding:9px 15px 9px 11px;border:1px solid var(--line);border-radius:var(--r-pill);
+  background:#F2F2F2;color:var(--ink);
+  font-family:"e-Ukraine",system-ui,sans-serif;font-size:14px;line-height:18px;
+  letter-spacing:-0.01em;font-weight:400;cursor:pointer;
+  transition:border-color .18s ease,background-color .18s ease,color .18s ease}
+.agent .rtg-opt:hover{border-color:#C9C9C9}
+.agent .rtg-dot{flex:none;width:17px;height:17px;border-radius:50%;
+  border:1.5px solid #9B9B9B;background:transparent}
+.agent .rtg-dot::after{width:9px;height:9px;background:var(--surface)}
+.agent .rtg-dot.sq{border-radius:5px}
+.agent .rtg-dot.sq::after{width:4px;height:8px;margin-top:-2px;background:none;
+  border:solid var(--surface);border-width:0 2px 2px 0}
+.agent .rtg-opt input:checked + .rtg-dot{border-color:var(--surface)}
+.agent .rtg-opt input:checked + .rtg-dot.sq{border-color:var(--surface);background:transparent}
+.agent .rtg-opt.on{background:var(--ink);border-color:var(--ink);color:var(--surface)}
+.agent .rtg-opt input:focus-visible + .rtg-dot{box-shadow:0 0 0 4px rgba(0,0,0,0.18)}
+.agent .rtg-fs.err .rtg-opt{border-color:#F25648}
+.agent .rtg-fs.err .rtg-dot{border-color:#F25648}
+
 /* ===== Стіна відгуків ===== */
 .agent .wall-wrap{padding:0 18px 36px}
 .agent .wall-h{margin:0 auto 18px;max-width:520px;font-size:26px;line-height:1.42;color:var(--ink);text-align:center}
