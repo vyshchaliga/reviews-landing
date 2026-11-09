@@ -48,12 +48,12 @@
   };
 
   // На агентському і консалтинговому лендах замість питання про роль стоїть вільне поле «Ваша ниша»
-  var NICHE = /^\/pre-reg-form-(?:agent|consult)(?:\/ua)?\/?$/.test(location.pathname);
+  var NICHE = /^\/pre-reg-form-(?:agent|agent-d|consult)(?:\/ua)?\/?$/.test(location.pathname);
   // Дохід питають скрізь, роль — тільки там, де замість неї немає поля ніші
   var GROUPS = NICHE ? [INCOME] : [INCOME, ROLE];
   // Під яким типом анкета лягає в таблицю — по цьому полю потоки розділяються
   var LEAD_TYPE = /^\/pre-reg-form-consult(?:\/ua)?\/?$/.test(location.pathname) ? 'Предзапис консалт'
-    : /^\/pre-reg-form-agent(?:\/ua)?\/?$/.test(location.pathname) ? 'Предзапис агенти'
+    : /^\/pre-reg-form-agent(?:-d)?(?:\/ua)?\/?$/.test(location.pathname) ? 'Предзапис агенти'
     : 'Предзапис';
 
   var card, form, formView, done = false, busy = false;

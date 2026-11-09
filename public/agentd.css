@@ -1,0 +1,40 @@
+/* Сторінка /pre-reg-form-agent-d: агентський ленд (/pre-reg-form-agent, agent.css) з героєм
+   від /pre-reg-form-d — Саша на тлі кривої зростання. Правила графіка повторені з preregd.css,
+   але прибиті до html.agentd, щоб не тягнути сюди всю тему apple. */
+
+/* Без сірої картки під фото: фігура стоїть просто на тлі сторінки, як на /pre-reg-form-d */
+.agentd .hero-pic{position:relative;margin:10px 0 0;aspect-ratio:1000/620;
+  border-radius:0;overflow:visible;background:none}
+.agentd .hero-chart{position:absolute;inset:0;width:100%;height:100%}
+.agentd .hero-chart-n{font-family:"e-Ukraine",system-ui,sans-serif;font-weight:500;font-size:36px;letter-spacing:-0.02em}
+.agentd .hero-pic img{position:absolute;left:7%;bottom:0;width:52%;height:auto}
+
+@keyframes agd-draw{
+  from{clip-path:inset(-30px calc(100% + 30px) -30px -30px)}
+  33%{clip-path:inset(-30px calc(41% + 30px) -30px -30px)}
+  to{clip-path:inset(-30px -30px -30px -30px)}
+}
+@keyframes agd-fade{from{opacity:0}to{opacity:1}}
+@keyframes agd-pulse{0%{opacity:.5;transform:scale(1)}70%,100%{opacity:0;transform:scale(4.6)}}
+
+.agentd .hero-chart .ch-area,
+.agentd .hero-chart .ch-done{animation:agd-draw 1.22s linear .2s backwards}
+.agentd .hero-chart .ch-dot,.agentd .hero-chart .ch-n{animation:agd-fade .35s ease both}
+.agentd .hero-chart .ch-glow{animation:agd-fade .9s ease backwards}
+.agentd .hero-chart .d0{animation-delay:.23s}
+.agentd .hero-chart .d1{animation-delay:.71s}
+.agentd .hero-chart .d2{animation-delay:.94s}
+.agentd .hero-chart .d3{animation-delay:1.23s}
+.agentd .hero-chart .ch-peak{font-size:48px;font-weight:700}
+.agentd .hero-chart .ch-pulse{transform-box:fill-box;transform-origin:center;opacity:0;
+  animation:agd-pulse 2.4s ease-out 1.3s infinite}
+
+/* Картка бонуса заходить на низ кадру й прикриває рівний зріз фігури */
+.agentd .offer{margin-top:-22px}
+
+@media (prefers-reduced-motion:reduce){
+  .agentd .hero-chart .ch-area,.agentd .hero-chart .ch-done,
+  .agentd .hero-chart .ch-dot,.agentd .hero-chart .ch-n,
+  .agentd .hero-chart .ch-glow,.agentd .hero-chart .ch-pulse{animation:none;clip-path:none}
+  .agentd .hero-chart .ch-pulse{opacity:0}
+}

@@ -34,24 +34,27 @@ const RAW = new Set(['bonusN']);
 
 const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
-export function buildAgentUaPage() {
-  let page = fs.readFileSync(SRC, 'utf8');
+// Тим самим кодом збирається /pre-reg-form-agent-d (агентський офер з героєм від /pre-reg-form-d):
+// йому передаються свої шляхи і ключі, якими його тексти відрізняються від базових.
+export function buildAgentUaPage({ src = SRC, out = OUT, ruHref = '/pre-reg-form-agent', dict = {} } = {}) {
+  const UA_ = { ...UA, ...dict };
+  let page = fs.readFileSync(src, 'utf8');
   const was = page;
 
   page = page.replace('<html lang="ru"', '<html lang="uk"');
-  page = page.replace(/<title>[\s\S]*?<\/title>/, `<title>${esc(UA.pageTitle)}</title>`);
-  page = page.replace(/(<meta name="description" content=")[^"]*(")/, `$1${esc(UA.pageDesc)}$2`);
+  page = page.replace(/<title>[\s\S]*?<\/title>/, `<title>${esc(UA_.pageTitle)}</title>`);
+  page = page.replace(/(<meta name="description" content=")[^"]*(")/, `$1${esc(UA_.pageDesc)}$2`);
   page = page.replace('aria-label="Бонус предзаписи"', 'aria-label="Бонус передзапису"');
 
   // перемикач дзеркалимо: активна тут українська, посилання веде на російську
   page = page.replace(
     /<!-- Мова прибита[\s\S]*?<\/div>/,
     [
-      '<!-- Мова прибита до адреси: ця сторінка тільки українська, RU веде на /pre-reg-form-agent -->',
+      `<!-- Мова прибита до адреси: ця сторінка тільки українська, RU веде на ${ruHref} -->`,
       '      <div class="langs" role="group" aria-label="Language">',
       '        <span class="lang on" aria-current="true">UA</span>',
       '        <span class="lang-sep">|</span>',
-      '        <a class="lang" href="/pre-reg-form-agent" hreflang="ru">RU</a>',
+      `        <a class="lang" href="${ruHref}" hreflang="ru">RU</a>`,
       '      </div>',
     ].join('\n')
   );
@@ -61,9 +64,9 @@ export function buildAgentUaPage() {
   page = page.replace(
     /(<(\w+)(?:\s[^>]*)?\sdata-a18n="([^"]+)"(?:\s[^>]*)?>)([\s\S]*?)(<\/\2>)/g,
     (all, open, tag, key, inner) => {
-      if (UA[key] == null) { missing.push(key); return all; }
+      if (UA_[key] == null) { missing.push(key); return all; }
       was_ru.push(inner.trim());
-      return open + (RAW.has(key) ? UA[key] : esc(UA[key])) + `</${tag}>`;
+      return open + (RAW.has(key) ? UA_[key] : esc(UA_[key])) + `</${tag}>`;
     }
   );
   if (missing.length) throw new Error(`у словнику немає ключів: ${missing.join(', ')}`);
@@ -74,10 +77,10 @@ export function buildAgentUaPage() {
   const left = was_ru.filter((s) => s && body.includes(s));
   if (left.length) throw new Error(`в українській сторінці лишився російський текст: ${left.join(' / ')}`);
 
-  fs.mkdirSync(path.dirname(OUT), { recursive: true });
-  const old = fs.existsSync(OUT) ? fs.readFileSync(OUT, 'utf8') : null;
-  if (old !== page) fs.writeFileSync(OUT, page);
-  return { changed: old !== page, keys: Object.keys(UA).length };
+  fs.mkdirSync(path.dirname(out), { recursive: true });
+  const old = fs.existsSync(out) ? fs.readFileSync(out, 'utf8') : null;
+  if (old !== page) fs.writeFileSync(out, page);
+  return { changed: old !== page, keys: Object.keys(UA_).length };
 }
 
 if (process.argv[1]?.endsWith('build-agent-ua-page.mjs')) {

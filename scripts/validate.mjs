@@ -41,6 +41,19 @@ try {
   console.log('  ✖ не вдалося зібрати українську сторінку для агенцій: ' + e.message);
   process.exit(1);
 }
+// Агентський ленд з героєм від /pre-reg-form-d: інший заголовок, решта текстів спільна
+try {
+  const ua = buildAgentUaPage({
+    src: path.join(ROOT, 'public', 'pre-reg-form-agent-d.html'),
+    out: path.join(ROOT, 'public', 'pre-reg-form-agent-d', 'ua.html'),
+    ruHref: '/pre-reg-form-agent-d',
+    dict: { h1c: 'в агентському бізнесі та підготуйся до нових реалій ринку у 2027' },
+  });
+  if (ua.changed) console.log('public/pre-reg-form-agent-d/ua.html перезібрано.');
+} catch (e) {
+  console.log('  ✖ не вдалося зібрати українську сторінку /pre-reg-form-agent-d: ' + e.message);
+  process.exit(1);
+}
 try {
   const ua = buildConsultUaPage();
   if (ua.changed) console.log('public/pre-reg-form-consult/ua.html перезібрано.');

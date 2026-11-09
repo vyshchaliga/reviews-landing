@@ -1,4 +1,4 @@
-/* Сторінки /pre-reg-form-agent і /pre-reg-form-agent/ua. Тексти в розмітці статичні —
+/* Сторінки /pre-reg-form-agent(-d) і /pre-reg-form-agent(-d)/ua. Тексти в розмітці статичні —
    українську сторінку збирає scripts/build-agent-ua-page.mjs, — тому словника тут немає.
    Лишається дата дедлайну, відео в мокапі і прокрутка до анкети. */
 (function () {
@@ -19,14 +19,16 @@
   }
 
   /* Заголовок тримається у двох рядках: перенос стоїть у розмітці, а тут
-     зменшуємо кегль, поки жоден з рядків не почне переноситись сам. */
+     зменшуємо кегль, поки жоден з рядків не почне переноситись сам.
+     Довшому заголовку (/pre-reg-form-agent-d) дозволено більше рядків: data-fit-lines. */
   function fitH1() {
     var h = document.querySelector('.hero-main h1');
     if (!h) return;
+    var lines = parseInt(h.getAttribute('data-fit-lines'), 10) || 2;
     for (var px = 32; px >= 16; px--) {
       h.style.fontSize = px + 'px';
       var lh = parseFloat(getComputedStyle(h).lineHeight) || px * 1.38;
-      if (h.offsetHeight / lh < 2.5) return;
+      if (h.offsetHeight / lh < lines + 0.5) return;
     }
   }
 
