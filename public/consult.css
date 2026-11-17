@@ -27,6 +27,9 @@
   --navy:#001934;
   --red:#E60C2E;
   --red-dark:#C50A27;
+  /* салатовий акцент — той самий, що на infobiz-lm300: коло на фото й виділені слова */
+  --lime:#B0E62A;
+  --lime-ink:#0A0A0A;
   --muted:#93939E;
   --line:#E8E8E8;
   --r-card:10px;
@@ -42,9 +45,14 @@
 /* золотих плям і золотого тексту тут немає */
 .consult .bg{display:none}
 .consult .gold{background:none;-webkit-text-fill-color:currentColor;color:inherit;animation:none}
-/* У ПУМБ акцент у заголовку — не плашка, а просто червоне слово */
-.consult .mark{background:none;color:var(--red);padding:0;margin:0;border-radius:0}
-.consult .mark-cyan,.consult .mark-orange{background:none;color:var(--red)}
+/* Акцент у заголовках — салатова плашка-маркер під темним текстом.
+   Салатовий текст на білому фоні не читається (контраст ~1.6:1), тому колір
+   іде у фон, а слова лишаються темними. box-decoration-break тримає плашку
+   цілою на кожному рядку, якщо виділення переноситься. */
+.consult .mark,.consult .mark-cyan,.consult .mark-orange{
+  background:var(--lime);color:var(--lime-ink);
+  padding:0 .14em;margin:0 -.04em;border-radius:.18em;
+  -webkit-box-decoration-break:clone;box-decoration-break:clone}
 
 /* ===== Перший екран ===== */
 .consult .hero{padding:16px 18px 28px}
@@ -65,7 +73,7 @@
   font-size:clamp(10px,3.3vw,12px);line-height:1.35;font-weight:500;letter-spacing:0;text-transform:none}
 .consult h1{margin:0;font-size:26px;line-height:1.24;letter-spacing:-0.015em;color:var(--ink-strong);font-weight:700}
 
-/* ===== Фото: червоне коло ПУМБ уже всередині кадру, тому під картинкою нічого не малюємо ===== */
+/* ===== Фото: салатове коло вже всередині кадру, тому під картинкою нічого не малюємо ===== */
 .consult .hero-pic{position:relative;margin:10px 0 0;background:none;border-radius:0;overflow:visible}
 .consult .hero-pic::before,.consult .hero-pic::after{display:none}
 .consult .hero-pic img{position:relative;z-index:1;display:block;width:100%;height:auto;border-radius:0}
@@ -89,12 +97,11 @@
   border:1px solid var(--line);box-shadow:var(--shadow);backdrop-filter:none;-webkit-backdrop-filter:none}
 .consult .bonus::before{display:none}
 .consult .bonus-h,.consult .bonus-s{display:block;color:var(--ink);font-size:clamp(11px,3vw,13px);line-height:1.4;font-weight:400}
-.consult .bonus-h b{color:var(--red);font-weight:700;white-space:nowrap}
+.consult .bonus-h b{background:var(--lime);color:var(--lime-ink);font-weight:700;white-space:nowrap;padding:0 4px;border-radius:4px}
 .consult .bonus-n{display:block;margin-top:6px;color:var(--ink-strong);font-size:clamp(11px,3vw,13px);line-height:1.4;font-weight:700}
-/* Темно-синій тут майже не відрізнявся від основного тексту картки, тому
-   акцент даємо кольором: усі три фрагменти червоним текстом, без плашки —
-   плашка з-поміж них вибивалась і картка читалась як два різні дизайни. */
-.consult .bonus-n b{color:var(--red);font-weight:700;white-space:nowrap}
+/* Акцентні фрагменти бонуса — тією ж салатовою плашкою, що й у заголовку,
+   щоб картка й заголовок читались як один дизайн. */
+.consult .bonus-n b{background:var(--lime);color:var(--lime-ink);font-weight:700;white-space:nowrap;padding:0 4px;border-radius:4px}
 .consult .lap{filter:none}
 .consult .lap-scr{border:2px solid #D8D8D8;background:#111}
 .consult .lap-base{background:linear-gradient(180deg,#E3E3EA 0%,#B6B6BF 100%)}
