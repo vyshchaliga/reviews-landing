@@ -30,6 +30,7 @@
   /* салатовий акцент — той самий, що на infobiz-lm300: коло на фото й виділені слова */
   --lime:#B0E62A;
   --lime-ink:#0A0A0A;
+  --lime-dark:#9FD41E;
   --muted:#93939E;
   --line:#E8E8E8;
   --r-card:10px;
@@ -62,7 +63,7 @@
 .consult .brand{font-size:15px;line-height:1;letter-spacing:-0.01em;color:var(--ink-strong);font-weight:700}
 .consult .langs{display:flex;align-items:center;gap:6px}
 .consult .lang{color:var(--muted);font-family:"Manrope",sans-serif;font-size:12px;font-weight:600;text-decoration:none}
-.consult .lang.on{color:var(--red)}
+.consult .lang.on{color:var(--ink-strong)}
 .consult .lang-sep{color:var(--line)}
 
 .consult .hero-main{min-height:0;padding:0;text-align:center}
@@ -108,9 +109,10 @@
 .consult .lap-base::after{background:rgba(0,0,0,0.12)}
 
 /* ===== Кнопки ===== */
-.consult .btn{background:var(--red);color:#FFFFFF;border-radius:var(--r-pill);
-  font-family:"Manrope",sans-serif;font-weight:600;letter-spacing:0;text-shadow:none}
-.consult .btn:hover{background:var(--red-dark);color:#FFFFFF}
+/* Кнопки салатові, як коло й акценти; білий текст на салатовому не читається, тому темний */
+.consult .btn{background:var(--lime);color:var(--lime-ink);border-radius:var(--r-pill);
+  font-family:"Manrope",sans-serif;font-weight:700;letter-spacing:0;text-shadow:none}
+.consult .btn:hover{background:var(--lime-dark);color:var(--lime-ink)}
 .consult .btn::after{display:none}              /* без золотого переблиску */
 .consult .offer-go{display:flex;align-items:center;justify-content:center;width:100%;min-height:56px;
   margin-top:14px;padding:0 18px;font-size:15px;line-height:1.2;text-transform:none;text-align:center}
@@ -127,7 +129,7 @@
 .consult .rtg-in{background:var(--tint);border:1px solid transparent;border-radius:var(--r-field);
   color:var(--ink-strong);font-family:"Manrope",system-ui,sans-serif}
 .consult .rtg-in::placeholder{color:#B6B6BF}
-.consult .rtg-in:focus{border-color:var(--red);background:#FFFFFF}
+.consult .rtg-in:focus{border-color:var(--lime-dark);background:#FFFFFF}
 .consult .rtg-f.err .rtg-in{border-color:var(--red)}
 .consult .rtg-f .rtg-l{color:var(--muted)}
 .consult .rtg-f:focus-within .rtg-l{color:var(--ink-strong)}
@@ -150,14 +152,14 @@
 .consult .rtg-opt:hover{border-color:#D0D0D9}
 .consult .rtg-dot{flex:none;width:17px;height:17px;border-radius:50%;
   border:1.5px solid #B6B6BF;background:transparent}
-.consult .rtg-dot::after{width:9px;height:9px;background:#fff}
+.consult .rtg-dot::after{width:9px;height:9px;background:var(--lime-ink)}
 .consult .rtg-dot.sq{border-radius:5px}
 .consult .rtg-dot.sq::after{width:4px;height:8px;margin-top:-2px;background:none;
-  border:solid #fff;border-width:0 2px 2px 0}
-.consult .rtg-opt input:checked + .rtg-dot{border-color:#fff}
-.consult .rtg-opt input:checked + .rtg-dot.sq{border-color:#fff;background:transparent}
-.consult .rtg-opt.on{background:var(--red);border-color:var(--red);color:#fff}
-.consult .rtg-opt input:focus-visible + .rtg-dot{box-shadow:0 0 0 4px rgba(230,12,46,0.25)}
+  border:solid var(--lime-ink);border-width:0 2px 2px 0}
+.consult .rtg-opt input:checked + .rtg-dot{border-color:var(--lime-ink)}
+.consult .rtg-opt input:checked + .rtg-dot.sq{border-color:var(--lime-ink);background:transparent}
+.consult .rtg-opt.on{background:var(--lime);border-color:var(--lime);color:var(--lime-ink)}
+.consult .rtg-opt input:focus-visible + .rtg-dot{box-shadow:0 0 0 4px rgba(176,230,42,0.45)}
 .consult .rtg-fs.err .rtg-opt{border-color:var(--red)}
 .consult .rtg-fs.err .rtg-dot{border-color:var(--red)}
 
@@ -167,8 +169,8 @@
 .consult .shot{border-radius:var(--r-card);background:var(--surface)}
 .consult .reel{border-radius:var(--r-card);background:var(--tint)}
 .consult .reel video{background:var(--tint)}
-.consult .play{background:var(--red)}
-.consult .play:hover{background:var(--red-dark)}
+.consult .play{background:var(--lime);color:var(--lime-ink)}
+.consult .play:hover{background:var(--lime-dark)}
 .consult .snd{background:rgba(0,25,52,0.5)}
 
 /* ===== Закріплена кнопка ===== */

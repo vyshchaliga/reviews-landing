@@ -13,7 +13,8 @@
 #   2) м'який зовнішній край кола на білому: те саме, щоб не лишилось рожевої облямівки;
 #   3) край, де коло заходить під волосся, шкіру, одяг: піксель — суміш червоного
 #      з тим, що попереду; оцінюємо частку червоного й міняємо тільки її.
-# Повторний запуск на вже салатовому кадрі нічого не змінює.
+#   4) чохол телефона — теж у салатовий, з його бліками й тінями.
+# Читає consult-hero.webp (червоний, після consult-phone-screen.py), пише consult-hero-lime.webp.
 import os
 from collections import deque
 
@@ -21,7 +22,10 @@ import numpy as np
 from PIL import Image, ImageDraw, ImageFilter
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-IMG = os.path.join(ROOT, "public", "assets", "img", "consult-hero.webp")
+SRC = os.path.join(ROOT, "public", "assets", "img", "consult-hero.webp")
+# окреме ім'я, а не перезапис: браузери тримають картинки тиждень (vercel.json),
+# і зі старим ім'ям відвідувачі довго бачили б червоне коло
+IMG = os.path.join(ROOT, "public", "assets", "img", "consult-hero-lime.webp")
 
 RED = np.array([220, 0, 34]) / 255          # колір кола на оригіналі
 LIME = np.array([176, 230, 42]) / 255       # #B0E62A
@@ -31,7 +35,7 @@ CX, CY, R = 628.9, 637.9, 563.6
 QUAD = [(726.5, 107.8), (970.7, 36.3), (1102.8, 563.7), (858.9, 622.2)]
 SEEDS = [(600, 150), (900, 1100), (100, 700), (1000, 900)]  # (y, x) усередині кола
 
-im = Image.open(IMG).convert("RGB")
+im = Image.open(SRC).convert("RGB")
 W, H = im.size
 a = np.asarray(im).astype(float) / 255
 r, g, b = a[..., 0], a[..., 1], a[..., 2]
@@ -53,8 +57,7 @@ B = lambda i: np.asarray(i) > 127
 
 red = (r > 150 / 255) & (g < 40 / 255) & (b < 60 / 255)
 if not red[tuple(zip(*SEEDS))].any():
-    print("червоного кола не знайдено — кадр уже перефарбований, нічого не роблю")
-    raise SystemExit(0)
+    raise SystemExit("червоного кола не знайдено: спершу запусти consult-phone-screen.py")
 
 lab = np.zeros(red.shape, bool)
 q = deque(s for s in SEEDS if red[s])
@@ -99,5 +102,19 @@ band = (B(L(core).filter(ImageFilter.MaxFilter(17))) | ((dist < 4) & (dist > -15
 t = np.clip(((r - g) - 65 / 255) / (155 / 255), 0, 1) * band
 out = np.clip(out + t[..., None] * (LIME - RED), 0, 1)
 
+# 4) чохол: червоні пікселі в зоні телефона, які не належать колу. Шкіра пальців
+#    має тон 10–25° і сюди не потрапляє; світлі бліки чохла мають низьку насиченість,
+#    тому поріг по ній м'який.
+def ring(w):
+    m = Image.new("L", (W, H), 0)
+    ImageDraw.Draw(m).line(QUAD + [QUAD[0]], fill=255, width=2 * w, joint="curve")
+    return np.asarray(m) > 0
+# насичений червоний — у смузі ±24 px від краю екрана; бліді бліки — тільки ±9 px,
+# бо далі вже лежать нігті, а вони такого ж блідо-рожевого кольору
+case = ~sel & redhue & ((ring(24) & (S > 0.4)) | (ring(9) & (S > 0.15)))
+out[case, 0] = (nV * (1 - nS * f))[case]
+out[case, 1] = nV[case]
+out[case, 2] = (nV * (1 - nS))[case]
+
 Image.fromarray((out * 255).round().astype(np.uint8)).save(IMG, "WEBP", quality=88, method=6)
-print("готово:", IMG, "| коло:", int(sel.sum()), "px, край:", int((t > 0).sum()), "px")
+print("готово:", IMG, "| коло:", int(sel.sum()), "px, край:", int((t > 0).sum()), "px, чохол:", int(case.sum()), "px")
