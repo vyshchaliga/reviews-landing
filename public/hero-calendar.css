@@ -46,3 +46,11 @@ html[lang="uk"].consult .hcal-g i::after{content:"Клієнт"}
 @media (prefers-reduced-motion: reduce){
   .consult .hcal-g i::after,.consult .hcal-ok,.consult .hcal-fr{transition:none}
 }
+/* Бонус: ноутбук + «Заполни анкету до … / и гарантированно забери бонус» в верхнем ряду,
+   название бонуса — на всю ширину карточки под ними, чтобы влезало в 2 строки на телефоне */
+html.consult .bonus{row-gap:0;align-items:center}
+html.consult .bonus .lap{grid-row:1 / span 2;align-self:center}
+html.consult .bonus-t{display:contents}
+html.consult .bonus-h{grid-column:2;align-self:end}
+html.consult .bonus-s{grid-column:2;align-self:start}
+html.consult .bonus-n{grid-column:1 / -1;margin-top:10px}
