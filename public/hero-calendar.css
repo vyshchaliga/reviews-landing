@@ -21,6 +21,8 @@
 .consult .hcal-g i::after{content:"Клиент";display:flex;align-items:center;justify-content:center;color:#fff;font-style:normal;font-weight:600;font-size:clamp(6px,1.55vw,8.5px);letter-spacing:-.02em;position:absolute;inset:0;border-radius:5px;background:#2C2C3B;
   opacity:0;transform:scale(.4);transition:opacity .25s,transform .35s cubic-bezier(.3,1.5,.5,1)}
 .consult .hcal-g i.on::after{opacity:1;transform:scale(1)}
+/* напис у вікні йде з CSS, тож для /ua перекладаємо тут */
+html[lang="uk"].consult .hcal-g i::after{content:"Клієнт"}
 .consult .hcal-lg{display:flex;align-items:center;gap:10px;margin-top:4%;font-size:clamp(7px,2vw,10px);color:#93939E;transition:opacity .3s}
 .consult .hcal-lg span{display:flex;align-items:center;gap:5px}
 .consult .hcal-lg i{width:9px;height:9px;border-radius:3px;background:#2C2C3B}
