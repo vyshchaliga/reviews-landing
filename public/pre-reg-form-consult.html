@@ -14,6 +14,7 @@
 <link rel="preload" href="assets/fonts/manrope-cyrillic-400-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="styles.css">
 <link rel="stylesheet" href="consult.css">
+<link rel="stylesheet" href="hero-calendar.css">
 <script src="px.js"></script>
 <script src="https://fnlz.app/t.js" data-project="gorevich-vishcha-liga" data-site-form="form_er1zydxm" async></script>
 </head>
@@ -36,13 +37,21 @@
     <div class="hero-main">
       <p class="qual"><span data-c18n="qualA">Премиальная программа по масштабированию</span><br><span data-c18n="qualB">продаж инфопродуктов и услуг</span></p>
       <!-- Переноси стоять у розмітці: заголовок тримається в трьох рядках, кегль підганяє consult.js -->
-      <h1 class="d"><span class="mark" data-c18n="h1a">Масштабируй свой консалтинг</span> <span data-c18n="h1b">в 2027:</span><br><span class="mark" data-c18n="h1c">больше клиентов</span> <span data-c18n="h1d">без новых</span><br><span data-c18n="h1e">часов в графике</span></h1>
+      <h1 class="d"><span class="mark"><span data-c18n="h1a">Масштабируй свой консалтинг</span> <span data-c18n="h1b">в 2027</span></span>:<br><span data-c18n="h1c">больше клиентов</span> <span data-c18n="h1d">без новых</span><br><span data-c18n="h1e">часов в графике</span></h1>
     </div>
 
-    <!-- Саша Горевич на салатовому колі, чохол телефона теж салатовий (перефарбовано assets-src/consult-circle-color.py). Коло і напис на екрані телефона вмальовані в кадр,
-         тому зверху нічого не домальовуємо. -->
-    <div class="hero-pic">
-      <img src="assets/img/consult-hero-lime.webp" alt="" width="1254" height="1254" decoding="async" fetchpriority="high">
+    <!-- Перший екран: Саша зліва, справа тиждень, що забивається клієнтами (hero-calendar.css/.js).
+         Анімація один раз: 25 вікон займаються → «Своя программа» → нижній ряд стає «Свободное время». -->
+    <div class="hero-pic" aria-hidden="true">
+      <div class="hglow"></div>
+      <div class="hcal">
+        <div class="hcal-top"><span>Неделя</span><span class="hcal-free">Свободных окон: <b id="hcal-n">25</b></span></div>
+        <div class="hcal-d"><span></span><span>Пн</span><span>Вт</span><span>Ср</span><span>Чт</span><span>Пт</span></div>
+        <div class="hcal-g"><span class="hcal-t">10:00</span><i style="--i:3"></i><i style="--i:11"></i><i style="--i:0"></i><i style="--i:17"></i><i style="--i:7"></i><span class="hcal-t">12:00</span><i style="--i:20"></i><i style="--i:5"></i><i style="--i:14"></i><i style="--i:22"></i><i style="--i:9"></i><span class="hcal-t">14:00</span><i style="--i:1"></i><i style="--i:18"></i><i style="--i:12"></i><i style="--i:24"></i><i style="--i:6"></i><span class="hcal-t">16:00</span><i style="--i:15"></i><i style="--i:2"></i><i style="--i:21"></i><i style="--i:10"></i><i style="--i:16"></i><span class="hcal-t">18:00</span><i style="--i:8"></i><i style="--i:23"></i><i style="--i:4"></i><i style="--i:13"></i><i style="--i:19"></i><div class="hcal-fr">Свободное время</div></div>
+        <div class="hcal-lg"><span><i></i>Клиент · 2 часа</span></div>
+        <div class="hcal-ok"><span class="hcal-ck"><svg viewBox="0 0 24 24" fill="none" stroke="#F2B635" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>Своя программа</div>
+      </div>
+      <img class="hsasha" src="assets/img/sasha-hero-2.webp" alt="" width="506" height="564" decoding="async" fetchpriority="high">
     </div>
 
     <section class="offer" aria-label="Бонус предзаписи">
@@ -85,5 +94,6 @@
 <script src="config.js"></script>
 <script src="app.js"></script>
 <script src="consult.js"></script>
+<script src="hero-calendar.js"></script>
 </body>
 </html>

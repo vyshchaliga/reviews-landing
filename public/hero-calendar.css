@@ -1,0 +1,46 @@
+/* Жовтий акцент замість салатового (як на креативах) */
+.consult{--lime:#F2B635;--lime-dark:#E0A11F;--lime-ink:#0A0A0A}
+/* /pre-reg-form-consult: Саша (фото з /pre-reg-form-d) зліва, справа — тиждень, який забивається клієнтами,
+   лічильник вільних вікон 25 → 0, потім жовта галочка «Своя программа», після неї нижній ряд вікон гасне й стає «Свободное время». Один раз, без циклу (hero-calendar.js). Підключається після consult.css. */
+.consult .hero-pic{position:relative;margin:10px 0 0;aspect-ratio:1000/620;overflow:visible}
+.consult .hero-pic .hsasha{position:absolute;left:-2%;bottom:0;width:47%;height:auto;z-index:2;border-radius:0}
+.consult .hglow{position:absolute;left:-4%;top:2%;width:58%;aspect-ratio:1;border-radius:50%;
+  background:radial-gradient(closest-side,rgba(242,182,53,.28),rgba(242,182,53,.1) 55%,rgba(242,182,53,0))}
+/* календар */
+.consult .hcal{--tc:2.3em;position:absolute;z-index:1;right:0;top:4%;bottom:7%;width:56%;border-radius:16px;background:#fff;
+  border:1px solid #EEE;box-shadow:0 18px 50px rgba(208,208,217,.55);padding:3% 2.6% 2.4%;display:flex;flex-direction:column;
+  font-family:"Manrope",system-ui,sans-serif;overflow:hidden}
+.consult .hcal-top{display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:clamp(9px,2.4vw,12px);color:#2C2C3B;margin-bottom:5%}
+.consult .hcal-free{font-weight:600;font-size:clamp(8px,2.1vw,11px);color:#4D4D5C;background:#F5F5FA;border-radius:20px;padding:2px 7px}
+.consult .hcal-free b{display:inline-block;min-width:1.5em;text-align:center;border-radius:5px;background:#F1F1F4;color:#2C2C3B;transition:background .3s}
+.consult .hcal.done .hcal-free b{background:#F2B635;color:#000}
+.consult .hcal-d{display:grid;grid-template-columns:var(--tc) repeat(5,1fr);gap:4px;font-size:clamp(7px,2vw,10px);color:#93939E;text-align:center;margin-bottom:3%}
+.consult .hcal-g{flex:1;display:grid;grid-template-columns:var(--tc) repeat(5,1fr);grid-auto-rows:1fr;gap:3px}
+.consult .hcal-g i{border-radius:5px;background:#F1F1F4;position:relative;overflow:hidden}
+.consult .hcal-t{display:flex;align-items:center;font-size:clamp(6.5px,1.7vw,9px);color:#93939E;font-variant-numeric:tabular-nums}
+.consult .hcal-g i::after{content:"Клиент";display:flex;align-items:center;justify-content:center;color:#fff;font-style:normal;font-weight:600;font-size:clamp(6px,1.55vw,8.5px);letter-spacing:-.02em;position:absolute;inset:0;border-radius:5px;background:#2C2C3B;
+  opacity:0;transform:scale(.4);transition:opacity .25s,transform .35s cubic-bezier(.3,1.5,.5,1)}
+.consult .hcal-g i.on::after{opacity:1;transform:scale(1)}
+.consult .hcal-lg{display:flex;align-items:center;gap:10px;margin-top:4%;font-size:clamp(7px,2vw,10px);color:#93939E;transition:opacity .3s}
+.consult .hcal-lg span{display:flex;align-items:center;gap:5px}
+.consult .hcal-lg i{width:9px;height:9px;border-radius:3px;background:#2C2C3B}
+/* фінал: нижній ряд темних вікон гасне, на його місці — «Свободное время» */
+.consult .hcal-g{position:relative}
+.consult .hcal.life .hcal-g i.free::after{opacity:0;transform:scale(.9)}
+.consult .hcal-fr{position:absolute;left:calc(var(--tc) + 3px);right:0;bottom:0;height:calc((100% - 12px) / 5);border-radius:7px;
+  display:flex;align-items:center;justify-content:center;background:#FFE7A8;box-shadow:inset 0 0 0 1.5px #E0A11F;
+  font-weight:800;font-size:clamp(10px,2.9vw,14px);color:#2C2C3B;opacity:0;transform:scaleX(.3);transition:opacity .35s .25s,transform .55s .25s cubic-bezier(.3,1.3,.5,1)}
+.consult .hcal.life .hcal-fr{opacity:1;transform:none}
+.consult .hcal.life .hcal-ok{top:36%}
+/* фінал: жовта картка з галочкою */
+.consult .hcal-ok{position:absolute;left:50%;top:50%;display:flex;align-items:center;gap:8px;white-space:nowrap;
+  padding:9px 14px 9px 9px;border-radius:14px;background:linear-gradient(135deg,#F9DD7E 0%,#F2B635 55%,#E0A11F 100%);
+  color:#000;font-weight:800;font-size:clamp(11px,3.1vw,16px);box-shadow:0 14px 34px rgba(0,0,0,.25),0 0 0 6px rgba(242,182,53,.22);
+  transform:translate(-50%,-50%) scale(0) rotate(-6deg);transition:transform .5s cubic-bezier(.3,1.6,.5,1),top .5s ease}
+.consult .hcal.done .hcal-ok{transform:translate(-50%,-50%) scale(1) rotate(-3deg)}
+.consult .hcal-ck{width:clamp(22px,6vw,30px);height:clamp(22px,6vw,30px);border-radius:50%;background:#000;display:flex;align-items:center;justify-content:center}
+.consult .hcal-ck svg{width:62%;height:62%}
+.consult .offer{margin-top:-22px}
+@media (prefers-reduced-motion: reduce){
+  .consult .hcal-g i::after,.consult .hcal-ok,.consult .hcal-fr{transition:none}
+}

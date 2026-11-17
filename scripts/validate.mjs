@@ -41,7 +41,12 @@ try {
   console.log('  ✖ не вдалося зібрати українську сторінку для агенцій: ' + e.message);
   process.exit(1);
 }
-try {
+// /pre-reg-form-consult/ua тимчасово НЕ перезбирається: на RU з'явився анімований календар
+// з російськими підписами й інший розклад заголовка, а UA поки лишається попередньою
+// версією (закомічений ua.html). Коли UA теж переводитимемо на календар — додати переклади
+// в build-consult-ua-page.mjs і прибрати цей прапорець.
+const FREEZE_CONSULT_UA = true;
+if (!FREEZE_CONSULT_UA) try {
   const ua = buildConsultUaPage();
   if (ua.changed) console.log('public/pre-reg-form-consult/ua.html перезібрано.');
 } catch (e) {
