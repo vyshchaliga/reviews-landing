@@ -51,6 +51,8 @@ html.rtg-lock,html.rtg-lock body{overflow:hidden}
 
 .rtg-go{width:100%;min-height:60px;padding:0 24px;font-size:17px;border-radius:3000px}
 .rtg-go[disabled]{opacity:.7;cursor:progress}
+/* «Не работаем с гражданами РФ» — дрібно під кнопкою; колір береться з тексту картки, тому читається і на темних, і на світлих лендах */
+.rtg-note{margin:10px 0 0;text-align:center;font-size:12px;line-height:1.4;opacity:.55}
 
 .rtg-hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
 

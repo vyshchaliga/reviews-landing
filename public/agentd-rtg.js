@@ -34,6 +34,7 @@
       income: 'Твій середній дохід на місяць?', role: 'Яка твоя роль', multi: 'можна обрати кілька',
       nisha: 'Твоя ніша',
       send: 'Відправити анкету', sending: 'Відправляємо…',
+      note: 'Не працюємо з громадянами РФ',
       need: 'Заповни, будь ласка, усі поля', fail: 'Не вдалося відправити анкету. Спробуй ще раз за хвилину.'
     },
     ru: {
@@ -44,6 +45,7 @@
       income: 'Твой средний доход в месяц?', role: 'Какая твоя роль', multi: 'можно выбрать несколько',
       nisha: 'Твоя ниша',
       send: 'Отправить анкету', sending: 'Отправляем…',
+      note: 'Не работаем с гражданами РФ',
       need: 'Заполни, пожалуйста, все поля', fail: 'Не удалось отправить анкету. Попробуй ещё раз через минуту.'
     }
   };
@@ -161,6 +163,8 @@
     form.appendChild(msg);
     var go = el('button', 'btn rtg-go'); go.type = 'submit'; refs.go = go;
     form.appendChild(go);
+    var note = el('p', 'rtg-note'); refs.note = note;   // дрібний текст під кнопкою
+    form.appendChild(note);
     form.addEventListener('submit', onSubmit);
     function clearErr(e) {
       var n = e.target.closest && e.target.closest('.rtg-f,.rtg-fs');
@@ -190,6 +194,7 @@
       G.items.forEach(function (r) { r.text.textContent = r.opt[lg]; });
     });
     refs.go.textContent = busy ? t.sending : t.send;
+    refs.note.textContent = t.note;
     if (refs.msg.getAttribute('data-k')) refs.msg.textContent = t[refs.msg.getAttribute('data-k')];
     fitH(); refit();
   }
