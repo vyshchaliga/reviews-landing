@@ -1,6 +1,7 @@
 /* Копія rtg.js тільки для /pre-reg-form-agent-d(/ua): анкета з полем ніші, тип «Предзапис агенти». */
 /* Анкета передзапису: картка стоїть прямо на сторінці, кнопки лише прокручують до неї.
    Попапа немає. Відповіді йдуть на /api/lead → Google-таблиця, після відправки — редірект (див. AFTER_URL).
+   Подію Lead у Meta шле тільки fnlz (скрипт у <head>), цей файл подій не шле.
    Мова береться з перемикача UA/RU на ленді. Завантажується тільки на /pre-reg-form. */
 (function () {
   'use strict';
@@ -308,49 +309,35 @@
     });
   }
 
-  /* Анкету прийнято — одразу ведемо далі. Проміжного екрана з кнопкою
-     і конфеті більше немає: людина має потрапити туди без зайвого кроку.
+  /* Анкету прийнято — ведемо в Telegram.
 
-     Lead у Meta Pixel. На сторінці стоїть трекер fnlz (data-site-form): він сам ловить
-     відправку форми і, коли його сервер прийняв лід, шле fbq('track','Lead') з eventID —
-     тим самим, що й серверна подія (CAPI), тож Meta їх склеює в одну. Якщо ми ще й
-     самі слали Lead (без eventID), виходило ДВА ліди на одну анкету. Тому:
-       • fnlz є — свій Lead не шлемо, чекаємо, поки fnlz віддасть свій, і тоді переходимо;
-       • fnlz не відповів за FNLZ_WAIT мс (або його немає) — шлемо Lead самі, щоб не втратити;
-       • після нашого запасного Lead пізній Lead від fnlz глушимо, щоб не було дубля. */
+     Подію Lead у Meta шле ТІЛЬКИ трекер fnlz (скрипт fnlz.app/t.js у <head>): він сам ловить
+     відправку цієї форми і передає ліда. Наш код ніяких подій у Meta не шле, пікселя на
+     сторінці немає — так Lead не може задвоїтись.
+     Єдине, що робимо: перед переходом чекаємо, поки запит fnlz з лідом дійде (до FNLZ_WAIT мс),
+     щоб перехід на t.me його не обірвав. */
   var FNLZ_WAIT = 3000;
+  function fnlzSent() {
+    try {
+      return performance.getEntriesByType('resource').some(function (e) {
+        return /fnlz\.(app|to)\/api\/lead/.test(e.name) && e.responseEnd > 0;
+      });
+    } catch (e) { return true; }
+  }
   function finish(real) {
     if (done) return;
     done = true;
     if (refs.go) refs.go.disabled = true;  // повторний тап не відправить анкету вдруге
     var left = false;
     var go = function () { if (left) return; left = true; location.href = AFTER_URL; };
-    if (!real || typeof window.fbq !== 'function') { go(); return; }
-
-    var orig = window.fbq, sent = false;
-    var own = function () {
-      if (sent) return; sent = true;
-      try { orig('track', 'Lead', { content_name: LEAD_TYPE, content_category: lang() }); } catch (e) {}
-      setTimeout(go, 300);                // інакше браузер обриває запит піксела на вивантаженні
-    };
     var hasFnlz = !!document.querySelector('script[data-site-form][src*="fnlz."]');
-    if (!hasFnlz) { own(); return; }
-
-    // перехоплюємо виклики fbq, щоб побачити Lead від fnlz
-    var wrap = function () {
-      var a = arguments;
-      if (a[0] === 'track' && a[1] === 'Lead') {
-        if (sent) return;                 // запасний Lead уже пішов — дубль не пускаємо
-        sent = true;
-        var r = orig.apply(this, a);
-        setTimeout(go, 300);
-        return r;
-      }
-      return orig.apply(this, a);
-    };
-    for (var k in orig) if (Object.prototype.hasOwnProperty.call(orig, k)) wrap[k] = orig[k];
-    window.fbq = wrap;
-    setTimeout(own, FNLZ_WAIT);
+    if (!real || !hasFnlz) { go(); return; }
+    var t0 = Date.now();
+    (function wait() {
+      if (fnlzSent()) { setTimeout(go, 150); return; }
+      if (Date.now() - t0 >= FNLZ_WAIT) { go(); return; }
+      setTimeout(wait, 100);
+    })();
   }
 
   /* ---------- Підключення ---------- */
