@@ -328,6 +328,7 @@
     if (done) return;
     done = true;
     if (refs.go) refs.go.disabled = true;  // повторний тап не відправить анкету вдруге
+    if (real) { try { window.hmGoal && window.hmGoal(); } catch (e) {} }  // конверсія в Heatmap
     var left = false;
     var go = function () { if (left) return; left = true; location.href = AFTER_URL; };
     var hasFnlz = !!document.querySelector('script[data-site-form][src*="fnlz."]');
